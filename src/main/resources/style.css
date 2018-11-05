@@ -1,0 +1,21 @@
+nav li{
+    list-style: none;
+}
+nav li a{
+    text-decoration: none;
+    color: blanchedalmond;
+    display: block;
+    float: left;
+    margin-left: 25px;
+    font-size: 3.25rem;
+}
+a:hover{
+    text-decoration:none;
+}
+body{
+    background-color: gainsboro;
+}
+footer{
+    background-color: bisque ;
+    height: 10%;
+}

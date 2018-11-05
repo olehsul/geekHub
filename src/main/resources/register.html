@@ -4,9 +4,17 @@
     <meta charset="UTF-8">
     <title>Document</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header></header>
+<script src="script.js"></script>
+<header>
+    <nav class="navbar navbar-dark bg-primary">
+        <li><a href="#">Geekhub</a></li>
+        <li><a href="#">Мій профіль</a></li>
+        <li><a href="#">Налаштування</a></li>
+    </nav>
+</header>
 <div class="content">
     <div class="register">
         <form name="register" method="get" action="/save">
@@ -37,8 +45,8 @@
             <option value="0" selected>Рік</option>
             <option value="1900" placeholder="1900">1900</option>
             <option value="1901" placeholder="1901">1901</option>
-        <p><input type="submit" name="" placeholder=""></p>
         </select>
+            <p><input type="submit" name="" placeholder=""></p>
 
         </form>
     </div>
@@ -46,18 +54,18 @@
 <footer></footer>
 
 <script>
-    function day{
+    function day(){
         n=0;
         var i;
         for(i=0;i<=31; i++ )
         document.getElementsByName("Birth_day").setAttribute("value",n);
     }
-    function mounth{
+    function mounth(){
         n=0;
         for( i=0;i<=12; i++ )
         document.getElementsByName("Birth_day").setAttribute("value",n);
     }
-    function year{
+    function year(){
         n=1900;
         for(  i=0;i<=2018; i++ )
         document.getElementsByName("Birth_day").setAttribute("value",n);
