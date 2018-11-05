@@ -20,8 +20,10 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String email;
     private String password;
-    private String realName;
+    private String firstName;
+    private String lastName;
 
+    @OneToMany
     private int genderId;
     private int cityId;
     private Date birthDate;
@@ -34,15 +36,22 @@ public class User implements UserDetails {
     private boolean credentialsNonExpired;
     private boolean accountNonLocked;
 
-    public User(String email, String password, String realName, int genderId, int cityId, Date birthDate) {
+    public User(String email, String password, String firstName, String lastName, int genderId, int cityId, Date birthDate) {
         this.email = email;
         this.password = password;
-        this.realName = realName;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.genderId = genderId;
         this.cityId = cityId;
         this.birthDate = birthDate;
+    }
 
-
+    public User(String email, String password, String firstName, String lastName, Date birthDate) {
+        this.email = email;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthDate = birthDate;
     }
 
     @Override
