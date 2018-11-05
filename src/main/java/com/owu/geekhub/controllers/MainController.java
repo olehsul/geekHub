@@ -14,7 +14,7 @@ public class MainController {
 
     @GetMapping ("/")
     public String home(Model model){
-        model.addAttribute("message", "register");
+        model.addAttribute("message", "Hello");
         return "index";
     }
 
