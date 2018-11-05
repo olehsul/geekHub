@@ -9,7 +9,7 @@ public class GeekhubApplication {
     public static void main(String[] args) {
         SpringApplication.run(GeekhubApplication.class, args);
 
-       // System.out.println("hello");
+
     }
 
 }
