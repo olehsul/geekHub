@@ -22,6 +22,8 @@ public class User implements UserDetails {
     private String password;
     private String firstName;
     private String lastName;
+    private String username;
+    // todo: fix username & email
 
 
     private int genderId;
