@@ -13,6 +13,6 @@ public class City {
     private String name;
 
     @ManyToOne
-    private int countryId;
+    private Country country;
     
 }

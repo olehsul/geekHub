@@ -23,7 +23,7 @@ public class User implements UserDetails {
     private String firstName;
     private String lastName;
 
-    @OneToMany
+
     private int genderId;
     private int cityId;
     private Date birthDate;

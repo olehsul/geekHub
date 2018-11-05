@@ -13,7 +13,7 @@ public class Gender {
     private int id;
     private String name;
 
-    @ManyToOne
+    @OneToMany
     private List<User> users;
     
 }
