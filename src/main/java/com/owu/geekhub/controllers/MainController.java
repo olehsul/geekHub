@@ -43,7 +43,7 @@ public class MainController {
         String encode = passwordEncoder.encode(user.getPassword());
         user.setPassword(encode);
         System.out.println(user);
-        userService.save(user);
+        userService.save(user);//ilugh
 
         return "redirect:/";
     }
