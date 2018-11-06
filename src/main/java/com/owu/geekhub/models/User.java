@@ -1,6 +1,7 @@
 package com.owu.geekhub.models;
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,6 +29,7 @@ public class User implements UserDetails {
 
     private int genderId;
     private int cityId;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date birthDate;
     private String activationKey;
     private Role role;
@@ -54,6 +56,13 @@ public class User implements UserDetails {
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthDate = birthDate;
+    }
+
+    public User(String email, String password, String firstName, String lastName) {
+        this.email = email;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     @Override
