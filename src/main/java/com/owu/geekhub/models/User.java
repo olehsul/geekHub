@@ -40,30 +40,30 @@ public class User implements UserDetails {
     private boolean credentialsNonExpired;
     private boolean accountNonLocked;
 
-    public User(String email, String password, String firstName, String lastName, int genderId, int cityId, Date birthDate) {
-        this.email = email;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.genderId = genderId;
-        this.cityId = cityId;
-        this.birthDate = birthDate;
-    }
-
-    public User(String email, String password, String firstName, String lastName, Date birthDate) {
-        this.email = email;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.birthDate = birthDate;
-    }
-
-    public User(String email, String password, String firstName, String lastName) {
-        this.email = email;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
+//    public User(String email, String password, String firstName, String lastName, int genderId, int cityId, Date birthDate) {
+//        this.email = email;
+//        this.password = password;
+//        this.firstName = firstName;
+//        this.lastName = lastName;
+//        this.genderId = genderId;
+//        this.cityId = cityId;
+//        this.birthDate = birthDate;
+//    }
+//
+//    public User(String email, String password, String firstName, String lastName, Date birthDate) {
+//        this.email = email;
+//        this.password = password;
+//        this.firstName = firstName;
+//        this.lastName = lastName;
+//        this.birthDate = birthDate;
+//    }
+//
+//    public User(String email, String password, String firstName, String lastName) {
+//        this.email = email;
+//        this.password = password;
+//        this.firstName = firstName;
+//        this.lastName = lastName;
+//    }
 
     @Override
     public String getUsername() {

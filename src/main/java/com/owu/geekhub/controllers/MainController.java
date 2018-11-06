@@ -1,16 +1,22 @@
 package com.owu.geekhub.controllers;
 
+import com.owu.geekhub.dao.UserDao;
 import com.owu.geekhub.models.Contact;
+import com.owu.geekhub.models.User;
+import com.owu.geekhub.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.xml.ws.Action;
+
 @Controller
 public class MainController {
-
-
+    @Autowired
+    UserService userService;
 
     @GetMapping ("/")
     public String home(Model model){
@@ -18,11 +24,12 @@ public class MainController {
         return "index";
     }
 
-    @PostMapping("/save")
-    public String save(
-            Contact contact
-
+    @PostMapping("/registerNewUser")
+    public String registerNewUser(
+            User user
     ){
+        System.out.println(user);
+        userService.save(user);
 
         return "redirect:/";
     }
