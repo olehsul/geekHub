@@ -35,19 +35,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/register", "/login", "/registerNewUser").permitAll()
+                .antMatchers("/auth", "/registerNewUser").permitAll()
                 .anyRequest().authenticated()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .and()
                 .formLogin()
-                .loginPage("/login")
+                .loginPage("/auth")
                 .successForwardUrl("/successURL")//handle with post mapping in controller
-                .failureUrl("/login?error").permitAll()
+                .failureUrl("/auth?error").permitAll()
                 .permitAll()
                 .and()
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout")).
-                logoutSuccessUrl("/login")
+                logoutSuccessUrl("/auth")
                 .permitAll();
     }
 

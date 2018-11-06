@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Document</title>
+    <title>Authentication</title>
+    <meta charset="UTF-8"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="../static/style.css">
 </head>
 <body>
-<script src="../static/script.js"></script>
 <header>
     <nav class="navbar navbar-dark bg-primary">
         <li><a href="#">Geekhub</a></li>
@@ -15,6 +14,17 @@
         <li><a href="#">Налаштування</a></li>
     </nav>
 </header>
+<div th:if="${param.error}">
+    Invalid username or password.
+</div>
+<div th:if="${param.logout}">
+    You have been logged out.
+</div>
+<form th:action="@{/auth}" method="POST">
+    <div><label>Email : <input type="text" name="username" placeholder="username"></label></div>
+    <div><label>Password : <input type="password" name="password" placeholder="password"></label></div>
+    <div><input type="submit" value="Sign in"></div>
+</form>
 <div class="content">
     <div class="register">
         <form name="register" method="post" th:action="@{/registerNewUser}">
@@ -34,22 +44,22 @@
             <!--<p><b>Дата народження</b></p>-->
             <!--<p>Date: <span th:text="${#calendars.format(#calendars.createNow(), 'dd MMM yyyy HH:mm')}"></span></p>-->
             <!--<select size="1" name="Birth_day">-->
-                <!--<option value="0" selected>День</option>-->
-                <!--<option value="1" placeholder="1">1</option>-->
-                <!--<option value="2" placeholder="2">2</option>-->
+            <!--<option value="0" selected>День</option>-->
+            <!--<option value="1" placeholder="1">1</option>-->
+            <!--<option value="2" placeholder="2">2</option>-->
             <!--</select >-->
             <!--<select size="1" name="Birth_mounth">-->
             <!--<option value="0" selected>Місяць</option>-->
             <!--<option value="1" placeholder="1">1</option>-->
             <!--<option value="2" placeholder="2">2</option>-->
 
-        <!--</select><select size="1" name="Birth_year">-->
+            <!--</select><select size="1" name="Birth_year">-->
             <!--<option value="0" selected>Рік</option>-->
             <!--<option value="1900" placeholder="1900">1900</option>-->
             <!--<option value="1901" placeholder="1901">1901</option>-->
-        <!--</select>-->
+            <!--</select>-->
             <p>
-            <br />
+                <br />
                 <input type="submit" name="" placeholder="">
             </p>
 
@@ -64,18 +74,19 @@
         n=0;
         var i;
         for(i=0;i<=31; i++ )
-        document.getElementsByName("Birth_day").setAttribute("value",n);
+            document.getElementsByName("Birth_day").setAttribute("value",n);
     }
     function mounth(){
         n=0;
         for( i=0;i<=12; i++ )
-        document.getElementsByName("Birth_day").setAttribute("value",n);
+            document.getElementsByName("Birth_day").setAttribute("value",n);
     }
     function year(){
         n=1900;
         for(  i=0;i<=2018; i++ )
-        document.getElementsByName("Birth_day").setAttribute("value",n);
+            document.getElementsByName("Birth_day").setAttribute("value",n);
     }
 </script>
+<script src="../static/script.js"></script>
 </body>
 </html>

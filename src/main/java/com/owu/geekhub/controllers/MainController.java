@@ -19,10 +19,17 @@ public class MainController {
     @Autowired
     UserService userService;
 
-    @GetMapping ("/")
-    public String home(Model model){
+    @GetMapping("/")
+    public String home(Model model) {
         model.addAttribute("message", "Hello");
+
         return "index";
+    }
+
+    @PostMapping ("/successURL")
+    public String successURL(){
+        System.out.println("successURL______________________________________");
+        return "redirect:/";
     }
 
     @Autowired
