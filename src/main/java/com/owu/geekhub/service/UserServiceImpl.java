@@ -2,6 +2,7 @@ package com.owu.geekhub.service;
 
 import com.owu.geekhub.dao.UserDao;
 import com.owu.geekhub.models.Contact;
+import com.owu.geekhub.models.Role;
 import com.owu.geekhub.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,6 +24,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public void save(User user) {
         if (user != null) {
+
+
+            user.setRole(Role.ROLE_USER);
+            user.setAccountNonExpired(true);
+            user.setCredentialsNonExpired(true);
+            user.setAccountNonLocked(true);
+            user.setEnabled(true);
+            user.setActive(true);
+
             userDao.save(user);
         }
     }

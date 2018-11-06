@@ -1,10 +1,20 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <title>Login</title>
+    <title>Sring Security Login page</title>
     <meta charset="UTF-8"/>
 </head>
 <body>
-<a href="/register">Sign up</a>
+<div th:if="${param.error}">
+    Invalid username or password.
+</div>
+<div th:if="${param.logout}">
+    You have been logged out.
+</div>
+<form th:action="@{/login}" method="POST">
+    <div><label>Email : <input type="text" name="username" placeholder="username"></label></div>
+    <div><label>Password : <input type="password" name="password" placeholder="password"></label></div>
+    <div><input type="submit" value="Sign in"></div>
+</form>
 </body>
 </html>
