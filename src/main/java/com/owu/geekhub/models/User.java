@@ -18,16 +18,17 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    // todo: fix username & email
     @Column(unique = true)
     private String email;
     private String password;
     private String firstName;
     private String lastName;
+    @Column(unique = true)
     private String username;
-    // todo: fix username & email
 
 
-    private int genderId;
+    private Gender gender;
     private int cityId;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date birthDate;
