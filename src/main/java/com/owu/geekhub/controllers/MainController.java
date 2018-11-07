@@ -52,7 +52,7 @@ public class MainController {
     ) throws ParseException {
         String stringDate = birthYear + "/" + birthMonth + "/" + birthDay;
         Date date = new java.sql.Date(new SimpleDateFormat("yyyy/MM/dd").parse(stringDate).getTime());
-        dateValidator.isDateVALID(date);
+        System.out.println(dateValidator.isDateValid("1999-02-31"));
         user.setBirthDate(date);
         System.out.println(user);
         String encode = passwordEncoder.encode(user.getPassword());

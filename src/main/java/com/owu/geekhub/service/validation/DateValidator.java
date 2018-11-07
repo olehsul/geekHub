@@ -1,26 +1,25 @@
 package com.owu.geekhub.service.validation;
 
 import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class DateValidator {
-    public boolean isDateVALID(Date date){
+    public boolean isDateValid(String date){
         if(date == null){
             return false;
         }
 
-        Calendar cal = Calendar.getInstance();
-        cal.setLenient(false);
-        cal.setTime(date);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        sdf.setLenient(false);
         try {
-            cal.getTime();
-
-        }
-        catch (Exception e) {
-            System.out.println("Invalid date");
+            sdf.parse(date);
+            return true;
+        } catch (ParseException ex) {
             return false;
         }
-        System.out.println("Date is valid!!!");
-        return true;
+
+
     }
 }
