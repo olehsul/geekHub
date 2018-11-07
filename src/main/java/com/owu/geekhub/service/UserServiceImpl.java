@@ -27,8 +27,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void save(User user) {
         if (user != null) {
-            if (!dateValidator.isDateVALID(user.getBirthDate()))
-                return;
+//            if (!dateValidator.isDateValid(user.getBirthDate()))
+//                return;
             user.setRole(Role.ROLE_USER);
             user.setAccountNonExpired(true);
             user.setCredentialsNonExpired(true);

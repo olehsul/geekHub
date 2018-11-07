@@ -48,6 +48,7 @@ public class MainController {
             User user,
             @RequestParam("birth-date") String birthDate
     ) {
+        System.out.println(dateValidator.isDateValid(birthDate));
         System.out.println(user);
         String datePattern = "dd/MM/yyyy";
         try {
