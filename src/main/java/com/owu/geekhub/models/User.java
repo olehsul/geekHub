@@ -15,7 +15,6 @@ import java.util.List;
 @Entity
 @Data
 public class User implements UserDetails {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,7 +28,7 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Gender gender;
     private int cityId;
-    @DateTimeFormat(pattern = "yyyy/MM/dd")
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date birthDate;
     private String activationKey;
     @Enumerated(EnumType.STRING)

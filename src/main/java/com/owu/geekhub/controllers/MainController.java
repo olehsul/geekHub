@@ -46,15 +46,15 @@ public class MainController {
     @PostMapping("/registerNewUser")
     public String registerNewUser(
             User user,
-            @RequestParam("Birth_day") int birthDay,
-            @RequestParam("Birth_month") int birthMonth,
-            @RequestParam("Birth_year") int birthYear
-    ) throws ParseException {
-        String stringDate = birthYear + "/" + birthMonth + "/" + birthDay;
-        Date date = new java.sql.Date(new SimpleDateFormat("yyyy/MM/dd").parse(stringDate).getTime());
-        System.out.println(dateValidator.isDateValid("1999-02-31"));
-        user.setBirthDate(date);
+            @RequestParam("birth-date") String birthDate
+    ) {
         System.out.println(user);
+        String datePattern = "dd/MM/yyyy";
+        try {
+            user.setBirthDate(new Date(new SimpleDateFormat(datePattern).parse(birthDate).getTime()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         String encode = passwordEncoder.encode(user.getPassword());
         user.setPassword(encode);
         System.out.println(user);
