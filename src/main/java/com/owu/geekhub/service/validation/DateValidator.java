@@ -1,8 +1,11 @@
 package com.owu.geekhub.service.validation;
 
+import org.springframework.stereotype.Service;
+
 import java.sql.Date;
 import java.util.Calendar;
 
+@Service
 public class DateValidator {
     public boolean isDateVALID(Date date){
         if(date == null){

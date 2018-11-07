@@ -4,6 +4,7 @@ import com.owu.geekhub.dao.UserDao;
 import com.owu.geekhub.models.Contact;
 import com.owu.geekhub.models.Role;
 import com.owu.geekhub.models.User;
+import com.owu.geekhub.service.validation.DateValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,6 +15,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private DateValidator dateValidator;
 
 
     @Override
@@ -24,8 +27,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void save(User user) {
         if (user != null) {
-
-
+            if (!dateValidator.isDateVALID(user.getBirthDate()))
+                return;
             user.setRole(Role.ROLE_USER);
             user.setAccountNonExpired(true);
             user.setCredentialsNonExpired(true);
