@@ -43,21 +43,23 @@
             <!--<input type="text" size="20" name="nickname" placeholder="">-->
             <!--<p><b>Дата народження</b></p>-->
             <!--<p>Date: <span th:text="${#calendars.format(#calendars.createNow(), 'dd MMM yyyy HH:mm')}"></span></p>-->
-            <!--<select size="1" name="Birth_day">-->
-            <!--<option value="0" selected>День</option>-->
-            <!--<option value="1" placeholder="1">1</option>-->
-            <!--<option value="2" placeholder="2">2</option>-->
-            <!--</select >-->
-            <!--<select size="1" name="Birth_mounth">-->
-            <!--<option value="0" selected>Місяць</option>-->
-            <!--<option value="1" placeholder="1">1</option>-->
-            <!--<option value="2" placeholder="2">2</option>-->
+            <select size="1" name="Birth_day">
+            <option value="0" selected>День</option>
+            <option value="1" placeholder="1">1</option>
+            <option value="2" placeholder="2">2</option>
+            <option value="30" placeholder="30">30</option>
+            </select >
+            <select size="1" name="Birth_month">
+            <option value="0" selected>Місяць</option>
+            <option value="1" placeholder="1">1</option>
+            <option value="2" placeholder="2">2</option>
 
-            <!--</select><select size="1" name="Birth_year">-->
-            <!--<option value="0" selected>Рік</option>-->
-            <!--<option value="1900" placeholder="1900">1900</option>-->
-            <!--<option value="1901" placeholder="1901">1901</option>-->
-            <!--</select>-->
+            </select><select size="1" name="Birth_year">
+            <option value="0" selected>Рік</option>
+            <option value="1900" placeholder="1900">1900</option>
+            <option value="1901" placeholder="1901">1901</option>
+            <option value="1998" placeholder="1998">1998</option>
+            </select>
             <p>
                 <br />
                 <input type="submit" name="" placeholder="">
