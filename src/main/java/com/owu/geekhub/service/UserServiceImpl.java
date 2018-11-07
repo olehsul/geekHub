@@ -18,16 +18,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        UserDetails byEmail = userDao.findByUsername(s);
-        System.out.println(byEmail + "_______________________________");
-        return byEmail;
+        return userDao.findByUsername(s);
     }
 
     @Override
     public void save(User user) {
         if (user != null) {
 
-            user.setUsername(user.getEmail());
+
             user.setRole(Role.ROLE_USER);
             user.setAccountNonExpired(true);
             user.setCredentialsNonExpired(true);

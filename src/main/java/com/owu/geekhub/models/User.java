@@ -20,19 +20,18 @@ public class User implements UserDetails {
     private Long id;
     // todo: fix username & email
     @Column(unique = true)
-    private String email;
-    private String password;
-    private String firstName;
-    private String lastName;
-    @Column(unique = true)
     private String username;
+    private String password;
+    private String lastName;
+    private String firstName;
 
-
+    @Enumerated(EnumType.STRING)
     private Gender gender;
     private int cityId;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date birthDate;
     private String activationKey;
+    @Enumerated(EnumType.STRING)
     private Role role;
     private boolean isActive;
 
@@ -68,7 +67,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return username;
     }
 
     @Override

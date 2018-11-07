@@ -21,24 +21,24 @@
     You have been logged out.
 </div>
 <form th:action="@{/auth}" method="POST">
-    <div><label>Email : <input type="text" name="email" placeholder="email"></label></div>
-    <div><label>Password : <input type="password" name="password" placeholder="password"></label></div>
+    <div><label>Email : <br><input type="text" name="username" placeholder="email"></label></div>
+    <div><label>Password : <br><input type="password" name="password" placeholder="password"></label></div>
     <div><input type="submit" value="Sign in"></div>
 </form>
 <div class="content">
     <div class="register">
         <form name="register" method="post" th:action="@{/registerNewUser}">
-            <p><b>Імя</b></p>
+            <p><b>First name</b></p>
             <input type="text" size="20" name="firstName" placeholder="Ім'я">
-            <p><b>Прізвище</b></p>
+            <p><b>Last name</b></p>
             <input type="text" size="20" name="lastName" placeholder="Прізвище">
             <p><b>Пошта</b></p>
-            <input type="text" size="20" name="email" placeholder="email">
+            <input type="text" size="20" name="username" placeholder="email">
             <p><b>Пароль</b></p>
             <input type="password" size="20" name="password" placeholder="">
-            <!--<p><b>Cтать</b></p>-->
-            <!--<input type="radio" name="sex" placeholder="sex"> Чоловіча-->
-            <!--<input type="radio" name="sex" placeholder="sex"> Жіноча-->
+            <p><b>Cтать</b></p>
+            <input type="radio" name="gender" value="MALE" placeholder="sex"> Чоловіча
+            <input type="radio" name="gender" value="FEMALE" placeholder="sex"> Жіноча
             <!--<p><b>Країна</b></p>-->
             <!--<input type="text" size="20" name="nickname" placeholder="">-->
             <!--<p><b>Дата народження</b></p>-->
