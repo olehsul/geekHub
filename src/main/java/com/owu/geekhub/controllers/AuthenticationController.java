@@ -21,8 +21,10 @@ import java.text.SimpleDateFormat;
 
 @Controller
 public class AuthenticationController {
+
     @Autowired
     UserService userService;
+
     @Autowired
     PasswordEncoder passwordEncoder;
 
@@ -33,6 +35,7 @@ public class AuthenticationController {
             @RequestParam("birth-date") String birthDate,
             HttpServletRequest request
     ) {
+        String password = user.getPassword();
 //        System.out.println(user);
         String datePattern = "dd/MM/yyyy";
         try {
@@ -40,14 +43,11 @@ public class AuthenticationController {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        String password = user.getPassword();
-        String encode = passwordEncoder.encode(user.getPassword());
-        user.setPassword(encode);
+        System.out.println("-------------im in saver----------------");
         if (userService.save(user)) {
             authWithHttpServletRequest(request, user.getUsername(), password);
             return "redirect:/id" + user.getId();
-        }
-        else return "redirect:/auth";
+        } else return "redirect:/auth";
 
     }
 
