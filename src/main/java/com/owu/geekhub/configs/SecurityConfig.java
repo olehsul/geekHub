@@ -24,12 +24,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
 
     @Bean
-        public DaoAuthenticationProvider authenticationProvider() {
-            DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-            provider.setUserDetailsService(userDetailsService);
-            provider.setPasswordEncoder(passwordEncoder());
-            return provider;
-        }
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder());
+//        userDetailsService.loadUserByUsername();
+        return provider;
+    }
 
 
     @Override
@@ -53,26 +54,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-        public PasswordEncoder passwordEncoder() {
-            return new BCryptPasswordEncoder();
-        }
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-         private InMemoryUserDetailsManagerConfigurer<AuthenticationManagerBuilder> inMemoryConfigurer() {
-                 return new InMemoryUserDetailsManagerConfigurer<AuthenticationManagerBuilder>();
-             }
+    private InMemoryUserDetailsManagerConfigurer<AuthenticationManagerBuilder> inMemoryConfigurer() {
+        return new InMemoryUserDetailsManagerConfigurer<>();
+    }
 
-             @Autowired
-             public void configureGlobal(AuthenticationManagerBuilder auth,
-                                         AuthenticationProvider provider) throws Exception {
-                 inMemoryConfigurer()
-                         .withUser("admin")
-                         .password("{noop}admin")
-                         .authorities("ADMIN")
-                         .and()
-                         .configure(auth);
-                 auth.authenticationProvider(provider);
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth,
+                                AuthenticationProvider provider) throws Exception {
+        inMemoryConfigurer()
+                .withUser("admin")
+                .password("{noop}admin")
+                .authorities("ADMIN")
+                .and()
+                .configure(auth);
+        auth.authenticationProvider(provider);
 
-             }
+    }
 
-    
+
 }

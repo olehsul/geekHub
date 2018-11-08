@@ -4,6 +4,8 @@ import com.owu.geekhub.models.User;
 import com.owu.geekhub.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,8 +31,8 @@ public class MainController {
 
     @PostMapping ("/successURL")
     public String successURL(){
-        System.out.println("successURL______________________________________");
-        return "redirect:/";
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return "redirect:/id" + ((User)authentication.getPrincipal()).getId();
     }
 
     @Autowired
@@ -42,7 +44,7 @@ public class MainController {
             User user,
             @RequestParam("birth-date") String birthDate
     ) {
-        System.out.println(user);
+//        System.out.println(user);
         String datePattern = "dd/MM/yyyy";
         try {
             user.setBirthDate(new Date(new SimpleDateFormat(datePattern).parse(birthDate).getTime()));
@@ -51,7 +53,7 @@ public class MainController {
         }
         String encode = passwordEncoder.encode(user.getPassword());
         user.setPassword(encode);
-        System.out.println(user);
+//        System.out.println(user);
         userService.save(user);
 
         return "redirect:/";
