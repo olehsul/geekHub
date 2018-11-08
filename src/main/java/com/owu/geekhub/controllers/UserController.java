@@ -20,6 +20,7 @@ public class UserController {
     public String userId(@PathVariable Long userId,
                          Model model) {
         User user = userDao.findById(userId).get();
+        model.addAttribute("user", user);
         System.out.println(user);
         return "user-home";
     }
