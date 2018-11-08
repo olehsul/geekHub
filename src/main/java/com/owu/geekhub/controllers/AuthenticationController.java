@@ -1,0 +1,73 @@
+package com.owu.geekhub.controllers;
+
+import com.owu.geekhub.models.User;
+import com.owu.geekhub.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
+@Controller
+public class AuthenticationController {
+    @Autowired
+    UserService userService;
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
+    @PostMapping("/registerNewUser")
+    public String registerNewUser(
+            User user,
+            @RequestParam("birth-date") String birthDate,
+            HttpServletRequest request
+    ) {
+//        System.out.println(user);
+        String datePattern = "dd/MM/yyyy";
+        try {
+            user.setBirthDate(new Date(new SimpleDateFormat(datePattern).parse(birthDate).getTime()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        String password = user.getPassword();
+        String encode = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encode);
+        if (userService.save(user)) {
+            authWithHttpServletRequest(request, user.getUsername(), password);
+            return "redirect:/id" + user.getId();
+        }
+        else return "redirect:/auth";
+
+    }
+
+
+    @PostMapping("/successURL")
+    public String successURL() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return "redirect:/id" + ((User) authentication.getPrincipal()).getId();
+    }
+
+    public void authWithHttpServletRequest(HttpServletRequest request, String username, String password) {
+//        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
+//                .getRequestAttributes()).getRequest();
+        try {
+            request.login(username, password);
+        } catch (ServletException e) {
+            System.err.println("Login Error!");
+            e.printStackTrace();
+//            LOGGER.error("Error while login ", e);
+        }
+    }
+
+}

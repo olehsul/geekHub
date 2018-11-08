@@ -6,5 +6,5 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface UserService extends UserDetailsService {
-    void save(User user);
+    boolean save(User user);
 }
