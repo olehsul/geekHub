@@ -1,10 +1,8 @@
 package com.owu.geekhub.service;
 
 import com.owu.geekhub.dao.UserDao;
-import com.owu.geekhub.models.Contact;
 import com.owu.geekhub.models.Role;
 import com.owu.geekhub.models.User;
-import com.owu.geekhub.service.validation.DateValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,8 +13,6 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDao userDao;
-    @Autowired
-    private DateValidator dateValidator;
 
 
     @Override
