@@ -28,37 +28,4 @@ public class MainController {
 
         return "index";
     }
-
-    @PostMapping ("/successURL")
-    public String successURL(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return "redirect:/id" + ((User)authentication.getPrincipal()).getId();
-    }
-
-    @Autowired
-    PasswordEncoder passwordEncoder;
-
-    @DateTimeFormat(pattern = "dd/MM/yyyy")
-    @PostMapping("/registerNewUser")
-    public String registerNewUser(
-            User user,
-            @RequestParam("birth-date") String birthDate
-    ) {
-//        System.out.println(user);
-        String datePattern = "dd/MM/yyyy";
-        try {
-            user.setBirthDate(new Date(new SimpleDateFormat(datePattern).parse(birthDate).getTime()));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        String encode = passwordEncoder.encode(user.getPassword());
-        user.setPassword(encode);
-//        System.out.println(user);
-        userService.save(user);
-
-        return "redirect:/";
-    }
-
-
-
 }

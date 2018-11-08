@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void save(User user) {
+    public boolean save(User user) {
         if (user != null) {
 //            if (!dateValidator.isDateValid(user.getBirthDate()))
 //                return;
@@ -38,6 +38,8 @@ public class UserServiceImpl implements UserService {
             user.setActive(true);
 
             userDao.save(user);
+            return true;
         }
+        else return false;
     }
 }
