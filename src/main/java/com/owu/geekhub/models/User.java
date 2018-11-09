@@ -25,6 +25,9 @@ public class User implements UserDetails {
     private String lastName;
     private String firstName;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private UserIdentity identity;
+
     @Enumerated(EnumType.STRING)
     private Gender gender;
     private int cityId;
