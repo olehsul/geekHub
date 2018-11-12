@@ -30,7 +30,7 @@ public class User implements UserDetails {
     private int cityId;
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date birthDate;
-    private String activationKey;
+    private int activationKey;
     @Enumerated(EnumType.STRING)
     private Role role;
     private boolean isActive;

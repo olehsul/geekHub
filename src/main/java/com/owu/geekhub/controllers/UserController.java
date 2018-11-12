@@ -22,6 +22,6 @@ public class UserController {
         User user = userDao.findById(userId).get();
         model.addAttribute("user", user);
         System.out.println(user);
-        return "user-home";
+        return "user/home";
     }
 }

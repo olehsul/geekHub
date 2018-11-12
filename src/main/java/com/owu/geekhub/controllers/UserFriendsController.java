@@ -13,7 +13,7 @@ public class UserFriendsController{
     @GetMapping("/friends")
     public String friends() {
         
-        return "friend-list";
+        return "friends";
     }
     
     @GetMapping("/{userID}/friends")
