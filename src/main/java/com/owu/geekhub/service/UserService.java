@@ -4,7 +4,9 @@ import com.owu.geekhub.models.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
+
 @Service
 public interface UserService extends UserDetailsService {
-    boolean save(User user);
+    boolean save(User user) throws MessagingException;
 }
