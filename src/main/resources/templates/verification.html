@@ -6,8 +6,9 @@
 </head>
 <body>
     <form th:action="@{/verify}" method="POST">
+        <input type="hidden" name="id" th:value="${user.id}">
         <input type="number" name="activationKey" placeholder="00000">
-
+        <button type="submit">verify</button>
     </form>
 </body>
 </html>

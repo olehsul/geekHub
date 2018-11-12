@@ -1,5 +1,6 @@
 package com.owu.geekhub.controllers;
 
+import com.owu.geekhub.dao.UserDao;
 import com.owu.geekhub.models.User;
 import com.owu.geekhub.service.MailService;
 import com.owu.geekhub.service.UserService;
@@ -36,6 +37,11 @@ public class AuthenticationController {
     private MailService mailService;
 
     @Autowired
+    private UserDao userDao;
+
+
+
+    @Autowired
     private RandomVerificationNumber verificationNumber;
 
     @DateTimeFormat(pattern = "dd/MM/yyyy")
@@ -55,10 +61,11 @@ public class AuthenticationController {
         }
         System.out.println("-------------im in saver----------------");
         if (userService.save(user)) {
-//            authWithHttpServletRequest(request, user.getUsername(), password);
-            int randomVerifictionNumber = verificationNumber.getRandomVerifictionNumber();
+            authWithHttpServletRequest(request, user.getUsername(), password);
 
-            return "redirect:/id" + user.getId();
+//            return "redirect:/id" + user.getId();
+            return "redirect:/verifyId" + user.getId();
+
         } else return "redirect:/auth";
 
     }
@@ -92,13 +99,21 @@ public class AuthenticationController {
     }
 
     @PostMapping("/verify")
-    public String verify(int activationKey) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
-        if (user.getActivationKey() == activationKey) {
-            user.setEnabled(true);
+    public String verify(@RequestParam Long id,
+                         @RequestParam int activationKey) throws MessagingException {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        User user = (User) authentication.getPrincipal();
+        User user = userDao.findById(id).get();
+        int key = user.getActivationKey();
+        if (key == activationKey) {
+            System.out.println("=======keys match========");
+            user.setActivated(true);
+            userService.update(user);
             return "/auth";
-        } else return "/verification";
+        } else {
+            System.out.println("---not---");
+            return "redirect:/verify";
+        }
     }
 
 }

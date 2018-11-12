@@ -103,17 +103,21 @@ public class UserServiceImpl implements UserService {
 //        userIdentity.setUser(user);
 
 
-        user.setEnabled(false);
+        user.setEnabled(true);
         user.setRole(Role.ROLE_USER);
         user.setAccountNonExpired(true);
         user.setCredentialsNonExpired(true);
         user.setAccountNonLocked(true);
-        user.setEnabled(true);
-        user.setActive(true);
+        user.setActivated(false);
 
         userDao.save(user);
         System.out.println("----------Registration data is Ok");
         return true;
+    }
+
+    @Override
+    public void update(User user){
+        userDao.save(user);
     }
 
 
