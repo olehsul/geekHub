@@ -23,14 +23,14 @@
 <div th:if="${param.logout}">
     You have been logged out.
 </div>
-<form th:action="@{/auth}" method="POST">
+<form th:action="@{'/auth'}" method="POST">
     <div><label>Email : <br><input type="text" name="username" placeholder="email"></label></div>
     <div><label>Password : <br><input type="password" name="password" placeholder="password"></label></div>
     <div><input type="submit" value="Sign in"></div>
 </form>
 <div class="content">
     <div class="register">
-        <form name="register" method="POST" th:action="@{/registerNewUser}">
+        <form name="register" method="POST" th:action="@{'/registerNewUser'}">
             <p><b>First name</b></p>
             <input type="text" size="20" name="firstName" placeholder="Ім'я">
             <p><b>Last name</b></p>

@@ -57,8 +57,7 @@ public class AuthenticationController {
         if (userService.save(user)) {
 //            authWithHttpServletRequest(request, user.getUsername(), password);
             System.out.println("USER SAVED SUCCESSFULLY");
-//            return "redirect:/auth";
-            return "redirect:/ver/id"+ user.getId() +"";
+            return "redirect:/verification-request/id"+ user.getId() +"";
         } else {
             System.out.println("WRONG DATA ENTERED");
             return "redirect:/auth";
@@ -94,21 +93,21 @@ public class AuthenticationController {
         }
     }
 
-    @GetMapping("/ver/id{id}")
-    public String verification(@PathVariable Long id) {
-        System.out.println(id.toString());
-//        model.addAttribute("userId", id);
+    @GetMapping("/verification-request/id{id}")
+    public String verification(@PathVariable Long id,
+                               Model model) {
+        model.addAttribute("userId", id);
         return "verification";
     }
 
-    @GetMapping("/verify/id{id}")
+    @PostMapping("/verify/id{id}")
     public String verify(@PathVariable Long id, @RequestParam int activationKey) {
         User user = userDao.findById(id).get();
         System.out.println(user);
         if (user.getActivationKey() == activationKey) {
             user.setEnabled(true);
             return "/auth";
-        } else return "redirect:/verification";
+        } else return "redirect:/verification-request/id" + id;
     }
 
 }
