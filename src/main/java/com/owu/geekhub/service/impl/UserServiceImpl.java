@@ -1,10 +1,11 @@
-package com.owu.geekhub.service;
+package com.owu.geekhub.service.impl;
 
 import com.owu.geekhub.dao.UserDao;
 import com.owu.geekhub.dao.UserIdentityDao;
 import com.owu.geekhub.models.Role;
 import com.owu.geekhub.models.User;
 import com.owu.geekhub.models.UserIdentity;
+import com.owu.geekhub.service.UserService;
 import com.owu.geekhub.service.generators.RandomUserIdentity;
 import com.owu.geekhub.service.validation.RegistrationValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,28 +67,28 @@ public class UserServiceImpl implements UserService {
         String encode = passwordEncoder.encode(password);
         user.setPassword(encode);
 
-
-        long randomUserIdentity;
-        boolean identityAlreadyExist = false;
-        do{
-            randomUserIdentity = this.randomUserIdentity.createRandomUserIdentity();
-
-            List<UserIdentity> userIdentities = userIdentityDao.findAll();
-            Iterator<UserIdentity> iterator = userIdentities.iterator();
-
-            while (iterator.hasNext()){
-                UserIdentity identity = iterator.next();
-                if (identity.getUserId().equals(randomUserIdentity)){
-                    System.out.println("-------------identity matches!!----------");
-                    identityAlreadyExist = true;
-                }
-            }
-        }while (identityAlreadyExist);
-        System.out.println("================" + randomUserIdentity);
-        UserIdentity userIdentity = new UserIdentity();
-        userIdentity.setUserId(randomUserIdentity);
-        user.setIdentity(userIdentity);
-        userIdentity.setUser(user);
+//
+//        long randomUserIdentity;
+//        boolean identityAlreadyExist = false;
+//        do{
+//            randomUserIdentity = this.randomUserIdentity.createRandomUserIdentity();
+//
+//            List<UserIdentity> userIdentities = userIdentityDao.findAll();
+//            Iterator<UserIdentity> iterator = userIdentities.iterator();
+//
+//            while (iterator.hasNext()){
+//                UserIdentity identity = iterator.next();
+//                if (identity.getUserId().equals(randomUserIdentity)){
+//                    System.out.println("-------------identity matches!!----------");
+//                    identityAlreadyExist = true;
+//                }
+//            }
+//        }while (identityAlreadyExist);
+//        System.out.println("================" + randomUserIdentity);
+//        UserIdentity userIdentity = new UserIdentity();
+//        userIdentity.setUserId(randomUserIdentity);
+//        user.setIdentity(userIdentity);
+//        userIdentity.setUser(user);
 
 
         user.setRole(Role.ROLE_USER);
