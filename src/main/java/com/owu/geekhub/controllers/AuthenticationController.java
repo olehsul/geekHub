@@ -6,14 +6,15 @@ import com.owu.geekhub.service.UserService;
 import com.owu.geekhub.service.generators.RandomVerificationNumber;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.mail.MessagingException;
 import javax.servlet.ServletException;
@@ -62,6 +63,15 @@ public class AuthenticationController {
 
     }
 
+    @GetMapping("/auth")
+    public String auth() {
+        if (!(SecurityContextHolder.getContext().getAuthentication()
+                instanceof AnonymousAuthenticationToken)) {
+            return "redirect:/";
+        } else {
+            return "auth";
+        }
+    }
 
     @PostMapping("/successURL")
     public String successURL() {
@@ -79,6 +89,16 @@ public class AuthenticationController {
             e.printStackTrace();
 //            LOGGER.error("Error while login ", e);
         }
+    }
+
+    @PostMapping("/verify")
+    public String verify(int activationKey) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+        if (user.getActivationKey() == activationKey) {
+            user.setEnabled(true);
+            return "/auth";
+        } else return "/verification";
     }
 
 }
