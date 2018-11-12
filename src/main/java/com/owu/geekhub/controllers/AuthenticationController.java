@@ -1,7 +1,9 @@
 package com.owu.geekhub.controllers;
 
 import com.owu.geekhub.models.User;
+import com.owu.geekhub.service.MailService;
 import com.owu.geekhub.service.UserService;
+import com.owu.geekhub.service.generators.RandomVerificationNumber;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.mail.MessagingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
@@ -28,13 +31,19 @@ public class AuthenticationController {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private MailService mailService;
+
+    @Autowired
+    private RandomVerificationNumber verificationNumber;
+
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     @PostMapping("/registerNewUser")
     public String registerNewUser(
             User user,
             @RequestParam("birth-date") String birthDate,
             HttpServletRequest request
-    ) {
+    ) throws MessagingException {
         String password = user.getPassword();
 //        System.out.println(user);
         String datePattern = "dd/MM/yyyy";
@@ -45,7 +54,9 @@ public class AuthenticationController {
         }
         System.out.println("-------------im in saver----------------");
         if (userService.save(user)) {
-            authWithHttpServletRequest(request, user.getUsername(), password);
+//            authWithHttpServletRequest(request, user.getUsername(), password);
+            int randomVerifictionNumber = verificationNumber.getRandomVerifictionNumber();
+
             return "redirect:/id" + user.getId();
         } else return "redirect:/auth";
 

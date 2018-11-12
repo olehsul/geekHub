@@ -5,8 +5,10 @@ import com.owu.geekhub.dao.UserIdentityDao;
 import com.owu.geekhub.models.Role;
 import com.owu.geekhub.models.User;
 import com.owu.geekhub.models.UserIdentity;
+import com.owu.geekhub.service.MailService;
 import com.owu.geekhub.service.UserService;
 import com.owu.geekhub.service.generators.RandomUserIdentity;
+import com.owu.geekhub.service.generators.RandomVerificationNumber;
 import com.owu.geekhub.service.validation.RegistrationValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
 import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.List;
@@ -36,6 +39,11 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserIdentityDao userIdentityDao;
 
+    @Autowired
+    private RandomVerificationNumber randomVerificationNumber;
+
+    @Autowired
+    private MailService mailService;
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
@@ -45,7 +53,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public boolean save(User user) {
+    public boolean save(User user) throws MessagingException {
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 
         String date = format.format(user.getBirthDate());
@@ -66,6 +74,10 @@ public class UserServiceImpl implements UserService {
         String password = user.getPassword();
         String encode = passwordEncoder.encode(password);
         user.setPassword(encode);
+
+        int verifictionNumber = randomVerificationNumber.getRandomVerifictionNumber();
+        user.setActivationKey(verifictionNumber);
+        mailService.send(user.getUsername(), Integer.toString(verifictionNumber));
 
 //
 //        long randomUserIdentity;
@@ -91,6 +103,7 @@ public class UserServiceImpl implements UserService {
 //        userIdentity.setUser(user);
 
 
+        user.setEnabled(false);
         user.setRole(Role.ROLE_USER);
         user.setAccountNonExpired(true);
         user.setCredentialsNonExpired(true);
