@@ -1,5 +1,6 @@
 package com.owu.geekhub.controllers;
 
+import com.owu.geekhub.dao.UserDao;
 import com.owu.geekhub.models.User;
 import com.owu.geekhub.service.MailService;
 import com.owu.geekhub.service.UserService;
@@ -11,10 +12,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.Mapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
 import javax.servlet.ServletException;
@@ -28,6 +27,9 @@ public class AuthenticationController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    private UserDao userDao;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -46,20 +48,21 @@ public class AuthenticationController {
             HttpServletRequest request
     ) throws MessagingException {
         String password = user.getPassword();
-//        System.out.println(user);
         String datePattern = "dd/MM/yyyy";
         try {
             user.setBirthDate(new Date(new SimpleDateFormat(datePattern).parse(birthDate).getTime()));
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        System.out.println("-------------im in saver----------------");
         if (userService.save(user)) {
 //            authWithHttpServletRequest(request, user.getUsername(), password);
-            int randomVerifictionNumber = verificationNumber.getRandomVerifictionNumber();
-
-            return "redirect:/id" + user.getId();
-        } else return "redirect:/auth";
+            System.out.println("USER SAVED SUCCESSFULLY");
+//            return "redirect:/auth";
+            return "redirect:/ver/id"+ user.getId() +"";
+        } else {
+            System.out.println("WRONG DATA ENTERED");
+            return "redirect:/auth";
+        }
 
     }
 
@@ -91,14 +94,21 @@ public class AuthenticationController {
         }
     }
 
-    @PostMapping("/verify")
-    public String verify(int activationKey) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
+    @GetMapping("/ver/id{id}")
+    public String verification(@PathVariable Long id) {
+        System.out.println(id.toString());
+//        model.addAttribute("userId", id);
+        return "verification";
+    }
+
+    @GetMapping("/verify/id{id}")
+    public String verify(@PathVariable Long id, @RequestParam int activationKey) {
+        User user = userDao.findById(id).get();
+        System.out.println(user);
         if (user.getActivationKey() == activationKey) {
             user.setEnabled(true);
             return "/auth";
-        } else return "/verification";
+        } else return "redirect:/verification";
     }
 
 }
