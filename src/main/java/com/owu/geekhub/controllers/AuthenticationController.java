@@ -106,6 +106,7 @@ public class AuthenticationController {
         System.out.println(user);
         if (user.getActivationKey() == activationKey) {
             user.setEnabled(true);
+            userService.update(user);
             return "/auth";
         } else return "redirect:/verification-request/id" + id;
     }

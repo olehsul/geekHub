@@ -103,7 +103,7 @@ public class UserServiceImpl implements UserService {
 //        userIdentity.setUser(user);
 
 
-        user.setEnabled(true);
+        user.setEnabled(false);
         user.setRole(Role.ROLE_USER);
         user.setAccountNonExpired(true);
         user.setCredentialsNonExpired(true);

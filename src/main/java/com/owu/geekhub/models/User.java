@@ -36,7 +36,7 @@ public class User implements UserDetails {
     private int activationKey;
     @Enumerated(EnumType.STRING)
     private Role role;
-    private boolean isActivated;
+    private boolean Activated;
 
     private boolean enabled;
     private boolean accountNonExpired;
