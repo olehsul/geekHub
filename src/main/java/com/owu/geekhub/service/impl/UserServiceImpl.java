@@ -75,9 +75,6 @@ public class UserServiceImpl implements UserService {
         String encode = passwordEncoder.encode(password);
         user.setPassword(encode);
 
-        int verificationNumber = randomVerificationNumber.getRandomVerifictionNumber();
-        user.setActivationKey(verificationNumber);
-        mailService.send(user.getUsername(), Integer.toString(verificationNumber));
 
 //
 //        long randomUserIdentity;
@@ -102,6 +99,27 @@ public class UserServiceImpl implements UserService {
 //        user.setIdentity(userIdentity);
 //        userIdentity.setUser(user);
 
+        boolean userAlreadyExist = false;
+
+//        List<User> allUsers = userDao.findAll();
+//        Iterator<User> iterator = allUsers.iterator();
+//        while (iterator.hasNext()){
+//            User nextUser = iterator.next();
+//            if (nextUser.getUsername().equals(user.getUsername())){
+//                userAlreadyExist = true;
+//                System.out.println("========user " + user.getUsername()+ " already exist=========");
+//                return false;
+//            }
+//        }
+
+        if (userDao.existsDistinctByUsername(user.getUsername())){
+            System.out.println("========user " + user.getUsername()+ " already exist=========");
+            return false;
+        }
+
+        int verificationNumber = randomVerificationNumber.getRandomVerifictionNumber();
+        user.setActivationKey(verificationNumber);
+        mailService.send(user.getUsername(), Integer.toString(verificationNumber));
 
         user.setEnabled(false);
         user.setRole(Role.ROLE_USER);
