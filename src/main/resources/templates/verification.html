@@ -5,10 +5,10 @@
     <meta charset="UTF-8"/>
 </head>
 <body>
-    <form th:action="@{/verify}" method="POST">
-        <input type="hidden" name="id" th:value="${user.id}">
+    <form th:action="@{'/verify/id{id}'(id=${userId})}" method="POST">
         <input type="number" name="activationKey" placeholder="00000">
-        <button type="submit">verify</button>
+        <input type="submit" name="" placeholder="">
+
     </form>
 </body>
 </html>

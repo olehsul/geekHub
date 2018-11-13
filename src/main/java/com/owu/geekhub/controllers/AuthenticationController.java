@@ -12,10 +12,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.Mapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
 import javax.servlet.ServletException;
@@ -31,15 +29,13 @@ public class AuthenticationController {
     UserService userService;
 
     @Autowired
+    private UserDao userDao;
+
+    @Autowired
     PasswordEncoder passwordEncoder;
 
     @Autowired
     private MailService mailService;
-
-    @Autowired
-    private UserDao userDao;
-
-
 
     @Autowired
     private RandomVerificationNumber verificationNumber;
@@ -52,21 +48,20 @@ public class AuthenticationController {
             HttpServletRequest request
     ) throws MessagingException {
         String password = user.getPassword();
-//        System.out.println(user);
         String datePattern = "dd/MM/yyyy";
         try {
             user.setBirthDate(new Date(new SimpleDateFormat(datePattern).parse(birthDate).getTime()));
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        System.out.println("-------------im in saver----------------");
         if (userService.save(user)) {
-            authWithHttpServletRequest(request, user.getUsername(), password);
-
-//            return "redirect:/id" + user.getId();
-            return "redirect:/verifyId" + user.getId();
-
-        } else return "redirect:/auth";
+//            authWithHttpServletRequest(request, user.getUsername(), password);
+            System.out.println("USER SAVED SUCCESSFULLY");
+            return "redirect:/verification-request/id"+ user.getId() +"";
+        } else {
+            System.out.println("WRONG DATA ENTERED");
+            return "redirect:/auth";
+        }
 
     }
 
@@ -98,22 +93,21 @@ public class AuthenticationController {
         }
     }
 
-    @PostMapping("/verify")
-    public String verify(@RequestParam Long id,
-                         @RequestParam int activationKey) throws MessagingException {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        User user = (User) authentication.getPrincipal();
+    @GetMapping("/verification-request/id{id}")
+    public String verification(@PathVariable Long id,
+                               Model model) {
+        model.addAttribute("userId", id);
+        return "verification";
+    }
+
+    @PostMapping("/verify/id{id}")
+    public String verify(@PathVariable Long id, @RequestParam int activationKey) {
         User user = userDao.findById(id).get();
-        int key = user.getActivationKey();
-        if (key == activationKey) {
-            System.out.println("=======keys match========");
-            user.setActivated(true);
-            userService.update(user);
+        System.out.println(user);
+        if (user.getActivationKey() == activationKey) {
+            user.setEnabled(true);
             return "/auth";
-        } else {
-            System.out.println("---not---");
-            return "redirect:/verify";
-        }
+        } else return "redirect:/verification-request/id" + id;
     }
 
 }

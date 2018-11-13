@@ -75,9 +75,9 @@ public class UserServiceImpl implements UserService {
         String encode = passwordEncoder.encode(password);
         user.setPassword(encode);
 
-        int verifictionNumber = randomVerificationNumber.getRandomVerifictionNumber();
-        user.setActivationKey(verifictionNumber);
-        mailService.send(user.getUsername(), Integer.toString(verifictionNumber));
+        int verificationNumber = randomVerificationNumber.getRandomVerifictionNumber();
+        user.setActivationKey(verificationNumber);
+        mailService.send(user.getUsername(), Integer.toString(verificationNumber));
 
 //
 //        long randomUserIdentity;
