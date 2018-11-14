@@ -34,6 +34,12 @@ public class AuthenticationController {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private RandomVerificationNumber randomVerificationNumber;
+
+    @Autowired
+    private MailService mailService;
+
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     @PostMapping("/registerNewUser")
     public String registerNewUser(
@@ -61,6 +67,8 @@ public class AuthenticationController {
 
     @GetMapping("/auth")
     public String auth() {
+
+
         if (!(SecurityContextHolder.getContext().getAuthentication()
                 instanceof AnonymousAuthenticationToken)) {
             return "redirect:/";
@@ -87,9 +95,21 @@ public class AuthenticationController {
         }
     }
 
+    @PostMapping("/verify/sendCodeAgainFor/id{id}")
+    public String sendCodeAgain(@PathVariable Long id,
+                                Model model) throws MessagingException {
+        System.out.println("======send_new_code==================");
+        User user = userDao.findById(id).get();
+        mailService.send(user.getUsername());
+        model.addAttribute("userId", id);
+        return "verification";
+    }
+
     @GetMapping("/verification-request/id{id}")
     public String verification(@PathVariable Long id,
-                               Model model) {
+                               Model model) throws MessagingException {
+        User user = userDao.findById(id).get();
+        mailService.send(user.getUsername());
         model.addAttribute("userId", id);
         return "verification";
     }

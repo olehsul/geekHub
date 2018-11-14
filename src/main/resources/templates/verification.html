@@ -8,7 +8,9 @@
     <form th:action="@{'/verify/id{id}'(id=${userId})}" method="POST">
         <input type="number" name="activationKey" placeholder="00000" required="required">
         <input type="submit" name="" placeholder="">
-
     </form>
+    <form th:action="@{'/verify/sendCodeAgainFor/id{id}'(id=${userId})}" method="POST">
+        <button type="submit">Send code again</button>
+    </form >
 </body>
 </html>
