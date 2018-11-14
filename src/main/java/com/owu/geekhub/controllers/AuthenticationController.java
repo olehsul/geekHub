@@ -10,14 +10,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.mail.MessagingException;
 import javax.servlet.ServletException;
@@ -38,20 +34,23 @@ public class AuthenticationController {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    @DateTimeFormat(pattern = "dd/MM/yyyy")
+    @Autowired
+    private MailService mailService;
+
+    @Autowired
+    private RandomVerificationNumber verificationNumber;
+
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
     @PostMapping("/registerNewUser")
     public String registerNewUser(
             User user,
-            @RequestParam("birth-date") String birthDate,
+            @RequestParam("birth-date") Date birthDate,
             HttpServletRequest request
     ) throws MessagingException {
         String password = user.getPassword();
-        String datePattern = "dd/MM/yyyy";
-        try {
-            user.setBirthDate(new Date(new SimpleDateFormat(datePattern).parse(birthDate).getTime()));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        String datePattern = "";
+
+        user.setBirthDate(birthDate);
         if (userService.save(user)) {
 //            authWithHttpServletRequest(request, user.getUsername(), password);
             System.out.println("USER SAVED SUCCESSFULLY");
@@ -73,19 +72,10 @@ public class AuthenticationController {
         }
     }
 
-    @PostMapping("/success-login")
-    public String successURL(HttpServletRequest request) {
+    @PostMapping("/successURL")
+    public String successURL() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails principal = (UserDetails) authentication.getPrincipal();
-        if (principal.getUsername().equals("admin"))
-            return "redirect:/admin";
-        User user = (User) authentication.getPrincipal();
-        if (!user.isActivated()) {
-            // log out user until email confirmation
-            new SecurityContextLogoutHandler().logout(request, null, null);
-            return "redirect:/verification-request/id" + user.getId();
-        }
-        return "redirect:/id" + user.getId();
+        return "redirect:/id" + ((User) authentication.getPrincipal()).getId();
     }
 
     public void authWithHttpServletRequest(HttpServletRequest request, String username, String password) {
@@ -113,7 +103,6 @@ public class AuthenticationController {
         System.out.println(user);
         if (user.getActivationKey() == activationKey) {
             user.setEnabled(true);
-            userService.update(user);
             return "/auth";
         } else return "redirect:/verification-request/id" + id;
     }

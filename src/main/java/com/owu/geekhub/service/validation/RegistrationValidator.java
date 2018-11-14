@@ -17,12 +17,12 @@ public class RegistrationValidator {
         );
     }
 
-    public boolean isDateValid(String date){
+   /* public boolean isDateValid(String date){
         if(date == null){
             return false;
         }
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat(date);
         sdf.setLenient(false);
         try {
             sdf.parse(date);
@@ -30,7 +30,7 @@ public class RegistrationValidator {
         } catch (ParseException ex) {
             return false;
         }
-    }
+    }*/
 
     public boolean isPasswordValid(String password){
         String passwordPattern = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,}";

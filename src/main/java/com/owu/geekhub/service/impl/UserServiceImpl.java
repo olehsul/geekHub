@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
 
         if (
                 !registrationValidator.isNameValid(user.getFirstName())
-                        || !registrationValidator.isDateValid(date)
+       //                 || !registrationValidator.isDateValid(date)
                         || !registrationValidator.isPasswordValid(user.getPassword())
         ) {
             System.out.println("-----some registration data are wrong---------");
@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
         System.out.println("first name valid = " + registrationValidator.isNameValid(user.getFirstName()));
         System.out.println("last name valid = " + registrationValidator.isNameValid(user.getLastName()));
         System.out.println("password valid = " + registrationValidator.isPasswordValid(user.getPassword()));
-        System.out.println("date valid = " + registrationValidator.isDateValid(date));
+  //      System.out.println("date valid = " + registrationValidator.isDateValid(date));
 
         String password = user.getPassword();
         String encode = passwordEncoder.encode(password);
