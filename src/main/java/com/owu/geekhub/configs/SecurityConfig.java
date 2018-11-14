@@ -43,13 +43,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin()
                 .loginPage("/auth")
-                .successForwardUrl("/successURL")//handle with post mapping in controller
+                .successForwardUrl("/success-login")//handle with post mapping in controller
                 .failureUrl("/auth?error").permitAll()
                 .permitAll()
                 .and()
                 .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout")).
-                logoutSuccessUrl("/auth")
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutSuccessUrl("/auth")
                 .permitAll();
     }
 

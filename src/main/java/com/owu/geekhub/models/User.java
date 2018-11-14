@@ -1,5 +1,6 @@
 package com.owu.geekhub.models;
 
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @Entity
 @Data
+@Builder
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +35,8 @@ public class User implements UserDetails {
     private int activationKey;
     @Enumerated(EnumType.STRING)
     private Role role;
-    private boolean Activated;
+    private boolean active;
+    private boolean activated;
 
     private boolean enabled;
     private boolean accountNonExpired;

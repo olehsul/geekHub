@@ -10,10 +10,14 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.mail.MessagingException;
 import javax.servlet.ServletException;
@@ -69,10 +73,19 @@ public class AuthenticationController {
         }
     }
 
-    @PostMapping("/successURL")
-    public String successURL() {
+    @PostMapping("/success-login")
+    public String successURL(HttpServletRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return "redirect:/id" + ((User) authentication.getPrincipal()).getId();
+        UserDetails principal = (UserDetails) authentication.getPrincipal();
+        if (principal.getUsername().equals("admin"))
+            return "redirect:/admin";
+        User user = (User) authentication.getPrincipal();
+        if (!user.isActivated()) {
+            // log out user until email confirmation
+            new SecurityContextLogoutHandler().logout(request, null, null);
+            return "redirect:/verification-request/id" + user.getId();
+        }
+        return "redirect:/id" + user.getId();
     }
 
     public void authWithHttpServletRequest(HttpServletRequest request, String username, String password) {
