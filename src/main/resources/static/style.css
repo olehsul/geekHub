@@ -7,7 +7,7 @@ nav li a{
     display: block;
     float: left;
     margin-left: 25px;
-    font-size: 3.25rem;
+    font-size: 12pt;
 }
 a:hover{
     text-decoration:none;

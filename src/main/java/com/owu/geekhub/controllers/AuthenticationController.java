@@ -78,7 +78,12 @@ public class AuthenticationController {
 
     @GetMapping("/login")
     public String login() {
-        return "login";
+        if (!(SecurityContextHolder.getContext().getAuthentication()
+                instanceof AnonymousAuthenticationToken)) {
+            return "redirect:/";
+        } else {
+            return "login";
+        }
     }
 
     @PostMapping("/success-login")

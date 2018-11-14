@@ -9,6 +9,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
+
 //        registry.addViewController("/verification").setViewName("verification");
 //        if (!(SecurityContextHolder.getContext().getAuthentication()
 //                instanceof AnonymousAuthenticationToken)) {
