@@ -39,9 +39,6 @@ public class AuthenticationController {
     PasswordEncoder passwordEncoder;
 
     @Autowired
-    private RandomVerificationNumber randomVerificationNumber;
-
-    @Autowired
     private MailService mailService;
 
     @DateTimeFormat(pattern = "dd/MM/yyyy")
@@ -71,13 +68,21 @@ public class AuthenticationController {
 
     @GetMapping("/auth")
     public String auth() {
-
-
         if (!(SecurityContextHolder.getContext().getAuthentication()
                 instanceof AnonymousAuthenticationToken)) {
             return "redirect:/";
         } else {
             return "auth";
+        }
+    }
+
+    @GetMapping("/login")
+    public String login() {
+        if (!(SecurityContextHolder.getContext().getAuthentication()
+                instanceof AnonymousAuthenticationToken)) {
+            return "redirect:/";
+        } else {
+            return "login";
         }
     }
 
