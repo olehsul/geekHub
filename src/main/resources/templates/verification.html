@@ -5,8 +5,9 @@
     <meta charset="UTF-8"/>
 </head>
 <body>
-    <form th:action="@{/verify}" method="POST">
+    <form th:action="@{'/verify/id{id}'(id=${userId})}" method="POST">
         <input type="number" name="activationKey" placeholder="00000">
+        <input type="submit" name="" placeholder="">
 
     </form>
 </body>

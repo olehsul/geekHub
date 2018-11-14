@@ -75,9 +75,6 @@ public class UserServiceImpl implements UserService {
         String encode = passwordEncoder.encode(password);
         user.setPassword(encode);
 
-        int verifictionNumber = randomVerificationNumber.getRandomVerifictionNumber();
-        user.setActivationKey(verifictionNumber);
-        mailService.send(user.getUsername(), Integer.toString(verifictionNumber));
 
 //
 //        long randomUserIdentity;
@@ -102,18 +99,43 @@ public class UserServiceImpl implements UserService {
 //        user.setIdentity(userIdentity);
 //        userIdentity.setUser(user);
 
+        boolean userAlreadyExist = false;
+
+//        List<User> allUsers = userDao.findAll();
+//        Iterator<User> iterator = allUsers.iterator();
+//        while (iterator.hasNext()){
+//            User nextUser = iterator.next();
+//            if (nextUser.getUsername().equals(user.getUsername())){
+//                userAlreadyExist = true;
+//                System.out.println("========user " + user.getUsername()+ " already exist=========");
+//                return false;
+//            }
+//        }
+
+        if (userDao.existsDistinctByUsername(user.getUsername())){
+            System.out.println("========user " + user.getUsername()+ " already exist=========");
+            return false;
+        }
+
+        int verificationNumber = randomVerificationNumber.getRandomVerifictionNumber();
+        user.setActivationKey(verificationNumber);
+        mailService.send(user.getUsername(), Integer.toString(verificationNumber));
 
         user.setEnabled(false);
         user.setRole(Role.ROLE_USER);
         user.setAccountNonExpired(true);
         user.setCredentialsNonExpired(true);
         user.setAccountNonLocked(true);
-        user.setEnabled(true);
-        user.setActive(true);
+        user.setActivated(false);
 
         userDao.save(user);
         System.out.println("----------Registration data is Ok");
         return true;
+    }
+
+    @Override
+    public void update(User user){
+        userDao.save(user);
     }
 
 
