@@ -34,12 +34,6 @@ public class AuthenticationController {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private MailService mailService;
-
-    @Autowired
-    private RandomVerificationNumber verificationNumber;
-
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     @PostMapping("/registerNewUser")
     public String registerNewUser(
