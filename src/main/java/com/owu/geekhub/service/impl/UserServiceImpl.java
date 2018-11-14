@@ -80,12 +80,12 @@ public class UserServiceImpl implements UserService {
             return false;
         }
 
-        user.setEnabled(false);
+        user.setActivated(false);
+        user.setEnabled(true);
         user.setRole(Role.ROLE_USER);
         user.setAccountNonExpired(true);
         user.setCredentialsNonExpired(true);
         user.setAccountNonLocked(true);
-        user.setActivated(false);
 
 
         userDao.save(user);
