@@ -132,7 +132,7 @@ public class AuthenticationController {
         User user = userDao.findById(id).get();
         System.out.println(user);
         if (user.getActivationKey() == activationKey) {
-            user.setEnabled(true);
+            user.setActivated(true);
             userService.update(user);
             return "/auth";
         } else return "redirect:/verification-request/id" + id;
