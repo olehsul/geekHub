@@ -34,16 +34,13 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private RandomUserIdentity randomUserIdentity;
-
-    @Autowired
-    private UserIdentityDao userIdentityDao;
-
-    @Autowired
     private RandomVerificationNumber randomVerificationNumber;
 
     @Autowired
     private MailService mailService;
+
+    @Autowired
+    private RandomUserIdentity randomUserIdentity;
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
@@ -66,54 +63,30 @@ public class UserServiceImpl implements UserService {
             System.out.println("-----some registration data are wrong---------");
             return false;
         }
-        System.out.println("first name valid = " + registrationValidator.isNameValid(user.getFirstName()));
-        System.out.println("last name valid = " + registrationValidator.isNameValid(user.getLastName()));
-        System.out.println("password valid = " + registrationValidator.isPasswordValid(user.getPassword()));
-        System.out.println("date valid = " + registrationValidator.isDateValid(date));
+
+        randomUserIdentity.setRandomId(user);
+        System.out.println(user);
 
         String password = user.getPassword();
         String encode = passwordEncoder.encode(password);
         user.setPassword(encode);
 
-//
-//        long randomUserIdentity;
-//        boolean identityAlreadyExist = false;
-//        do{
-//            randomUserIdentity = this.randomUserIdentity.createRandomUserIdentity();
-//
-//            List<UserIdentity> userIdentities = userIdentityDao.findAll();
-//            Iterator<UserIdentity> iterator = userIdentities.iterator();
-//
-//            while (iterator.hasNext()){
-//                UserIdentity identity = iterator.next();
-//                if (identity.getUserId().equals(randomUserIdentity)){
-//                    System.out.println("-------------identity matches!!----------");
-//                    identityAlreadyExist = true;
-//                }
-//            }
-//        }while (identityAlreadyExist);
-//        System.out.println("================" + randomUserIdentity);
-//        UserIdentity userIdentity = new UserIdentity();
-//        userIdentity.setUserId(randomUserIdentity);
-//        user.setIdentity(userIdentity);
-//        userIdentity.setUser(user);
 
         if (userDao.existsDistinctByUsername(user.getUsername())){
             System.out.println("========user " + user.getUsername()+ " already exist=========");
             return false;
         }
+        if (userDao.existsDistinctByUsername(user.getUsername())){
+            return false;
+        }
 
-        int verificationNumber = randomVerificationNumber.getRandomVerifictionNumber();
-        user.setActivationKey(verificationNumber);
-        mailService.send(user.getUsername(), Integer.toString(verificationNumber));
-
-        user.setActivated(false);
-        user.setEnabled(true);
+        user.setEnabled(false);
         user.setRole(Role.ROLE_USER);
         user.setAccountNonExpired(true);
         user.setCredentialsNonExpired(true);
         user.setAccountNonLocked(true);
         user.setActivated(false);
+
 
         userDao.save(user);
         System.out.println("----------Registration data is Ok");

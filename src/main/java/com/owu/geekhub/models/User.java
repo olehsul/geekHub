@@ -18,7 +18,6 @@ import java.util.List;
 @Builder
 public class User implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     // todo: fix username & email
     @Column(unique = true)

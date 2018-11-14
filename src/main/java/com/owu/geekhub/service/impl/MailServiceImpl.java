@@ -1,6 +1,10 @@
 package com.owu.geekhub.service.impl;
 
+import com.owu.geekhub.dao.UserDao;
+import com.owu.geekhub.models.User;
 import com.owu.geekhub.service.MailService;
+import com.owu.geekhub.service.UserService;
+import com.owu.geekhub.service.generators.RandomVerificationNumber;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -19,17 +23,32 @@ public class MailServiceImpl implements MailService {
     @Autowired
     private JavaMailSender javaMailSender;
 
+    @Autowired
+    private RandomVerificationNumber randomVerificationNumber;
+
+    @Autowired
+    private UserDao userDao;
 
     @Autowired
     private Environment env;
 
-    public void send(String email, String message) throws MessagingException {
+    @Autowired
+    private UserService userService;
+
+    public void send(String email) throws MessagingException {
+
+
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+        int verificationNumber = randomVerificationNumber.getRandomVerifictionNumber();
+        User user = userDao.findByUsername(email);
+        user.setActivationKey(verificationNumber);
+        userService.update(user);
+
         try {
             mimeMessage.setFrom(new InternetAddress(env.getProperty("email.username")));
             helper.setTo(email);
-            helper.setText(message,true);
+            helper.setText(Integer.toString(verificationNumber),true);
 
         } catch (MessagingException e) {
             e.printStackTrace();

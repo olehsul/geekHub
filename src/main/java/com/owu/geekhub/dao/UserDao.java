@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface UserDao extends JpaRepository<User, Long> {
     User findByUsername(String s);
     boolean existsDistinctByUsername(String username);
+    boolean existsDistinctById(Long id);
+
 }
