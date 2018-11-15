@@ -28,18 +28,18 @@
         </a>
     </div>
 </nav>
-<form class="input-group col-md-3 mx-auto" action="#">
-    <input type="text" aria-label="0" class="form-control" placeholder="00000"  required="required" aria-describedby="button-addon2">
+<form class="input-group col-md-3 mx-auto" th:action="@{'/verify/id{id}'(id=${userId})}" method="POST">
+    <input type="text" aria-label="0" class="form-control" placeholder="00000" name="activationKey" required="required"
+           aria-describedby="button-addon2" title="Five number code" pattern="[0-9]{5}" style="font-size: 20px">
     <div class="input-group-append">
-        <button class="btn btn-primary" type="button" id="button-addon2">Send</button>
+        <input type="submit"  class="btn btn-primary">
     </div>
 </form>
-<form th:action="@{'/verify/id{id}'(id=${userId})}" method="POST">
-    <input type="number" name="activationKey" placeholder="00000" required="required">
-    <input type="submit" name="" placeholder="">
-</form>
-<form th:action="@{'/verify/sendCodeAgainFor/id{id}'(id=${userId})}" method="POST">
-    <button type="submit">Send code again</button>
-</form>
+    <a th:href="@{'/verify/sendCodeAgainFor/id{id}'(id=${userId})}">
+        <button type="submit" >Send code again</button>
+    </a>
+<!--<form th:action="@{'/verify/sendCodeAgainFor/id{id}'(id=${userId})}" method="POST">-->
+    <!--<button type="submit" >Send code again</button>-->
+<!--</form>-->
 </body>
 </html>
