@@ -36,12 +36,17 @@ public class MailServiceImpl implements MailService {
     private UserService userService;
 
     public void send(String email) throws MessagingException {
+        User user = userDao.findByUsername(email);
+        if (user.isActivated()) {
+            System.out.println(" user " + user.getUsername() + " is already activated");
+            return;
+        }
 
 
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
         int verificationNumber = randomVerificationNumber.getRandomVerifictionNumber();
-        User user = userDao.findByUsername(email);
+
         user.setActivationKey(verificationNumber);
         userService.update(user);
 

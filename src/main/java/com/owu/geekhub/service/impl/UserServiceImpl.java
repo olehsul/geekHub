@@ -33,11 +33,11 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private RandomVerificationNumber randomVerificationNumber;
-
-    @Autowired
-    private MailService mailService;
+//    @Autowired
+//    private RandomVerificationNumber randomVerificationNumber;
+//
+//    @Autowired
+//    private MailService mailService;
 
     @Autowired
     private RandomUserIdentity randomUserIdentity;
@@ -48,48 +48,37 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-
-    @Override
-    public boolean save(User user) throws MessagingException {
-        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-
-        String date = format.format(user.getBirthDate());
-
-        if (
-                !registrationValidator.isNameValid(user.getFirstName())
-                        || !registrationValidator.isDateValid(date)
-                        || !registrationValidator.isPasswordValid(user.getPassword())
-        ) {
-            System.out.println("-----some registration data are wrong---------");
-            return false;
-        }
-
-        randomUserIdentity.setRandomId(user);
-        System.out.println(user);
-
+    private void encodePassword(User user){
         String password = user.getPassword();
         String encode = passwordEncoder.encode(password);
         user.setPassword(encode);
+    }
 
-
+    private boolean isUserAlreadyRegistered(User user){
         if (userDao.existsDistinctByUsername(user.getUsername())){
             System.out.println("========user " + user.getUsername()+ " already exist=========");
-            return false;
+            return true;
         }
-        if (userDao.existsDistinctByUsername(user.getUsername())){
-            return false;
-        }
+        return false;
+    }
 
-        user.setActivated(false);
+
+    @Override
+    public boolean save(User user){
+
+        if (!registrationValidator.validateRegistrationData(user)) return false;
+        if (isUserAlreadyRegistered(user)) return false;
+        randomUserIdentity.setRandomId(user);
+        encodePassword(user);
+        System.out.println(user);
+
         user.setEnabled(true);
         user.setRole(Role.ROLE_USER);
         user.setAccountNonExpired(true);
         user.setCredentialsNonExpired(true);
         user.setAccountNonLocked(true);
-
-
         userDao.save(user);
-        System.out.println("----------Registration data is Ok");
+        System.out.println("User is saved");
         return true;
     }
 

@@ -4,6 +4,7 @@ import com.owu.geekhub.dao.UserDao;
 import com.owu.geekhub.models.User;
 import com.owu.geekhub.service.MailService;
 import com.owu.geekhub.service.UserService;
+import com.owu.geekhub.service.generators.RandomVerificationNumber;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -15,6 +16,8 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.mail.MessagingException;
 import javax.servlet.ServletException;
@@ -54,6 +57,7 @@ public class AuthenticationController {
         }
         if (userService.save(user)) {
 //            authWithHttpServletRequest(request, user.getUsername(), password);
+            mailService.send(user.getUsername());
             System.out.println("USER SAVED SUCCESSFULLY");
             return "redirect:/verification-request/id"+ user.getId() +"";
         } else {
@@ -117,14 +121,14 @@ public class AuthenticationController {
         User user = userDao.findById(id).get();
         mailService.send(user.getUsername());
         model.addAttribute("userId", id);
-        return "authentication/verification";
+        return "redirect:/verification-request/id" + user.getId();
     }
 
     @GetMapping("/verification-request/id{id}")
     public String verification(@PathVariable Long id,
                                Model model) throws MessagingException {
         User user = userDao.findById(id).get();
-        mailService.send(user.getUsername());
+//        mailService.send(user.getUsername());
         model.addAttribute("userId", id);
         return "authentication/verification";
     }
