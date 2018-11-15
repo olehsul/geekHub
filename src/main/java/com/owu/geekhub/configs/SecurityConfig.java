@@ -44,7 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .loginPage("/login")
                 .successForwardUrl("/success-login")//handle with post mapping in controller
-                .failureUrl("/auth?error").permitAll()
+                .failureUrl("/login?error").permitAll()
                 .permitAll()
                 .and()
                 .logout()
