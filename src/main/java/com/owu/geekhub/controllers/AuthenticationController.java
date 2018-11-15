@@ -73,7 +73,7 @@ public class AuthenticationController {
                 instanceof AnonymousAuthenticationToken)) {
             return "redirect:/";
         } else {
-            return "auth";
+            return "authentication/auth";
         }
     }
 
@@ -83,7 +83,7 @@ public class AuthenticationController {
                 instanceof AnonymousAuthenticationToken)) {
             return "redirect:/";
         } else {
-            return "login";
+            return "authentication/login";
         }
     }
 
@@ -130,7 +130,7 @@ public class AuthenticationController {
         User user = userDao.findById(id).get();
 //        mailService.send(user.getUsername());
         model.addAttribute("userId", id);
-        return "verification";
+        return "authentication/verification";
     }
 
     @PostMapping("/verify/id{id}")
@@ -140,7 +140,7 @@ public class AuthenticationController {
         if (user.getActivationKey() == activationKey) {
             user.setActivated(true);
             userService.update(user);
-            return "/auth";
+            return "authentication/auth";
         } else return "redirect:/verification-request/id" + id;
     }
 
