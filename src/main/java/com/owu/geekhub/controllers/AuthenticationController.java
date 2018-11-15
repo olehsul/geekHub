@@ -4,7 +4,6 @@ import com.owu.geekhub.dao.UserDao;
 import com.owu.geekhub.models.User;
 import com.owu.geekhub.service.MailService;
 import com.owu.geekhub.service.UserService;
-import com.owu.geekhub.service.generators.RandomVerificationNumber;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -16,8 +15,6 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.mail.MessagingException;
 import javax.servlet.ServletException;
@@ -72,7 +69,7 @@ public class AuthenticationController {
                 instanceof AnonymousAuthenticationToken)) {
             return "redirect:/";
         } else {
-            return "auth";
+            return "authentication/auth";
         }
     }
 
@@ -82,7 +79,7 @@ public class AuthenticationController {
                 instanceof AnonymousAuthenticationToken)) {
             return "redirect:/";
         } else {
-            return "login";
+            return "authentication/login";
         }
     }
 
@@ -120,7 +117,7 @@ public class AuthenticationController {
         User user = userDao.findById(id).get();
         mailService.send(user.getUsername());
         model.addAttribute("userId", id);
-        return "verification";
+        return "authentication/verification";
     }
 
     @GetMapping("/verification-request/id{id}")
@@ -129,7 +126,7 @@ public class AuthenticationController {
         User user = userDao.findById(id).get();
         mailService.send(user.getUsername());
         model.addAttribute("userId", id);
-        return "verification";
+        return "authentication/verification";
     }
 
     @PostMapping("/verify/id{id}")
@@ -139,7 +136,7 @@ public class AuthenticationController {
         if (user.getActivationKey() == activationKey) {
             user.setActivated(true);
             userService.update(user);
-            return "/auth";
+            return "authentication/auth";
         } else return "redirect:/verification-request/id" + id;
     }
 
