@@ -140,7 +140,7 @@ public class AuthenticationController {
         if (user.getActivationKey() == activationKey) {
             user.setActivated(true);
             userService.update(user);
-            return "authentication/auth";
+            return "authentication/login";
         } else return "redirect:/verification-request/id" + id;
     }
 
