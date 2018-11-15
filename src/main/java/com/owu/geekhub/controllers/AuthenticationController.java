@@ -57,6 +57,7 @@ public class AuthenticationController {
         }
         if (userService.save(user)) {
 //            authWithHttpServletRequest(request, user.getUsername(), password);
+            mailService.send(user.getUsername());
             System.out.println("USER SAVED SUCCESSFULLY");
             return "redirect:/verification-request/id"+ user.getId() +"";
         } else {
@@ -120,14 +121,14 @@ public class AuthenticationController {
         User user = userDao.findById(id).get();
         mailService.send(user.getUsername());
         model.addAttribute("userId", id);
-        return "verification";
+        return "redirect:/verification-request/id" + user.getId();
     }
 
     @GetMapping("/verification-request/id{id}")
     public String verification(@PathVariable Long id,
                                Model model) throws MessagingException {
         User user = userDao.findById(id).get();
-        mailService.send(user.getUsername());
+//        mailService.send(user.getUsername());
         model.addAttribute("userId", id);
         return "verification";
     }
