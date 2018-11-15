@@ -45,16 +45,10 @@ public class AuthenticationController {
     @PostMapping("/registerNewUser")
     public String registerNewUser(
             User user,
-            @RequestParam("birth-date") String birthDate,
+            @RequestParam("birth-date") Date birthDate,
             HttpServletRequest request
     ) throws MessagingException {
-        String password = user.getPassword();
-        String datePattern = "dd/MM/yyyy";
-        try {
-            user.setBirthDate(new Date(new SimpleDateFormat(datePattern).parse(birthDate).getTime()));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+            user.setBirthDate(birthDate);
         if (userService.save(user)) {
 //            authWithHttpServletRequest(request, user.getUsername(), password);
             mailService.send(user.getUsername());
