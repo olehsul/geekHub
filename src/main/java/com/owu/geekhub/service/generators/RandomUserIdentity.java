@@ -1,12 +1,18 @@
 package com.owu.geekhub.service.generators;
 
+import com.owu.geekhub.dao.UserDao;
+import com.owu.geekhub.models.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
 @Service
 public class RandomUserIdentity {
+    @Autowired
+    private UserDao userDao;
+
     public Long createRandomUserIdentity(){
-        int aStart =10000000;
+        long aStart =10000000L;
         long aEnd = 99999999L;
         Random aRandom = new Random();
         if ( aStart > aEnd ) {
@@ -19,6 +25,18 @@ public class RandomUserIdentity {
         long randomNumber =  fraction + (long)aStart;
         return randomNumber;
 
+
+    }
+
+    public void setRandomId(User user){
+        Long randomIdentity;
+        boolean identityAlreadyExist = false;
+        do{
+            randomIdentity = createRandomUserIdentity();
+            if (!userDao.existsDistinctById(randomIdentity)){
+                user.setId(randomIdentity);
+            }
+        }while (identityAlreadyExist);
 
     }
 }

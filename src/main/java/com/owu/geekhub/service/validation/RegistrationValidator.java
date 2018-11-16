@@ -1,5 +1,6 @@
 package com.owu.geekhub.service.validation;
 
+import com.owu.geekhub.models.User;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -35,5 +36,17 @@ public class RegistrationValidator {
     public boolean isPasswordValid(String password){
         String passwordPattern = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,}";
         return password.matches(passwordPattern);
+    }
+
+    public boolean validateRegistrationData(User user){
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+
+        String date = format.format(user.getBirthDate());
+        if (!isNameValid(user.getFirstName())
+                        || !isDateValid(date)
+                        || !isPasswordValid(user.getPassword())
+        )
+            System.out.println("-----some registration data are OK---------");
+            return true;
     }
 }

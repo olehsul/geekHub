@@ -10,10 +10,14 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.mail.MessagingException;
 import javax.servlet.ServletException;
@@ -37,22 +41,17 @@ public class AuthenticationController {
     @Autowired
     private MailService mailService;
 
-    @Autowired
-    private RandomVerificationNumber verificationNumber;
-
-    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     @PostMapping("/registerNewUser")
     public String registerNewUser(
             User user,
             @RequestParam("birth-date") Date birthDate,
             HttpServletRequest request
     ) throws MessagingException {
-        String password = user.getPassword();
-        String datePattern = "";
-
-        user.setBirthDate(birthDate);
+            user.setBirthDate(birthDate);
         if (userService.save(user)) {
 //            authWithHttpServletRequest(request, user.getUsername(), password);
+            mailService.send(user.getUsername());
             System.out.println("USER SAVED SUCCESSFULLY");
             return "redirect:/verification-request/id"+ user.getId() +"";
         } else {
@@ -68,14 +67,33 @@ public class AuthenticationController {
                 instanceof AnonymousAuthenticationToken)) {
             return "redirect:/";
         } else {
-            return "auth";
+            return "authentication/auth";
         }
     }
 
-    @PostMapping("/successURL")
-    public String successURL() {
+    @GetMapping("/login")
+    public String login() {
+        if (!(SecurityContextHolder.getContext().getAuthentication()
+                instanceof AnonymousAuthenticationToken)) {
+            return "redirect:/";
+        } else {
+            return "authentication/login";
+        }
+    }
+
+    @PostMapping("/success-login")
+    public String successURL(HttpServletRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return "redirect:/id" + ((User) authentication.getPrincipal()).getId();
+        UserDetails principal = (UserDetails) authentication.getPrincipal();
+        if (principal.getUsername().equals("admin"))
+            return "redirect:/admin";
+        User user = (User) authentication.getPrincipal();
+        if (!user.isActivated()) {
+            // log out user until email confirmation
+            new SecurityContextLogoutHandler().logout(request, null, null);
+            return "redirect:/verification-request/id" + user.getId();
+        }
+        return "redirect:/id" + user.getId();
     }
 
     public void authWithHttpServletRequest(HttpServletRequest request, String username, String password) {
@@ -90,11 +108,23 @@ public class AuthenticationController {
         }
     }
 
+    @PostMapping("/verify/sendCodeAgainFor/id{id}")
+    public String sendCodeAgain(@PathVariable Long id,
+                                Model model) throws MessagingException {
+        System.out.println("======send_new_code==================");
+        User user = userDao.findById(id).get();
+        mailService.send(user.getUsername());
+        model.addAttribute("userId", id);
+        return "redirect:/verification-request/id" + user.getId();
+    }
+
     @GetMapping("/verification-request/id{id}")
     public String verification(@PathVariable Long id,
-                               Model model) {
+                               Model model) throws MessagingException {
+        User user = userDao.findById(id).get();
+//        mailService.send(user.getUsername());
         model.addAttribute("userId", id);
-        return "verification";
+        return "authentication/verification";
     }
 
     @PostMapping("/verify/id{id}")
@@ -102,8 +132,9 @@ public class AuthenticationController {
         User user = userDao.findById(id).get();
         System.out.println(user);
         if (user.getActivationKey() == activationKey) {
-            user.setEnabled(true);
-            return "/auth";
+            user.setActivated(true);
+            userService.update(user);
+            return "authentication/login";
         } else return "redirect:/verification-request/id" + id;
     }
 
