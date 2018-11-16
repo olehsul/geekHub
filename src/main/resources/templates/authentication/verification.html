@@ -16,7 +16,7 @@
             crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
           integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-    <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/style.css}" href="../../static/css/style.css" type="text/css">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -28,18 +28,24 @@
         </a>
     </div>
 </nav>
-<form class="input-group col-md-3 mx-auto" action="#">
-    <input type="text" aria-label="0" class="form-control" placeholder="00000"  required="required" aria-describedby="button-addon2">
-    <div class="input-group-append">
-        <button class="btn btn-primary" type="button" id="button-addon2">Send</button>
-    </div>
-</form>
-<form th:action="@{'/verify/id{id}'(id=${userId})}" method="POST">
-    <input type="number" name="activationKey" placeholder="00000" required="required">
-    <input type="submit" name="" placeholder="">
-</form>
-<form th:action="@{'/verify/sendCodeAgainFor/id{id}'(id=${userId})}" method="POST">
-    <button type="submit">Send code again</button>
-</form>
+
+<div class="container mx-auto border border-warning rounded text-center col-md-6" style="margin: 10px; padding: 5px; background: #cccccc">
+    <h2><b>Login verification</b></h2>
+    <p class="text-left">In order to verify you, we send a code to your email</p>
+    <p class="text-left">Enter the following code to confirm email</p>
+    <form class="form-inline input-group mx-auto form-row col-md-5" th:action="@{'/verify/id{id}'(id=${userId})}" method="POST" style="margin: 10px">
+        <input type="text" aria-label="0" class="form-control rounded-left" placeholder="00000" name="activationKey" required="required"
+               aria-describedby="button-addon2" title="Five number code" pattern="[0-9]{5}" style="font-size: 20px; border-color: white; ">
+        <div class="input-group-append rounded-right">
+            <input type="submit" class="btn btn-warning">
+        </div>
+    </form>
+    <a th:href="@{'/verify/sendCodeAgainFor/id{id}'(id=${userId})}">
+        <button type="submit" class="btn btn-warning" style="margin-bottom: 10px">Send code again</button>
+    </a>
+</div>
+<!--<form th:action="@{'/verify/sendCodeAgainFor/id{id}'(id=${userId})}" method="POST">-->
+<!--<button type="submit" >Send code again</button>-->
+<!--</form>-->
 </body>
 </html>
