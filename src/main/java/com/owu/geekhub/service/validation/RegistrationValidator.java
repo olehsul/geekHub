@@ -18,7 +18,7 @@ public class RegistrationValidator {
         );
     }
 
-   /* public boolean isDateValid(String date){
+    public boolean isDateValid(String date){
         if(date == null){
             return false;
         }
@@ -31,7 +31,7 @@ public class RegistrationValidator {
         } catch (ParseException ex) {
             return false;
         }
-    }*/
+    }
 
     public boolean isPasswordValid(String password){
         String passwordPattern = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,}";
@@ -43,6 +43,7 @@ public class RegistrationValidator {
 
         String date = format.format(user.getBirthDate());
         if (!isNameValid(user.getFirstName())
+
                         || !isDateValid(date)
                         || !isPasswordValid(user.getPassword())
         )
