@@ -73,14 +73,14 @@ function emailValid(email) {
 
 function passwordValid(password) {
     console.log("true password")
-    passwordRegex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{8})$/;
+    passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
     return passwordRegex.test(password);
 
 }
 
 function confirmPasswordValid(password) {
     console.log("true confirm password")
-    confirmPasswordRegex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{8})$/;
+    confirmPasswordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
     return confirmPasswordRegex.test(password);
 
 }
