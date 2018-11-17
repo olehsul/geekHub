@@ -29,13 +29,16 @@ public class RegistrationValidator {
             sdf.parse(date);
             return true;
         } catch (ParseException ex) {
+            System.out.println("=========date are invalid========");
             return false;
         }
     }
 
     public boolean isPasswordValid(String password){
         String passwordPattern = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,}";
-        return password.matches(passwordPattern);
+        boolean bool = password.matches(passwordPattern);
+        System.out.println("==========is password valid " + bool);
+        return bool;
     }
 
     public boolean validateRegistrationData(User user){
@@ -45,8 +48,10 @@ public class RegistrationValidator {
         if (!isNameValid(user.getFirstName())
                         || !isDateValid(date)
                         || !isPasswordValid(user.getPassword())
-        )
-            System.out.println("-----some registration data are OK---------");
-            return true;
+        ) {
+            System.out.println("-----some registration data are wrong--------");
+            return false;
+        }
+        return true;
     }
 }

@@ -46,9 +46,10 @@ public class AuthenticationController {
             HttpServletRequest request
     ) throws MessagingException {
             user.setBirthDate(birthDate);
+        System.out.println(user);
         if (userService.save(user)) {
 //            authWithHttpServletRequest(request, user.getUsername(), password);
-            mailService.send(user.getUsername());
+            mailService.sendActivationKey(user.getUsername());
             System.out.println("USER SAVED SUCCESSFULLY");
             return "redirect:/verification-request/id"+ user.getId() +"";
         } else {
@@ -110,7 +111,7 @@ public class AuthenticationController {
                                 Model model) throws MessagingException {
         System.out.println("======send_new_code==================");
         User user = userDao.findById(id).get();
-        mailService.send(user.getUsername());
+        mailService.sendActivationKey(user.getUsername());
         model.addAttribute("userId", id);
         return "redirect:/verification-request/id" + user.getId();
     }
@@ -133,6 +134,12 @@ public class AuthenticationController {
             userService.update(user);
             return "authentication/login";
         } else return "redirect:/verification-request/id" + id;
+    }
+
+    @PostMapping("/passwordRecovery")
+    public String passwordRecovery(@RequestParam String email){
+
+        return "";
     }
 
 }

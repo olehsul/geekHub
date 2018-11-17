@@ -55,3 +55,11 @@ a:hover {
 .color-aliceblue{
     color: aliceblue;
 }
+
+
+.fixed-size{
+    min-width: 300px;
+}
+.mw900{
+    min-width: 900px;
+}

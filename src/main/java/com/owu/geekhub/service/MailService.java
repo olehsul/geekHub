@@ -7,4 +7,5 @@ import javax.mail.MessagingException;
 @Service
 public interface MailService {
     void send(String email) throws MessagingException;
+    void sendActivationKey(String email) throws MessagingException;
 }

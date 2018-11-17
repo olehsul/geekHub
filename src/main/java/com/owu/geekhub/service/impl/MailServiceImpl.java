@@ -35,14 +35,12 @@ public class MailServiceImpl implements MailService {
     @Autowired
     private UserService userService;
 
-    public void send(String email) throws MessagingException {
+     public void send(String email) throws MessagingException {
         User user = userDao.findByUsername(email);
-        if (user.isActivated()) {
-            System.out.println(" user " + user.getUsername() + " is already activated");
-            return;
-        }
-
-
+//        if (user.isActivated()) {
+//            System.out.println(" user " + user.getUsername() + " is already activated");
+//            return;
+//        }
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
         int verificationNumber = randomVerificationNumber.getRandomVerifictionNumber();
@@ -59,5 +57,21 @@ public class MailServiceImpl implements MailService {
             e.printStackTrace();
         }
         javaMailSender.send(mimeMessage);
+    }
+
+    public void sendActivationKey(String email) throws MessagingException {
+        User user = userDao.findByUsername(email);
+        if (user.isActivated()) {
+            System.out.println(" user " + user.getUsername() + " is already activated");
+            return;
+        }
+        send(email);
+    }
+    public void sendRecoveryCode(String email){
+        User user = userDao.findByUsername(email);
+
+
+
+
     }
 }
