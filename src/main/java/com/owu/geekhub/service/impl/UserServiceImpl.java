@@ -1,25 +1,16 @@
 package com.owu.geekhub.service.impl;
 
 import com.owu.geekhub.dao.UserDao;
-import com.owu.geekhub.dao.UserIdentityDao;
 import com.owu.geekhub.models.Role;
 import com.owu.geekhub.models.User;
-import com.owu.geekhub.models.UserIdentity;
-import com.owu.geekhub.service.MailService;
 import com.owu.geekhub.service.UserService;
 import com.owu.geekhub.service.generators.RandomUserIdentity;
-import com.owu.geekhub.service.generators.RandomVerificationNumber;
 import com.owu.geekhub.service.validation.RegistrationValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import javax.mail.MessagingException;
-import java.text.SimpleDateFormat;
-import java.util.Iterator;
-import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
