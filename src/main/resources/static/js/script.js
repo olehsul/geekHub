@@ -35,6 +35,18 @@ function validate(event) {
 
 }
 
+function validateNewPassword(event) {
+    var password = $("#passwordId").val();
+    var confirmPassword = $("#confirmPasswordId").val();
+
+    if ((validatePassword(password) == false)
+        || (isPasswordMatches(password, confirmPassword) == false)
+    ) {
+        console.log('prevent def');
+        event.preventDefault();
+    }else console.log('data are valid');
+}
+
 
 function validateName(name) {
     const regexName = /^[a-zA-Z ]{2,30}$/;
@@ -83,12 +95,12 @@ function validatePassword(password) {
 
     if (regexPassword.test(password)) {
         console.log('password is valid');
-        $("#passwordmassage").html("<span style='color: transparent'>should contain at least one digit, lower case, upper case!</span>");
+        // $("#passwordmassage").html("<span style='color: transparent'>should contain at least one digit, lower case, upper case!</span>");
         return true;
     }
     else {
         // alert("You have entered an invalid Password");
-        $("#passwordmassage").html("<span style='color: red'>should contain at least one digit, lower case, upper case!</span>");
+        // $("#passwordmassage").html("<span style='color: red'>should contain at least one digit, lower case, upper case!</span>");
         console.log('password is invalid');
         return false;
     }
