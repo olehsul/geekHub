@@ -22,95 +22,90 @@
 <div class="">
     <nav class="row navbar navbar-expand-lg navbar-dark bg-dark">
         <!-- Brand -->
-        <div class="col-md-1 offset-md-1 col-sm-12">
+        <div class="col-md-1 offset-md-1">
             <a href="#" class="navbar-brand">
                 <span style="color: white"><b>Geek </b></span>
                 <span style="color: black" class="logo-orange"><b>hub</b></span>
             </a>
         </div>
-        <div class="col-md-5 offset-md-4 col-sm-12 text-right">
+        <div class="col-md-6 offset-md-4 text-right">
             <form th:action="@{'/login'}" class="form-inline" method="POST">
                 <div class="form-row">
-                    <div class="form-group  col-md-5 col-sm-8">
+                    <div class="form-group col-md-5">
                         <label for="mailId" class="color-aliceblue">email&nbsp</label>
                         <input class="form-control" type="text" name="username" placeholder="email" id="mailId">
                     </div>
-                    <div class="form-group col-md-6 col-sm-8">
+                    <div class="form-group col-md-6">
                         <label for="passId" class="color-aliceblue">password&nbsp</label>
                         <input class="form-control" type="password" name="password" placeholder="password"
                                id="passId">
                     </div>
-                    <div class="form-group col-md-1 col-sm-8"><input type="submit" value="Sign in"></div>
+                    <div class="form-group col-md-1"><input type="submit" value="Sign in"></div>
                 </div>
             </form>
         </div>
     </nav>
+</div>
 
-
-    <div class="col-md-4 mx-auto">
-        <form class="px-4 py-3" th:action="@{'/registerNewUser'}" method="POST">
-            <div class="row" style="padding: 0;">
-                <div class="col-md-6" style="margin: 0">
-                    <div class="form-group">
-                        <label for="fname">First name</label>
-                        <input class="form-control" name="firstName" type="text" placeholder="First name" id="fname"/>
-                    </div>
-                </div><!-- /.col -->
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="lname">Last name</label>
-                        <input class="form-control" name="lastName" type="text" placeholder="Last name" id="lname"/>
-                    </div>
-                </div><!-- /.col -->
-            </div>
-            <div class="form-group">
-                <label for="exampleDropdownFormEmail1">Email address</label>
-                <input type="email" class="form-control" id="exampleDropdownFormEmail1" name="username"
-                       placeholder="email@example.com">
-            </div>
-            <div class="form-group">
-                <label for="passwordId">Password</label>&nbsp<span id="passwordmassage"><br/><br/></span>
-                <input type="password" class="form-control" id="passwordId" name="password"
-                       placeholder="Password">
-            </div>
-            <div class="form-group">
-                <label for="confirmPasswordId">Confirm Password &nbsp</label><span id="repasswordmassage"><br/></span>
-                <input type="password" class="form-control" id="confirmPasswordId" name="confirm_password"
-                       placeholder="Password"><span id='message'></span>
-            </div>
-
-            <div class="form-group row">
-                <div class="col-md-3">
-                    <div class="radio ">
-                        <label><input type="radio" name="gender" value="MALE" checked>Male</label>
-                    </div>
-
+<div class="col-md-4 mx-auto">
+    <form class="px-4 py-3" th:action="@{'/registerNewUser'}" method="POST">
+        <div class="row" style="padding: 0;">
+            <div class="col-md-6" style="margin: 0">
+                <div class="form-group">
+                    <label for="fname">First name</label>
+                    <input class="form-control" name="firstName" type="text" placeholder="First name" id="fname"/>
                 </div>
-                <div class="col-md-3">
-                    <div class="radio">
-                        <label><input type="radio" name="gender" value="FEMALE">Female</label>
-                    </div>
+            </div><!-- /.col -->
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="lname">Last name</label>
+                    <input class="form-control" name="lastName" type="text" placeholder="Last name" id="lname"/>
+                </div>
+            </div><!-- /.col -->
+        </div>
+        <div class="form-group">
+            <label for="exampleDropdownFormEmail1">Email address</label>
+            <input type="email" class="form-control" id="exampleDropdownFormEmail1" name="username"
+                   placeholder="email@example.com">
+        </div>
+        <div class="form-group">
+            <label for="passwordId">Password</label>
+            <input type="password" class="form-control" id="passwordId" name="password"
+                   placeholder="Password">
+        </div>
+        <div class="form-group">
+            <label for="confirmPasswordId">Password</label>
+            <input type="password" class="form-control" id="confirmPasswordId" name="confirm_password"
+                   placeholder="Password"><span id='message'></span>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-md-3">
+                <div class="radio ">
+                    <label><input type="radio" name="gender" value="MALE" checked>Male</label>
+                </div>
+
+            </div>
+            <div class="col-md-3">
+                <div class="radio">
+                    <label><input type="radio" name="gender" value="FEMALE">Female</label>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="birthDate">Date of birth</label>
-                <input type="date" class="form-control" id="birthDate" name="birth-date" placeholder="">
-            </div>
-            <button type="submit" class="btn btn-primary" onclick="validate(event)" id="sighUpButton">Sign up</button>
-        </form>
-        <script src="/js/script.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-        <div class="mx-auto" style="padding-left: 22px"><a class="" href="/auth">New around here? Sign up</a><br>
-            <a class="" href="#">Forgot password?</a></div>
-    </div>
-
-
-    <footer>
-
-    </footer>
+        </div>
+        <div class="form-group">
+            <label for="birthDate">Date of birth</label>
+            <input type="date" class="form-control" id="birthDate" name="birth-date" placeholder="">
+        </div>
+        <button type="submit" onclick="validate(event)" class="btn btn-primary">Sign up</button>
+    </form>
+    <script src="/js/script.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <div class="mx-auto" style="padding-left: 22px"><a class="" href="/auth">New around here? Sign up</a><br>
+        <a class="" href="#">Forgot password?</a></div>
 </div>
 
 
+<footer></footer>
 <script src="../../static/js/script.js"></script>
 </body>
 </html>

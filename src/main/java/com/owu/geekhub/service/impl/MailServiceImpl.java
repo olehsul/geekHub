@@ -35,7 +35,7 @@ public class MailServiceImpl implements MailService {
     @Autowired
     private UserService userService;
 
-     public void send(String email) throws MessagingException {
+     private void send(String email) throws MessagingException {
         User user = userDao.findByUsername(email);
 //        if (user.isActivated()) {
 //            System.out.println(" user " + user.getUsername() + " is already activated");
@@ -67,11 +67,7 @@ public class MailServiceImpl implements MailService {
         }
         send(email);
     }
-    public void sendRecoveryCode(String email){
-        User user = userDao.findByUsername(email);
-
-
-
-
+    public void sendRecoveryCode(String email) throws MessagingException {
+        send(email);
     }
 }
