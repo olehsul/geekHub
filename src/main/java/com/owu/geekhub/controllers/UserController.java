@@ -27,7 +27,8 @@ public class UserController {
         User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         System.out.println("=========going home user" + principal.getUsername());
 
-        model.addAttribute("user", principal);
+        model.addAttribute("loggedUser", principal);
+        model.addAttribute("userPage", user);
         System.out.println(user);
         return "user/home";
     }
