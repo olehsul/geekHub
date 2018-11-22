@@ -23,7 +23,7 @@ public class RegistrationValidator {
             return false;
         }
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat(date);
         sdf.setLenient(false);
         try {
             sdf.parse(date);
@@ -46,6 +46,7 @@ public class RegistrationValidator {
 
         String date = format.format(user.getBirthDate());
         if (!isNameValid(user.getFirstName())
+
                         || !isDateValid(date)
                         || !isPasswordValid(user.getPassword())
         ) {
