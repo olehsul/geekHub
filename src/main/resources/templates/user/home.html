@@ -76,10 +76,12 @@
 </nav>
 <!--navbar-->
 
+
+
 <!--content-->
 <div class="container">
     <div class="row">
-        <div class="col-md-4 mx-auto">
+        <div th:if="${userPage.id} != ${loggedUser.id}" class="col-md-4 mx-auto">
             <h3>[[${userPage.firstName}]] [[${userPage.lastName}]]</h3>
             <a class="btn btn-primary" id="btn-send-friend-request">
                 <input type="hidden" th:value="${userPage.id}" id="friend-requested-id">

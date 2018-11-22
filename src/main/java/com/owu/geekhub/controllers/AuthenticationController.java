@@ -159,7 +159,7 @@ public class AuthenticationController {
                                  @RequestParam String password) {
         int key = Integer.parseInt(activationKey);
         User user = userDao.findByUsername(email);
-        if (user.getActivationKey() == key) System.out.println("=======user.getActivationKey() == key=========");
+        if (user.getActivationKey() == key) System.out.println("=======user.getActivationKey() == key=========k");
         if ((user.getActivationKey() == key)&&(userService.validatePassword(password))){
             System.out.println("=====password could be changed===========");
             user.setPassword(password);

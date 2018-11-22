@@ -16,11 +16,11 @@ $('#passwordId, #confirmPasswordId').on(function () {
      return re.test(String(email).toLowerCase())})*/
 
 function validate(event) {
-    var fname = $("#fname").val();
-    var lname = $("#lname").val();
-    var email = $("#exampleDropdownFormEmail1").val();
-    var password = $("#passwordId").val();
-    var confirmPassword = $("#confirmPasswordId").val();
+    let fname = $("#fname").val();
+    let lname = $("#lname").val();
+    let email = $("#exampleDropdownFormEmail1").val();
+    let password = $("#passwordId").val();
+    let confirmPassword = $("#confirmPasswordId").val();
 
     if (
         (validateName(fname) == false)
@@ -61,6 +61,13 @@ function validateName(name) {
         //alert("You have entered an invalid name");
         return false;
     }
+}
+
+function validateSingleEmail(event) {
+    let email = $("#mail").val();
+    if (validateEmail(email) == false) {console.log('prevent def');
+        event.preventDefault();
+    }else console.log('data are valid');
 }
 
 function validateEmail(mail) {
