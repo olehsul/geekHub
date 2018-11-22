@@ -39,4 +39,12 @@ public class FriendsRestController {
 //        return "redirect:/id" + friendId;
     }
 
+
+    @PostMapping("/acceptFriendRequest")
+    public void acceptFriendRequest(
+            @RequestBody Long friendId
+    ){
+        System.out.println(friendId);
+    }
+
 }

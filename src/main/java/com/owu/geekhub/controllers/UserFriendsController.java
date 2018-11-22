@@ -1,8 +1,10 @@
 package com.owu.geekhub.controllers;
 
+import com.owu.geekhub.dao.UserDao;
 import com.owu.geekhub.dao.UserFriendDAO;
 import com.owu.geekhub.models.FriendStatus;
 import com.owu.geekhub.models.User;
+import com.owu.geekhub.models.UserFriend;
 import com.owu.geekhub.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -12,26 +14,36 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 public class UserFriendsController {
     @Autowired
-    UserService userService;
+    private UserService userService;
     @Autowired
-    UserFriendDAO userFriendDAO;
+    private UserFriendDAO userFriendDAO;
+    @Autowired
+    private UserDao userDao;
 
     @GetMapping("/friends")
     public String friends(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User principal = (User) authentication.getPrincipal();
-        List<User> friends = userFriendDAO.findAllByFriendIdAndStatus(principal.getId(), FriendStatus.PENDING);
+        List<UserFriend> friends = userFriendDAO.findAllByFriendIdAndStatus(principal.getId(), FriendStatus.PENDING);
 
-        for (User friend : friends) {
+        List<User> users = new ArrayList<>();
+
+        for (UserFriend friend : friends) {
             System.out.println("_________________________________________");
             System.out.println(friend);
+            System.out.println("_________________________________________");
+            users.add(userDao.findById(friend.getUserId()).get());
         }
-        model.addAttribute("friends", friends);
+        for (User user : users) {
+            System.out.println("++++++" + user);
+        }
+        model.addAttribute("friends", users);
         return "user/friends-list";
     }
 

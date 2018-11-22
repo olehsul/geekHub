@@ -89,9 +89,8 @@
             <!--th:action="@{'/verify/id{id}'(id=${userId})}"-->
             <!--<h5 class="col-md-4">Sviatoslav Khrystyna</h5>-->
             <div th:if="${userPage.id} != ${loggedUser.id}">
-                <a class="btn btn-primary" id="btn-send-friend-request"
-                   >
-                   <!--th:href="@{'/friend-request-id{friendId}-from-id{userId}'(userId = ${loggedUser.id}, friendId = ${userPage.id})}">-->
+                <a class="btn btn-primary" id="btn-send-friend-request">
+                    <!--th:href="@{'/friend-request-id{friendId}-from-id{userId}'(userId = ${loggedUser.id}, friendId = ${userPage.id})}">-->
 
                     <input type="hidden" th:value="${userPage.id}" id="friend-requested-id">
                     <input type="hidden" th:value="${loggedUser.id}" id="user-requesting-id">
@@ -121,14 +120,16 @@
         }
         return cookieValue;
     }
+
     var csrftoken = getCookie('csrftoken');
 
     function csrfSafeMethod(method) {
         // these HTTP methods do not require CSRF protection
         return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
     }
+
     $.ajaxSetup({
-        beforeSend: function(xhr, settings) {
+        beforeSend: function (xhr, settings) {
             if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
                 xhr.setRequestHeader("X-CSRFToken", csrftoken);
             }
