@@ -52,8 +52,11 @@
             </ul>
             <ul class="navbar-nav ml-auto">
                 <li>
-                    <a class="nav-link">
+                    <a class="nav-link" th:href="@{/messages}">
                         1 <i class="fa fa-envelope" style="margin-right: 5px"></i>
+                    </a>
+                    <a class="nav-link" th:href="@{/friends}">
+                        5 <i class="fas fa-user" style="margin-right: 5px"></i>
                     </a>
                 </li>
                 <li class="nav-link" style="padding: 0">
@@ -86,13 +89,14 @@
             <!--th:action="@{'/verify/id{id}'(id=${userId})}"-->
             <!--<h5 class="col-md-4">Sviatoslav Khrystyna</h5>-->
             <div th:if="${userPage.id} != ${loggedUser.id}">
-                <div>
-                    <!--th:href="@{'/friend-request-id{friendId}-from-id{userId}'(userId = ${loggedUser.id}, friendId = ${userPage.id})}">-->
+                <a class="btn btn-primary" id="btn-send-friend-request"
+                   >
+                   <!--th:href="@{'/friend-request-id{friendId}-from-id{userId}'(userId = ${loggedUser.id}, friendId = ${userPage.id})}">-->
 
                     <input type="hidden" th:value="${userPage.id}" id="friend-requested-id">
                     <input type="hidden" th:value="${loggedUser.id}" id="user-requesting-id">
-                    <button class="btn btn-primary" id="friendRequestButton">Send friend request</button>
-                </div>
+                    <p>Send friend request</p>
+                </a>
             </div>
         </div>
     </div>
@@ -102,23 +106,52 @@
 </body>
 </html>
 <script>
-    $("#friendRequestButton").click(function () {
-        let friendId = $("#friend-requested-id").val();
-        let userId = $("#user-requesting-id").val();
-        console.log(userId, friendId);
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
 
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+    $("#btn-send-friend-request").click(function () {
+
+        let userPageId = $("#friend-requested-id").val();
+        let loggedUserId = $("#user-requesting-id").val();
+        console.log(userPageId, loggedUserId);
 
         // let stringURL = "@{'/friend-request-{friendId}-from-{userId}'(friendId=${userPage.id}, userId=${loggedUser.id})}";
         // let stringURL = '/friend-request-' + loggedUserId + '-from-' + userPageId;
-        // let stringURL = '/friend-request';
-        // let dataJSON = JSON.stringify({friendId, userId});
-        // console.log(dataJSON);
+        let stringURL = '/friend-request';
+        let dataJSON = JSON.stringify({friendId: userPageId, userId: loggedUserId});
+        console.log(dataJSON);
 
         $.ajax({
-            url: '/friend-request',
+            url: stringURL,
             type: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify({friendId, userId}),
+            data: dataJSON,
             success: function (response) {
                 console.log("succeed request!");
                 console.log(response);
