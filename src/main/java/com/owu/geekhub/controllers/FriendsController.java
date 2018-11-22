@@ -12,6 +12,8 @@ public class FriendsController {
     @Autowired
     UserFriendDAO userFriendDAO;
 //    @GetMapping("/friend-request-id{friendId}-from-id{userId}")
+
+
     @PostMapping("/friend-request")
     @ResponseBody
     public UserFriend friendRequest(
@@ -20,20 +22,20 @@ public class FriendsController {
 //            @PathVariable Long userId
     ) {
         System.out.println("INSIDE FRIEND REQUEST POSTMAPPING");
-        try {
-            userFriend.setStatus(FriendStatus.PENDING);
-//            UserFriend userFriend = UserFriend.builder()
-//                    .userId(userId)
-//                    .friendId(friendId)
-//                    .status(FriendStatus.PENDING)
-//                    .build();
-
-            userFriendDAO.save(userFriend);
-        } catch (Exception e) {
-            e.printStackTrace();
-//            return "redirect:/id" + friendId;
-            return null;
-        }
+//        try {
+//            userFriend.setStatus(FriendStatus.PENDING);
+////            UserFriend userFriend = UserFriend.builder()
+////                    .userId(userId)
+////                    .friendId(friendId)
+////                    .status(FriendStatus.PENDING)
+////                    .build();
+//
+//            userFriendDAO.save(userFriend);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+////            return "redirect:/id" + friendId;
+//            return null;
+//        }
         return userFriend;
 //        return "redirect:/id" + friendId;
     }
