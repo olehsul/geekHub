@@ -7,26 +7,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
-public class FriendsController {
+@RestController
+public class FriendsRestController {
     @Autowired
     UserFriendDAO userFriendDAO;
-//    @GetMapping("/friend-request-id{friendId}-from-id{userId}")
+
+    //    @GetMapping("/friend-request-id{friendId}-from-id{userId}")
     @PostMapping("/friend-request")
-    @ResponseBody
     public UserFriend friendRequest(
             @RequestBody UserFriend userFriend
-//            @PathVariable Long friendId,
-//            @PathVariable Long userId
+//            @RequestParam Long friendId,
+//            @RequestParam Long userId
     ) {
+//        UserFriend userFriend = new UserFriend(new Long(12), new Long(13));
         System.out.println("INSIDE FRIEND REQUEST POSTMAPPING");
+        userFriend.setStatus(FriendStatus.PENDING);
+//        UserFriend userFriend = UserFriend.builder()
+//                .userId(userId)
+//                .friendId(friendId)
+//                .status(FriendStatus.PENDING)
+//                .build();
         try {
-            userFriend.setStatus(FriendStatus.PENDING);
-//            UserFriend userFriend = UserFriend.builder()
-//                    .userId(userId)
-//                    .friendId(friendId)
-//                    .status(FriendStatus.PENDING)
-//                    .build();
 
             userFriendDAO.save(userFriend);
         } catch (Exception e) {
