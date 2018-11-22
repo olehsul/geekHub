@@ -2,10 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>[[${loggedUser.firstName}]] [[${loggedUser.lastName}]] - GeekHub</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
             integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
             crossorigin="anonymous"></script>
@@ -14,7 +16,7 @@
             crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
           integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-    <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/style.css}" href="../../static/css/style.css" type="text/css">
     <style type="text/css">
         /*textarea:focus, input[type="text"]:focus,textarea[type="text"]:focus,   input[type="password"]:focus, input[type="datetime"]:focus, input[type="datetime-local"]:focus, input[type="date"]:focus, input[type="month"]:focus, input[type="time"]:focus, input[type="week"]:focus, input[type="number"]:focus, input[type="email"]:focus, input[type="url"]:focus, input[type="search"]:focus, input[type="tel"]:focus,  input[type="color"]:focus, .uneditable-input:focus, .form-control:focus {*/
         /*border-color: rgba(255, 0, 0, 0);*/
@@ -79,13 +81,20 @@
 <!--content-->
 <div class="container">
     <div class="row">
-        <div class="col-md-4 mx-auto">
-            <h3>[[${userPage.firstName}]] [[${userPage.lastName}]]</h3>
-            <a class="btn btn-primary" id="btn-send-friend-request">
-                <input type="hidden" th:value="${userPage.id}" id="friend-requested-id">
-                <input type="hidden" th:value="${loggedUser.id}" id="user-requesting-id">
-                <p>Send friend request</p>
-            </a>
+        <div class="col-md-8 mx-auto" style="background: aquamarine;">
+            <h5 class="col-md-4">[[${userPage.firstName}]] [[${userPage.lastName}]]</h5>
+            <!--th:action="@{'/verify/id{id}'(id=${userId})}"-->
+            <!--<h5 class="col-md-4">Sviatoslav Khrystyna</h5>-->
+            <div th:if="${userPage.id} != ${loggedUser.id}">
+                <a class="btn btn-primary" id="btn-send-friend-request"
+                   >
+                   <!--th:href="@{'/friend-request-id{friendId}-from-id{userId}'(userId = ${loggedUser.id}, friendId = ${userPage.id})}">-->
+
+                    <input type="hidden" th:value="${userPage.id}" id="friend-requested-id">
+                    <input type="hidden" th:value="${loggedUser.id}" id="user-requesting-id">
+                    <p>Send friend request</p>
+                </a>
+            </div>
         </div>
     </div>
 </div>
@@ -102,17 +111,21 @@
         // let stringURL = "@{'/friend-request-{friendId}-from-{userId}'(friendId=${userPage.id}, userId=${loggedUser.id})}";
         // let stringURL = '/friend-request-' + loggedUserId + '-from-' + userPageId;
         let stringURL = '/friend-request';
+        let dataJSON = JSON.stringify({friendId: userPageId, userId: loggedUserId});
+        console.log(dataJSON);
 
         $.ajax({
             url: stringURL,
             type: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify({userPageId, loggedUserId}),
+            data: dataJSON,
             success: function (response) {
+                console.log("succeed request!");
                 console.log(response);
             },
             error: function (err) {
                 console.log(err);
+                console.log("not succeed request!");
             }
         });
     });

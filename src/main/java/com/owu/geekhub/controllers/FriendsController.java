@@ -11,28 +11,31 @@ import org.springframework.web.bind.annotation.*;
 public class FriendsController {
     @Autowired
     UserFriendDAO userFriendDAO;
-
-//    @PostMapping("/friend-request-{friendId}-from-{userId}")
+//    @GetMapping("/friend-request-id{friendId}-from-id{userId}")
     @PostMapping("/friend-request")
     @ResponseBody
-    public boolean friendRequest(
-            @RequestParam Long friendId,
-            @RequestParam Long userId
+    public UserFriend friendRequest(
+            @RequestBody UserFriend userFriend
+//            @PathVariable Long friendId,
+//            @PathVariable Long userId
     ) {
         System.out.println("INSIDE FRIEND REQUEST POSTMAPPING");
         try {
-            UserFriend userFriend = UserFriend.builder()
-                    .userId(userId)
-                    .friendId(friendId)
-                    .status(FriendStatus.PENDING)
-                    .build();
-
+            userFriend.setStatus(FriendStatus.PENDING);
+//            UserFriend userFriend = UserFriend.builder()
+//                    .userId(userId)
+//                    .friendId(friendId)
+//                    .status(FriendStatus.PENDING)
+//                    .build();
 
             userFriendDAO.save(userFriend);
         } catch (Exception e) {
-            return false;
+            e.printStackTrace();
+//            return "redirect:/id" + friendId;
+            return null;
         }
-        return true;
+        return userFriend;
+//        return "redirect:/id" + friendId;
     }
 
 }
