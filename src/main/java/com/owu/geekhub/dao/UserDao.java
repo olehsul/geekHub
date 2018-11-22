@@ -11,4 +11,8 @@ public interface UserDao extends JpaRepository<User, Long> {
     boolean existsDistinctByUsername(String username);
     boolean existsDistinctById(Long id);
 
+
+
+
+
 }

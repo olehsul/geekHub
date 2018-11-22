@@ -11,92 +11,97 @@ $('#passwordId, #confirmPasswordId').on(function () {
           return varName.test(String(name))})
       }*/
 
+/* $('#exampleDropdownFormEmail1').on('exampleDropdownFormEmail1', function () {
+     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+     return re.test(String(email).toLowerCase())})*/
 
-
-function validate(e) {
+function validate(event) {
     var fname = $("#fname").val();
     var lname = $("#lname").val();
     var email = $("#exampleDropdownFormEmail1").val();
     var password = $("#passwordId").val();
     var confirmPassword = $("#confirmPasswordId").val();
 
-    if (firstNameValid(fname) == false) {
-        console.log("false first name")
-        e.preventDefault();
-        }
+    if (
+        (validateName(fname) == false)
+        || (validateName(lname) == false)
+        || (validateEmail(email) == false)
+        || (validatePassword(password) == false)
+        || (isPasswordMatches(password, confirmPassword) == false)
+    ) {
+        console.log('prevent def');
+        event.preventDefault();
+    }else console.log('data are valid');
+
+}
+
+function validateNewPassword(event) {
+    var password = $("#passwordId").val();
+    var confirmPassword = $("#confirmPasswordId").val();
+
+    if ((validatePassword(password) == false)
+        || (isPasswordMatches(password, confirmPassword) == false)
+    ) {
+        console.log('prevent def');
+        event.preventDefault();
+    }else console.log('data are valid');
+}
 
 
-    if (lastNameValid(lname) == false) {
-        console.log("false first name")
-        e.preventDefault();
+function validateName(name) {
+    const regexName = /^[a-zA-Z ]{2,30}$/;
+
+    if (regexName.test(name)) {
+        console.log('name is valid');
+        // $("#fnamemassage").html("<span style='color: transparent'>write a valid name!</span><br />");
+        return true;
     }
-
-    if (emailValid(email) == false) {
-        console.log("false email")
-        e.preventDefault();
+    else {
+        // $("#fnamemassage").html("<font style='color: red'>write a valid name!</font><br />");
+        //alert("You have entered an invalid name");
+        return false;
     }
+}
 
-    if (passwordValid(password) == false) {
-        console.log("false password")
-        e.preventDefault();
+function validateEmail(mail) {
+    const regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+    if (regexEmail.test(mail)) {
+        console.log('email is valid');
+        // $("#emailmassage").html("<span style='color: transparent'>write a valid email!</span><br />");
+        return (true)
+
+    } else {
+        //alert("You have entered an invalid email address!");
+        // $("#emailmassage").html("<span style='color: red'>write a valid email!</span><br />");
+        console.log('email is invalid');
+        return (false)
+
     }
+}
 
-    if (confirmPasswordValid(confirmPassword) == false) {
-        console.log("false confirm password")
-        e.preventDefault();
+function isPasswordMatches(password, rePassword) {
+    $("#repasswordmassage").html("<span style='color: transparent'>password doesn`t matches</span><br />");
+    if (password != rePassword) {
+        $("#repasswordmassage").html("<span style='color: red'>password doesn`t matches</span><br />");
+        console.log('password not matches');
+        return (false);
     }
-
+    return (true);
 }
 
+function validatePassword(password) {
+    const regexPassword = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
 
-function firstNameValid(name) {
-    console.log("true first name")
-    firstNameRegex = /^[a-zA-Zа-яА-Я'][a-zA-Zа-яА-Я-' ]+[a-zA-Zа-яА-Я']?$/u;
-    return firstNameRegex.test(name);
-
+    if (regexPassword.test(password)) {
+        console.log('password is valid');
+        // $("#passwordmassage").html("<span style='color: transparent'>should contain at least one digit, lower case, upper case!</span>");
+        return true;
+    }
+    else {
+        // alert("You have entered an invalid Password");
+        // $("#passwordmassage").html("<span style='color: red'>should contain at least one digit, lower case, upper case!</span>");
+        console.log('password is invalid');
+        return false;
+    }
 }
-
-function lastNameValid(name) {
-    console.log("true last name")
-    lastNameRegex = /^[a-zA-Zа-яА-Я'][a-zA-Zа-яА-Я-' ]+[a-zA-Zа-яА-Я']?$/u;
-    return lastNameRegex.test(name);
-
-}
-
-function emailValid(email) {
-    console.log("true email")
-    emailRegex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-    return emailRegex.test(email);
-
-}
-
-
-function passwordValid(password) {
-    console.log("true password")
-    passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
-    return passwordRegex.test(password);
-
-}
-
-function confirmPasswordValid(password) {
-    console.log("true confirm password")
-    confirmPasswordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
-    return confirmPasswordRegex.test(password);
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

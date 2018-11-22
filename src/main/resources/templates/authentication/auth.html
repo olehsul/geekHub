@@ -20,66 +20,32 @@
 </head>
 <body>
 <div class="">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <div class="row">
-                <!-- Brand -->
-                <a href="#" class="navbar-brand">
-                    <span style="color: white"><b>Geek </b></span>
-                    <span style="color: black" class="logo-orange"><b>hub</b></span>
-                </a>
-                <form th:action="@{'/login'}" class="form-inline" method="POST">
-                    <div><label style="color: #e0e2e3">Email : <br><input class="form-control" type="text"
-                                                                          name="username"
-                                                                          placeholder="email"></label></div>
-                    <div><label style="color: #e0e2e3"> Password : <br><input class="form-control" type="password"
-                                                                              name="password"
-                                                                              placeholder="password"></label>
-                    </div>
-                    <div><input type="submit" value="Sign in"></div>
-                </form>
-            </div>
+    <nav class="row navbar navbar-expand-lg navbar-dark bg-dark">
+        <!-- Brand -->
+        <div class="col-md-1 offset-md-1">
+            <a href="#" class="navbar-brand">
+                <span style="color: white"><b>Geek </b></span>
+                <span style="color: black" class="logo-orange"><b>hub</b></span>
+            </a>
         </div>
+        <div class="col-md-6 offset-md-4 text-right">
+            <form th:action="@{'/login'}" class="form-inline" method="POST">
+                <div class="form-row">
+                    <div class="form-group col-md-5">
+                        <label for="mailId" class="color-aliceblue">email&nbsp</label>
+                        <input class="form-control" type="text" name="username" placeholder="email" id="mailId">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="passId" class="color-aliceblue">password&nbsp</label>
+                        <input class="form-control" type="password" name="password" placeholder="password"
+                               id="passId">
+                    </div>
+                    <div class="form-group col-md-1"><input type="submit" value="Sign in"></div>
+                </div>
+            </form>
+        </div>
+    </nav>
 </div>
-</nav>
-<div th:if="${param.error}">
-    Invalid username or password.
-</div>
-<div th:if="${param.logout}">
-    You have been logged out.
-</div>
-
-<!--<div class="content">-->
-    <!--<div class="register">-->
-        <!--<form name="register" method="POST" th:action="@{'/registerNewUser'}">-->
-            <!--<p><b>First name</b></p>-->
-            <!--<input type="text" size="20" name="firstName" placeholder="Ім'я">-->
-            <!--<p><b>Last name</b></p>-->
-            <!--<input type="text" size="20" name="lastName" placeholder="Прізвище">-->
-            <!--<p><b>Пошта</b></p>-->
-            <!--<input type="text" size="20" name="username" placeholder="email">-->
-            <!--<p><b>Пароль</b></p>-->
-            <!--<input type="password" size="20" name="password" placeholder="">-->
-            <!--<p><b>Cтать</b></p>-->
-            <!--<input type="radio" name="gender" value="MALE" placeholder="sex" checked="checked"> Чоловіча-->
-            <!--<input type="radio" name="gender" value="FEMALE" placeholder="sex"> Жіноча-->
-            <!--<p><b>Дата народження: </b></p>-->
-
-            <!--&lt;!&ndash;<input type="number" placeholder="dd" > /&ndash;&gt;-->
-            <!--&lt;!&ndash;<input type="number" placeholder="mm"> /&ndash;&gt;-->
-            <!--&lt;!&ndash;<input type="number" placeholder="yyyy">&ndash;&gt;-->
-
-            <!--<input type="text" name="birth-date" id="date" placeholder="dd/mm/yyyy">-->
-            <!--<p>-->
-                <!--<br/>-->
-                <!--<input type="submit" name="" placeholder="">-->
-            <!--</p>-->
-        <!--</form>-->
-
-    <!--</div>-->
-
-<!--</div>-->
-
 
 <div class="col-md-4 mx-auto">
     <form class="px-4 py-3" th:action="@{'/registerNewUser'}" method="POST">
@@ -112,11 +78,7 @@
             <input type="password" class="form-control" id="confirmPasswordId" name="confirm_password"
                    placeholder="Password"><span id='message'></span>
         </div>
-        <!--<div class="form-group">-->
-        <!--<label>Gender</label><br>-->
-        <!--<label for="maleId">Male</label><input class="checkbox-inline" id="maleId" type="radio" name="gender" value="MALE" placeholder="sex" checked="checked">-->
-        <!--<label for="femaleId">Female</label><input class="checkbox-inline" id="femaleId" type="radio" name="gender" value="FEMALE" placeholder="sex">-->
-        <!--</div>-->
+
         <div class="form-group row">
             <div class="col-md-3">
                 <div class="radio ">
@@ -134,30 +96,15 @@
             <label for="birthDate">Date of birth</label>
             <input type="date" class="form-control" id="birthDate" name="birth-date" placeholder="">
         </div>
-
-        <!--<div class="form-check">-->
-        <!--<input type="checkbox" class="form-check-input" id="dropdownCheck">-->
-        <!--<label class="form-check-label" for="dropdownCheck">-->
-        <!--Remember me-->
-        <!--</label>-->
-        <!--</div>-->
-        <button type="submit" class="btn btn-primary" onclick="validate(event)" id="sighUpButton" >Sign up</button>
+        <button type="submit" onclick="validate(event)" class="btn btn-primary">Sign up</button>
     </form>
     <script src="/js/script.js"></script>
-    <!--<script>-->
-        <!--$('#passwordId, #confirmPasswordId').on('keyup', function () {-->
-            <!--if ($('#passwordId').val() == $('#confirmPasswordId').val()) {-->
-                <!--$('#message').html('Matching').css('color', 'green');-->
-            <!--} else-->
-                <!--$('#message').html('Not Matching').css('color', 'red');-->
-        <!--});-->
-    <!--</script>-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <div class="mx-auto" style="padding-left: 22px"><a class="" href="/auth">New around here? Sign up</a><br>
         <a class="" href="#">Forgot password?</a></div>
 </div>
 
-</div>
+
 <footer></footer>
 <script src="../../static/js/script.js"></script>
 </body>

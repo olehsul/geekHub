@@ -45,12 +45,13 @@ public class AuthenticationController {
             @RequestParam("birth-date") Date birthDate,
             HttpServletRequest request
     ) throws MessagingException {
-            user.setBirthDate(birthDate);
+        user.setBirthDate(birthDate);
+        System.out.println(user);
         if (userService.save(user)) {
 //            authWithHttpServletRequest(request, user.getUsername(), password);
-            mailService.send(user.getUsername());
+            mailService.sendActivationKey(user.getUsername());
             System.out.println("USER SAVED SUCCESSFULLY");
-            return "redirect:/verification-request/id"+ user.getId() +"";
+            return "redirect:/verification-request/id" + user.getId() + "";
         } else {
             System.out.println("WRONG DATA ENTERED");
             return "redirect:/auth";
@@ -110,7 +111,7 @@ public class AuthenticationController {
                                 Model model) throws MessagingException {
         System.out.println("======send_new_code==================");
         User user = userDao.findById(id).get();
-        mailService.send(user.getUsername());
+        mailService.sendActivationKey(user.getUsername());
         model.addAttribute("userId", id);
         return "redirect:/verification-request/id" + user.getId();
     }
@@ -134,5 +135,40 @@ public class AuthenticationController {
             return "authentication/login";
         } else return "redirect:/verification-request/id" + id;
     }
+    @GetMapping("/emailrecovery")
+    public String emailrecovery(){
+        System.out.println("================you are in emailrecovery================");
+        return "authentication/recovery-email";
+    }
+
+    @PostMapping("/passwordRecovery")
+    public String passwordRecovery(
+            @RequestParam String email, Model model) throws MessagingException {
+        if (userDao.existsDistinctByUsername(email)) {
+            mailService.sendRecoveryCode(email);
+            model.addAttribute("email", email);
+
+            return "authentication/recovery-password";
+        }
+        return "authentication/login";
+    }
+
+    @PostMapping("/setNewPassword")
+    public String setNewPassword(@RequestParam String activationKey,
+                                 @RequestParam String email,
+                                 @RequestParam String password) {
+        int key = Integer.parseInt(activationKey);
+        User user = userDao.findByUsername(email);
+        if (user.getActivationKey() == key) System.out.println("=======user.getActivationKey() == key=========");
+        if ((user.getActivationKey() == key)&&(userService.validatePassword(password))){
+            System.out.println("=====password could be changed===========");
+            user.setPassword(password);
+            userService.updatePassword(user);
+        }else System.out.println("-======something is wrong, password was not updated=======");
+
+
+        return "authentication/login";
+    }
+
 
 }

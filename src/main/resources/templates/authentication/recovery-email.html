@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <title>Verification</title>
+    <title>Forgot your password</title>
     <meta charset="UTF-8"/>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
@@ -29,21 +29,18 @@
     </div>
 </nav>
 
-
 <div class="container mx-auto border border-warning rounded text-center col-md-6" style="margin: 10px; padding: 5px; background: #cccccc">
     <h2><b>Login verification</b></h2>
-    <p class="text-left">In order to verify you, we send a code to your email</p>
-    <p class="text-left">Enter the following code to confirm email</p>
-    <form class="form-inline input-group mx-auto form-row col-md-5" th:action="@{'/verify/id{id}'(id=${userId})}" method="POST" style="margin: 10px">
-        <input type="text" aria-label="0" class="form-control rounded-left" placeholder="00000" name="activationKey" required="required"
-               aria-describedby="button-addon2" title="Five number code" pattern="[0-9]{5}" style="font-size: 20px; border-color: white; ">
+    <p class="text-left">In order to verify you, we will send a code to your email</p>
+    <p class="text-left">Enter your email</p>
+    <form class="form-inline input-group mx-auto form-row col-md-5" th:action="@{'/passwordRecovery'}" method="POST" style="margin: 10px">
+        <input type="text" aria-label="0" class="form-control rounded-left" placeholder="" name="email" required="required"
+               aria-describedby="button-addon2" title="your email"  style="font-size: 20px; border-color: white; ">
         <div class="input-group-append rounded-right">
             <input type="submit" class="btn btn-warning">
         </div>
     </form>
-    <form th:action="@{'/verify/sendCodeAgainFor/id{id}'(id=${userId})}" method="POST">
-        <button type="submit" class="btn btn-warning" style="margin-bottom: 10px">Send code again</button>
-    </form>
+
 </div>
 <!--<form th:action="@{'/verify/sendCodeAgainFor/id{id}'(id=${userId})}" method="POST">-->
 <!--<button type="submit" >Send code again</button>-->

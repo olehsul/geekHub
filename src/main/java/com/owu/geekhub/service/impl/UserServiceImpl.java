@@ -82,8 +82,21 @@ public class UserServiceImpl implements UserService {
         return true;
     }
 
+    public boolean validatePassword(String password){
+        if (registrationValidator.isPasswordValid(password)){
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public void update(User user){
+        userDao.save(user);
+    }
+
+    @Override
+    public void updatePassword(User user){
+        encodePassword(user);
         userDao.save(user);
     }
 

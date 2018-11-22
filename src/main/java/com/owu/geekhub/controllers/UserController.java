@@ -24,7 +24,11 @@ public class UserController {
     public String userId(@PathVariable Long userId,
                          Model model) {
         User user = userDao.findById(userId).get();
-        model.addAttribute("user", user);
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        System.out.println("=========going home user" + principal.getUsername());
+
+        model.addAttribute("loggedUser", principal);
+        model.addAttribute("userPage", user);
         System.out.println(user);
         return "user/home";
     }

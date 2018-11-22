@@ -9,14 +9,16 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-
+//        registry.addViewController("/emailrecovery").setViewName("recovery-email");
 //        registry.addViewController("/verification").setViewName("verification");
-//        if (!(SecurityContextHolder.getContext().getAuthentication()
-//                instanceof AnonymousAuthenticationToken)) {
-//            registry.addViewController("/auth").setViewName("index");
-//        } else {
-//            //get method
-//            registry.addViewController("/auth").setViewName("auth");
-//        }
+////        if (!(SecurityContextHolder.getContext().getAuthentication()
+////                instanceof AnonymousAuthenticationToken)) {
+////            registry.addViewController("/auth").setViewName("index");
+////        } else {
+////            //get method
+////            registry.addViewController("/auth").setViewName("auth");
+////        }
+
+
     }
 }

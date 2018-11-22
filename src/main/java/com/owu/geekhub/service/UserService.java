@@ -10,4 +10,6 @@ import javax.mail.MessagingException;
 public interface UserService extends UserDetailsService {
     boolean save(User user) throws MessagingException;
     void update(User user);
+    void updatePassword(User user);
+    boolean validatePassword(String password);
 }
