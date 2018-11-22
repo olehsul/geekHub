@@ -22,14 +22,46 @@ function validate(event) {
     var password = $("#passwordId").val();
     var confirmPassword = $("#confirmPasswordId").val();
 
+    if (validateFirstName(fname) == false){
+        $('#fname').css('border-color', 'red');
+    } else{
+        $('#fname').css('border-color', 'green');
+    }
+
+    if (validateLastName(lname) == false){
+        $('#lname').css('border-color', 'red');
+    } else{
+        $('#lname').css('border-color', 'green');
+    }
+
+    if (validateEmail(email) == false){
+        $('#exampleDropdownFormEmail1').css('border-color', 'red');
+    } else{
+        $('#exampleDropdownFormEmail1').css('border-color', 'green');
+    }
+
+    if (validatePassword(password) == false){
+        $('#passwordId').css('border-color', 'red');
+    } else{
+        $('#passwordId').css('border-color', 'green');
+    }
+
+    if (validatePassword(password) == false){
+        $('#confirmPasswordId').css('border-color', 'red');
+    } else{
+        $('#confirmPasswordId').css('border-color', 'green');
+    }
+
+
     if (
-        (validateName(fname) == false)
-        || (validateName(lname) == false)
+        (validateFirstName(fname) == false)
+        || (validateLastName(lname) == false)
         || (validateEmail(email) == false)
         || (validatePassword(password) == false)
         || (isPasswordMatches(password, confirmPassword) == false)
     ) {
         console.log('prevent def');
+
         event.preventDefault();
     }else console.log('data are valid');
 
@@ -48,8 +80,25 @@ function validateNewPassword(event) {
 }
 
 
-function validateName(name) {
+function validateFirstName(name) {
     const regexName = /^[a-zA-Z ]{2,30}$/;
+
+
+    if (regexName.test(name)) {
+        console.log('name is valid');
+        // $("#fnamemassage").html("<span style='color: transparent'>write a valid name!</span><br />");
+        return true;
+    }
+    else {
+        // $("#fnamemassage").html("<font style='color: red'>write a valid name!</font><br />");
+        //alert("You have entered an invalid name");
+        return false;
+    }
+}
+function validateLastName(name) {
+    const regexName = /^[a-zA-Z ]{2,30}$/;
+
+
 
     if (regexName.test(name)) {
         console.log('name is valid');
@@ -104,4 +153,6 @@ function validatePassword(password) {
         console.log('password is invalid');
         return false;
     }
+
+
 }
