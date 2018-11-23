@@ -1,19 +1,26 @@
-$('#passwordId, #confirmPasswordId').on(function () {
-    if ($('#passwordId').val() == $('#confirmPasswordId').val()) {
-        $('#message').html('Matching').css('color', 'green');
-    } else
-        $('#message').html('Not Matching').css('color', 'red');
-});
+function validateNewPassword(event) {
+    var recoveryPassword = $("#recoveryPasswordId").val();
+    var recoveryConfirmPassword = $("#recoveryConfirmPasswordId").val();
 
+    if (validatePassword(recoveryPassword) == false) {
+        $('#recoveryPasswordId').css('border-color', 'red').html('Password not correct');
+    }
 
-/*  $('#fname').on('fname', function () {
-      var varName = /[A-Z][a-zA-Z][^#&<>\"~;$^%{}?]{1,20}$/
-          return varName.test(String(name))})
-      }*/
+    if (recoveryPassword !== recoveryConfirmPassword) {
+        event.preventDefault();
+        $('#recoveryConfirmPasswordId').css('border-color', 'red')
+    }
+    else console.log('password is mach');
 
-/* $('#exampleDropdownFormEmail1').on('exampleDropdownFormEmail1', function () {
-     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-     return re.test(String(email).toLowerCase())})*/
+    if ((validatePassword(recoveryPassword) == false)
+        || (isPasswordMatches(recoveryPassword, recoveryConfirmPassword) == false)
+        || (validatePassword(recoveryPassword) == false)
+        || (validatePassword(recoveryConfirmPassword) == false)
+    ) {
+        console.log('prevent def');
+        event.preventDefault();
+    } else console.log('data are valid');
+}
 
 function validate(event) {
     let fname = $("#fname").val();
@@ -22,36 +29,27 @@ function validate(event) {
     let password = $("#passwordId").val();
     let confirmPassword = $("#confirmPasswordId").val();
 
-    if (validateFirstName(fname) == false){
-        $('#fname').css('border-color', 'red');
-    } else{
-        $('#fname').css('border-color', 'green');
+    if (password !== confirmPassword) {
+        event.preventDefault();
+        $('#confirmPasswordId').css('border-color', 'red')
+    }
+    else console.log('password is mach');
+
+    if (validateFirstName(fname) == false) {
+        ($('#fname').css('border-color', 'red').innerHTML = 'wrong confirm password');
     }
 
-    if (validateLastName(lname) == false){
+    if (validateLastName(lname) == false) {
         $('#lname').css('border-color', 'red');
-    } else{
-        $('#lname').css('border-color', 'green');
     }
 
-    if (validateEmail(email) == false){
+    if (validateEmail(email) == false) {
         $('#exampleDropdownFormEmail1').css('border-color', 'red');
-    } else{
-        $('#exampleDropdownFormEmail1').css('border-color', 'green');
     }
 
-    if (validatePassword(password) == false){
+    if (validatePassword(password) == false) {
         $('#passwordId').css('border-color', 'red');
-    } else{
-        $('#passwordId').css('border-color', 'green');
     }
-
-    if (validatePassword(password) == false){
-        $('#confirmPasswordId').css('border-color', 'red');
-    } else{
-        $('#confirmPasswordId').css('border-color', 'green');
-    }
-
 
     if (
         (validateFirstName(fname) == false)
@@ -63,26 +61,12 @@ function validate(event) {
         console.log('prevent def');
 
         event.preventDefault();
-    }else console.log('data are valid');
-
+    } else console.log('data are valid');
 }
-
-function validateNewPassword(event) {
-    var password = $("#passwordId").val();
-    var confirmPassword = $("#confirmPasswordId").val();
-
-    if ((validatePassword(password) == false)
-        || (isPasswordMatches(password, confirmPassword) == false)
-    ) {
-        console.log('prevent def');
-        event.preventDefault();
-    }else console.log('data are valid');
-}
-
 
 function validateFirstName(name) {
-    const regexName = /^[a-zA-Z ]{2,30}$/;
-
+    //   const regexNameLatine = /^[a-zA-Z ]{2,30}$/;
+    const regexName = /^[a-zA-Zа-яА-Я'][a-zA-Zа-яА-Я-' ]+[a-zA-Zа-яА-Я']{2,30}?$/u;
 
     if (regexName.test(name)) {
         console.log('name is valid');
@@ -95,11 +79,10 @@ function validateFirstName(name) {
         return false;
     }
 }
+
 function validateLastName(name) {
-    const regexName = /^[a-zA-Z ]{2,30}$/;
-
-
-
+    //const regexName = /^[a-zA-Z ]{2,30}$/;
+    const regexName = /^[a-zA-Zа-яА-Я'][a-zA-Zа-яА-Я-' ]+[a-zA-Zа-яА-Я']{2,30}?$/u;
     if (regexName.test(name)) {
         console.log('name is valid');
         // $("#fnamemassage").html("<span style='color: transparent'>write a valid name!</span><br />");
@@ -113,10 +96,18 @@ function validateLastName(name) {
 }
 
 function validateSingleEmail(event) {
-    let email = $("#mail").val();
-    if (validateEmail(email) == false) {console.log('prevent def');
+    let recoveryEmail = $("#mail").val();
+
+    if (validateEmail(recoveryEmail) == false) {
+        $('#mail').css('border-color', 'red');
+    } else {
+        $('#mail').css('border-color', 'green');
+    }
+
+    if (validateEmail(recoveryEmail) == false) {
+        console.log('prevent def');
         event.preventDefault();
-    }else console.log('data are valid');
+    } else console.log('data are valid');
 }
 
 function validateEmail(mail) {
@@ -137,9 +128,9 @@ function validateEmail(mail) {
 }
 
 function isPasswordMatches(password, rePassword) {
-    $("#repasswordmassage").html("<span style='color: transparent'>password doesn`t matches</span><br />");
+    $("#repasswordmassage").html("<span style='color: 'transparent'>password doesn`t matches</span><br />");
     if (password != rePassword) {
-        $("#repasswordmassage").html("<span style='color: red'>password doesn`t matches</span><br />");
+        $("#repasswordmassage").html("<span style='color: 'red'>password doesn`t matches</span><br />");
         console.log('password not matches');
         return (false);
     }
@@ -160,6 +151,5 @@ function validatePassword(password) {
         console.log('password is invalid');
         return false;
     }
-
-
 }
+
