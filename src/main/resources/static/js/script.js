@@ -1,14 +1,15 @@
 function validateNewPassword(event) {
-    var recoveryPassword = $("#recoveryPasswordId").val();
-    var recoveryConfirmPassword = $("#recoveryConfirmPasswordId").val();
+    let recoveryPassword = $("#recoveryPasswordId").val();
+    let recoveryConfirmPassword = $("#recoveryConfirmPasswordId").val();
 
     if (validatePassword(recoveryPassword) == false) {
-        $('#recoveryPasswordId').css('border-color', 'red').html('Password not correct');
+        $('#recoveryPasswordId').val("").attr("placeholder", "wrong password").css('border-color', 'red').addClass("placeholderRed");
     }
 
     if (recoveryPassword !== recoveryConfirmPassword) {
         event.preventDefault();
-        $('#recoveryConfirmPasswordId').css('border-color', 'red')
+        $('#recoveryConfirmPasswordId').val("").attr("placeholder", "password is not match").css('border-color', 'red').addClass("placeholderRed");
+
     }
     else console.log('password is mach');
 
@@ -31,24 +32,24 @@ function validate(event) {
 
     if (password !== confirmPassword) {
         event.preventDefault();
-        $('#confirmPasswordId').css('border-color', 'red')
+        $('#confirmPasswordId').val("").attr("placeholder", "password is not mach").css('border-color', 'red').addClass("placeholderRed");
     }
     else console.log('password is mach');
 
     if (validateFirstName(fname) == false) {
-        ($('#fname').css('border-color', 'red').innerHTML = 'wrong confirm password');
+        $('#fname').val("").attr("placeholder", "wrong first name").css('border-color', 'red').addClass("placeholderRed");
     }
 
     if (validateLastName(lname) == false) {
-        $('#lname').css('border-color', 'red');
+        $('#lname').val("").attr("placeholder", "wrong last name").css('border-color', 'red').addClass("placeholderRed");
     }
 
     if (validateEmail(email) == false) {
-        $('#exampleDropdownFormEmail1').css('border-color', 'red');
+        $('#exampleDropdownFormEmail1').val("").attr("placeholder", "wrong email").css('border-color', 'red').addClass("placeholderRed");
     }
 
     if (validatePassword(password) == false) {
-        $('#passwordId').css('border-color', 'red');
+        $('#passwordId').val("").attr("placeholder", "wrong password").css('border-color', 'red').addClass("placeholderRed");
     }
 
     if (
@@ -70,11 +71,11 @@ function validateFirstName(name) {
 
     if (regexName.test(name)) {
         console.log('name is valid');
-        // $("#fnamemassage").html("<span style='color: transparent'>write a valid name!</span><br />");
+        //    $("#errorFirstNameMessaage").html("<span style='color: transparent'>write a valid name!</span><br />");
         return true;
     }
     else {
-        // $("#fnamemassage").html("<font style='color: red'>write a valid name!</font><br />");
+        //   $("#fname").placeholder="error";
         //alert("You have entered an invalid name");
         return false;
     }
@@ -99,10 +100,9 @@ function validateSingleEmail(event) {
     let recoveryEmail = $("#mail").val();
 
     if (validateEmail(recoveryEmail) == false) {
-        $('#mail').css('border-color', 'red');
-    } else {
-        $('#mail').css('border-color', 'green');
+        $('#mail').val("").attr("placeholder", "wrong email").css('border-color', 'red').addClass("placeholderRed");
     }
+
 
     if (validateEmail(recoveryEmail) == false) {
         console.log('prevent def');
