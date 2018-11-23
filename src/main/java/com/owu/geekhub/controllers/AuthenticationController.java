@@ -166,7 +166,6 @@ public class AuthenticationController {
             userService.updatePassword(user);
         }else System.out.println("-======something is wrong, password was not updated=======");
 
-
         return "authentication/login";
     }
 

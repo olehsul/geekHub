@@ -40,11 +40,13 @@ public class FriendsRestController {
     }
 
 
+
     @PostMapping("/acceptFriendRequest")
     public void acceptFriendRequest(
-            @RequestBody Long friendId
+            @RequestBody String id
     ){
-        System.out.println(friendId);
+        System.out.println("=============hello===========");
+        System.out.println(id);
     }
 
 }
