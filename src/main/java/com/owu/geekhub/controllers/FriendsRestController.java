@@ -1,52 +1,36 @@
 package com.owu.geekhub.controllers;
 
-import com.owu.geekhub.dao.UserFriendDAO;
-import com.owu.geekhub.models.FriendStatus;
 import com.owu.geekhub.models.UserFriend;
+import com.owu.geekhub.service.UserFriendService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import java.util.Map;
 
 @RestController
-public class FriendsRestController {
+public class FriendsRestController{
+
     @Autowired
-    UserFriendDAO userFriendDAO;
+    private UserFriendService friendService;
 
-    //    @GetMapping("/friend-request-id{friendId}-from-id{userId}")
+
     @PostMapping("/friend-request")
-    public UserFriend friendRequest(
+    public void friendRequest(
             @RequestBody UserFriend userFriend
-//            @RequestParam Long friendId,
-//            @RequestParam Long userId
     ) {
-//        UserFriend userFriend = new UserFriend(new Long(12), new Long(13));
         System.out.println("INSIDE FRIEND REQUEST POSTMAPPING");
-        userFriend.setStatus(FriendStatus.PENDING);
-//        UserFriend userFriend = UserFriend.builder()
-//                .userId(userId)
-//                .friendId(friendId)
-//                .status(FriendStatus.PENDING)
-//                .build();
-        try {
-
-            userFriendDAO.save(userFriend);
-        } catch (Exception e) {
-            e.printStackTrace();
-//            return "redirect:/id" + friendId;
-            return null;
-        }
-        return userFriend;
-//        return "redirect:/id" + friendId;
+        friendService.friendRequest(userFriend);
     }
 
 
 
     @PostMapping("/acceptFriendRequest")
     public void acceptFriendRequest(
-            @RequestBody String id
-    ){
-        System.out.println("=============hello===========");
-        System.out.println(id);
+            @RequestBody Map<String, Long> friendId
+    ) {
+        System.out.println(friendId);
+        Long id = friendId.get("friendId");
+        friendService.acceptFriendRequest(id);
+
     }
 
 }

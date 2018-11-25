@@ -9,6 +9,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface UserFriendDAO extends JpaRepository<UserFriend, Long> {
+public interface UserFriendDao extends JpaRepository<UserFriend, Long> {
     List<UserFriend> findAllByFriendIdAndStatus(Long id, FriendStatus status);
+    UserFriend findByFriendIdAndUserId(Long friendId, Long userId);
+    boolean existsDistinctByFriendIdAndUserId(Long friendId, Long userId);
+
 }

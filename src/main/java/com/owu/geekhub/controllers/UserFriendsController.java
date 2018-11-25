@@ -1,7 +1,7 @@
 package com.owu.geekhub.controllers;
 
 import com.owu.geekhub.dao.UserDao;
-import com.owu.geekhub.dao.UserFriendDAO;
+import com.owu.geekhub.dao.UserFriendDao;
 import com.owu.geekhub.models.FriendStatus;
 import com.owu.geekhub.models.User;
 import com.owu.geekhub.models.UserFriend;
@@ -19,10 +19,9 @@ import java.util.List;
 
 @Controller
 public class UserFriendsController {
+
     @Autowired
-    private UserService userService;
-    @Autowired
-    private UserFriendDAO userFriendDAO;
+    private UserFriendDao userFriendDao;
     @Autowired
     private UserDao userDao;
 
@@ -30,20 +29,34 @@ public class UserFriendsController {
     public String friends(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User principal = (User) authentication.getPrincipal();
-        List<UserFriend> friends = userFriendDAO.findAllByFriendIdAndStatus(principal.getId(), FriendStatus.PENDING);
+        List<UserFriend> friendRequests = userFriendDao.findAllByFriendIdAndStatus(principal.getId(), (FriendStatus.PENDING));
+        List<UserFriend> friends = userFriendDao.findAllByFriendIdAndStatus(principal.getId(), FriendStatus.APPROVED);
+        List<User> usersRequests = new ArrayList<>();
+        List<User> usersFriends = new ArrayList<>();
 
-        List<User> users = new ArrayList<>();
-
-        for (UserFriend friend : friends) {
+        for (UserFriend friend : friendRequests) {
             System.out.println("_________________________________________");
             System.out.println(friend);
             System.out.println("_________________________________________");
-            users.add(userDao.findById(friend.getUserId()).get());
+            usersRequests.add(userDao.findById(friend.getUserId()).get());
         }
-        for (User user : users) {
+
+
+        for (UserFriend friend : friends) {
+            System.out.println(friend);
+            System.out.println("_________________________________________");
+            usersFriends.add(userDao.findById(friend.getUserId()).get());
+        }
+
+        for (User user : usersRequests) {
             System.out.println("++++++" + user);
         }
-        model.addAttribute("friends", users);
+
+        for (User user : usersFriends) {
+            System.out.println("------" + user);
+        }
+        model.addAttribute("friendsRequests", usersRequests);
+        model.addAttribute("friends", usersFriends);
         return "user/friends-list";
     }
 
