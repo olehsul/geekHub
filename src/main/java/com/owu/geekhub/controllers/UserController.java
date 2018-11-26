@@ -1,6 +1,8 @@
 package com.owu.geekhub.controllers;
 
 import com.owu.geekhub.dao.UserDao;
+import com.owu.geekhub.dao.UserFriendDao;
+import com.owu.geekhub.models.FriendStatus;
 import com.owu.geekhub.models.Gender;
 import com.owu.geekhub.models.Role;
 import com.owu.geekhub.models.User;
@@ -16,9 +18,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 public class UserController {
     @Autowired
-    UserService userService;
+    private UserService userService;
     @Autowired
-    UserDao userDao;
+    private UserDao userDao;
+    @Autowired
+    private UserFriendDao userFriendDao;
 
     @GetMapping("/id{userId}")
     public String userId(@PathVariable Long userId,
@@ -29,6 +33,14 @@ public class UserController {
 
         model.addAttribute("loggedUser", principal);
         model.addAttribute("userPage", user);
+
+        Boolean areUserFriends = userFriendDao
+                .existsDistinctByFriendIdAndUserIdAndStatus(
+                        user.getId(),
+                        principal.getId(),
+                        FriendStatus.APPROVED);
+        model.addAttribute("areFriends", areUserFriends);
+
         System.out.println(user);
         return "user/home";
     }

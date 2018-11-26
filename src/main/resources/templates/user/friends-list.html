@@ -55,7 +55,9 @@
                         <p th:text="${friend.firstName}"></p>
                         <p th:text="${friend.lastName}"></p>
                         <p th:text="${friend.id}"></p>
-                        <!--<button th:onclick="acceptFriendRequest(${user.id})" th:name="${user.id}">accept</button>-->
+                        <button th:onclick="'deleteFriend(\'' + ${friend.id} + '\');'" th:value="${friend.id}">
+                            delete friend
+                        </button>
                         <hr>
                         <!--<input type="hidden" th:value="${user.id}" id="friend-requested-id">-->
                     </li>
@@ -72,6 +74,31 @@
         let friendId = id;
 
         let stringURL = '/acceptFriendRequest';
+        let dataJSON = JSON.stringify({friendId});
+
+        $.ajax({
+            url: stringURL,
+            type: 'POST',
+            contentType: 'application/json',
+            data: dataJSON,
+            success: function (response) {
+                console.log("succeed request!");
+                console.log(response);
+            },
+            error: function (err) {
+                console.log(err);
+                console.log("not succeed request!");
+            }
+        });
+    }
+
+
+    function deleteFriend(id) {
+
+        console.log(id);
+        let friendId = id;
+
+        let stringURL = '/deleteFriend';
         let dataJSON = JSON.stringify({friendId});
 
         $.ajax({

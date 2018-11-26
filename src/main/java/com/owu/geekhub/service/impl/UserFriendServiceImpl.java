@@ -18,13 +18,22 @@ public class UserFriendServiceImpl implements UserFriendService {
 
     @Override
     public void friendRequest(UserFriend userFriend) {
+        System.out.println("================you are in method friend request============");
         Long friendId = userFriend.getFriendId();
         Long userId = userFriend.getUserId();
-        if (!userFriendDao.existsDistinctByFriendIdAndUserId(friendId, userId)){
+
+        if (userFriendDao.existsDistinctByFriendIdAndUserId(userId, friendId)) {
+            System.out.println("user already Requested");
+            return;
+        }
+
+        if ((!userFriendDao.existsDistinctByFriendIdAndUserId(friendId, userId))) {
             userFriend.setStatus(FriendStatus.PENDING);
             try {
                 userFriendDao.save(userFriend);
+                System.out.println("Request is Successful");
             } catch (Exception e) {
+                System.out.println("Request error");
                 e.printStackTrace();
             }
         }
@@ -37,9 +46,25 @@ public class UserFriendServiceImpl implements UserFriendService {
         UserFriend friendship = userFriendDao.findByFriendIdAndUserId(principal.getId(), id);
         friendship.setStatus(FriendStatus.APPROVED);
         userFriendDao.save(friendship);
-        UserFriend duplicate = new UserFriend( friendship.getFriendId(), friendship.getUserId());
+        UserFriend duplicate = new UserFriend(friendship.getFriendId(), friendship.getUserId());
         duplicate.setStatus(FriendStatus.APPROVED);
         userFriendDao.save(duplicate);
         System.out.println("=============hello_new_friend===========");
     }
+
+    @Override
+    public void deleteFriend(Long id) {
+        System.out.println("You are in deleteFriend method");
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User principal = (User) authentication.getPrincipal();
+
+        System.out.println("==========" + id + "========" + principal.getId());
+        userFriendDao.removeByFriendIdAndUserId(id, principal.getId());
+        userFriendDao.removeByFriendIdAndUserId(principal.getId(), id);
+//        userFriendDao.removeUserFriendByFriendIdAndUserId(principal.getId(), id);
+//        System.out.println("friend deleted");
+    }
+
+
 }
