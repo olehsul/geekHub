@@ -33,4 +33,13 @@ public class FriendsRestController{
 
     }
 
+    @PostMapping("/deleteFriend")
+    public void deleteFriend(
+            @RequestBody Map<String, Long> friendId
+    ){
+        System.out.println("delete friend " + friendId);
+        Long id = friendId.get("friendId");
+        friendService.deleteFriend(id);
+    }
+
 }

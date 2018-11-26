@@ -88,14 +88,16 @@
             <h5 class="col-md-4">[[${userPage.firstName}]] [[${userPage.lastName}]]</h5>
             <!--th:action="@{'/verify/id{id}'(id=${userId})}"-->
             <!--<h5 class="col-md-4">Sviatoslav Khrystyna</h5>-->
-            <div th:if="${userPage.id} != ${loggedUser.id}">
-                <a class="btn btn-primary" id="btn-send-friend-request">
-                    <!--th:href="@{'/friend-request-id{friendId}-from-id{userId}'(userId = ${loggedUser.id}, friendId = ${userPage.id})}">-->
+            <div th:if="${!areFriends}">
+                <div th:if="${userPage.id} != ${loggedUser.id}">
+                    <a class="btn btn-primary" id="btn-send-friend-request">
+                        <!--th:href="@{'/friend-request-id{friendId}-from-id{userId}'(userId = ${loggedUser.id}, friendId = ${userPage.id})}">-->
 
-                    <input type="hidden" th:value="${userPage.id}" id="friend-requested-id">
-                    <input type="hidden" th:value="${loggedUser.id}" id="user-requesting-id">
-                    <p>Send friend request</p>
-                </a>
+                        <input type="hidden" th:value="${userPage.id}" id="friend-requested-id">
+                        <input type="hidden" th:value="${loggedUser.id}" id="user-requesting-id">
+                        <p>Send friend request</p>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
