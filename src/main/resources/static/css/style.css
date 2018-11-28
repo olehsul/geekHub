@@ -63,3 +63,9 @@ a:hover {
 .mw900{
     min-width: 900px;
 }
+
+.placeholderRed::-webkit-input-placeholder {
+    color:    red;
+}
+
+
