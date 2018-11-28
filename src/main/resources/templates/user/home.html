@@ -45,7 +45,7 @@
             <!--<a href="#" class="navbar-item">url</a>-->
             <ul class="navbar-nav">
                 <form class="form-inline my-2 my-lg-0 ml-auto search-input">
-                    <input class="form-control search-input" type="search" placeholder="Search" aria-label="Search">
+                    <input oninput="searchUser(event)" id="userNameSurname" class="form-control search-input" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-white btn-md my-2 my-sm-0 ml-3 search-btn" type="submit">Search
                     </button>
                 </form>
@@ -107,6 +107,49 @@
 </body>
 </html>
 <script>
+
+    function searchUser(event){
+
+        let fullName = $("#userNameSurname").val().split(' ');
+
+        let userName;
+        let surname;
+        if (fullName.length == 1){
+            userName = fullName[0]
+            surname = "";
+        }else if (fullName.length == 2){
+            userName = fullName[0];
+            surname = fullName[1];
+        }else {
+            userName = "";
+            surname = "";
+        }
+
+        // let userName = fullName[0] + "";
+        // let surname = fullName[1] + "";
+
+        console.log(name, surname);
+
+        let stringURL = '/findUser';
+        let dataJSON = JSON.stringify({firstName: userName, lastName: surname });
+        console.log(dataJSON);
+
+        $.ajax({
+            url: stringURL,
+            type: 'POST',
+            contentType: 'application/json',
+            data: dataJSON,
+            success: function (response) {
+                console.log("succeed request!");
+                console.log(response);
+            },
+            error: function (err) {
+                console.log(err);
+                console.log("not succeed request!");
+            }
+        });
+
+    }
     function getCookie(name) {
         var cookieValue = null;
         if (document.cookie && document.cookie !== '') {
