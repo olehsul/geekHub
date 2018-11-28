@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface UserDao extends JpaRepository<User, Long> {
     User findByUsername(String s);
@@ -12,7 +14,5 @@ public interface UserDao extends JpaRepository<User, Long> {
     boolean existsDistinctById(Long id);
 
 
-
-
-
+    List<User> findAllByFirstNameContainsAndLastNameContains(String name, String surname);
 }
