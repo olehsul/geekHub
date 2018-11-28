@@ -67,7 +67,8 @@ function validate(event) {
 
 function validateFirstName(name) {
     //   const regexNameLatine = /^[a-zA-Z ]{2,30}$/;
-    const regexName = /^[a-zA-Zа-яА-Я'][a-zA-Zа-яА-Я-' ]+[a-zA-Zа-яА-Я']{2,30}?$/u;
+    // const regexName = /^[a-zA-Zа-яА-Я'][a-zA-Zа-яА-Я-' ]+[a-zA-Zа-яА-Я']{2,30}?$/u;
+    const regexName = /^[a-zA-Zа-яА-ЯіІїЇ'][a-zA-Zа-яА-Я-іІїЇ' ]{1,30}$/u;
 
     if (regexName.test(name)) {
         console.log('name is valid');
@@ -83,7 +84,7 @@ function validateFirstName(name) {
 
 function validateLastName(name) {
     //const regexName = /^[a-zA-Z ]{2,30}$/;
-    const regexName = /^[a-zA-Zа-яА-Я'][a-zA-Zа-яА-Я-' ]+[a-zA-Zа-яА-Я']{2,30}?$/u;
+    const regexName = /^[a-zA-Zа-яА-ЯіІїЇ'][a-zA-Zа-яА-Я-іІїЇ' ]{1,30}$/u;
     if (regexName.test(name)) {
         console.log('name is valid');
         // $("#fnamemassage").html("<span style='color: transparent'>write a valid name!</span><br />");
