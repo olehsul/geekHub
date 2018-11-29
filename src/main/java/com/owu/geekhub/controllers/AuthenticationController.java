@@ -20,8 +20,7 @@ import javax.mail.MessagingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+
 
 @Controller
 public class AuthenticationController {
@@ -47,6 +46,7 @@ public class AuthenticationController {
     ) throws MessagingException {
         user.setBirthDate(birthDate);
         System.out.println(user);
+
         if (userService.save(user)) {
 //            authWithHttpServletRequest(request, user.getUsername(), password);
             mailService.sendActivationKey(user.getUsername());

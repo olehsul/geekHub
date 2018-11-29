@@ -43,7 +43,7 @@ public class MailServiceImpl implements MailService {
 //        }
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
-        int verificationNumber = randomVerificationNumber.getRandomVerifictionNumber();
+        int verificationNumber = randomVerificationNumber.getRandomVerificationNumber();
 
         user.setActivationKey(verificationNumber);
         userService.update(user);

@@ -42,6 +42,7 @@ public class UserFriendsController {
         }
 
 
+        System.out.println(friends.size() + "size-----------");
         for (UserFriend friend : friends) {
             System.out.println(friend);
             System.out.println("_________________________________________");

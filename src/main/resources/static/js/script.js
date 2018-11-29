@@ -54,7 +54,7 @@ function validate(event) {
 
     if (
         (validateFirstName(fname) == false)
-        || (validateLastName(lname) == false)
+        // || (validateLastName(lname) == false)
         || (validateEmail(email) == false)
         || (validatePassword(password) == false)
         || (isPasswordMatches(password, confirmPassword) == false)

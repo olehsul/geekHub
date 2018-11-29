@@ -67,5 +67,8 @@ a:hover {
 .placeholderRed::-webkit-input-placeholder {
     color:    red;
 }
+.list-style-none{
+    list-style-type: none;
+}
 
 

@@ -6,7 +6,7 @@ import java.util.Random;
 @Service
 public class RandomVerificationNumber {
 
-    public int getRandomVerifictionNumber(){
+    public int getRandomVerificationNumber(){
         int aStart =10000;
         int aEnd = 99999;
         Random aRandom = new Random();
