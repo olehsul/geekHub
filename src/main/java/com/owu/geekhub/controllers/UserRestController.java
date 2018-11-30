@@ -30,7 +30,6 @@ public class UserRestController {
         User principal = (User) authentication.getPrincipal();
         String firstName = fullName.get("firstName") + "";
         String lastName = fullName.get("lastName") + "";
-        System.out.println(firstName + " " + lastName);
         List<User> users = new ArrayList<>();
         if (!firstName.equals("")){
             users = userDao.findAllByFirstNameContainsAndLastNameContains(firstName, lastName);
