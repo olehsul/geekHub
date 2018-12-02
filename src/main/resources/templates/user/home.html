@@ -46,11 +46,12 @@
                         <span class="navbar-toggler-icon"></span>
                     </button>
                 </div>
-
+                <!-- Toggler/collapsibe Button -->
             </div>
 
         </div>
-        <!-- Toggler/collapsibe Button -->
+
+        </datalist>
 
 
         <!-- Collapsible content -->
@@ -67,9 +68,9 @@
                         </li>
                         <form class="form-inline my-2 my-md-0 ml-auto search-input">
                             <input oninput="searchUser(event)" id="userNameSurname" class="form-control search-input"
-                                   type="text" placeholder="Search" aria-label="Search">
-                            <div id="autocomplete"></div>
-
+                                   type="text" placeholder="Search" aria-label="Search" list="usersDataList">
+                            <ul id="userSearchResultList" class="list-style-none"></ul>
+                            <datalist id="usersDataList"></datalist>
                         </form>
                     </ul>
                 </div>
@@ -131,7 +132,7 @@
     </div>
     <div class="row">
         <div class="col-md-8 mx-auto" style="background: aquamarine;">
-            <ul id="userSearchResultList" class="list-style-none"></ul>
+
         </div>
     </div>
 </div>
@@ -140,6 +141,11 @@
 </body>
 </html>
 <script>
+    // $(document).ready(function() {
+    //     $("[list='usersDataList']").on("input onchange", function() {
+    //         window.location = $("#usersDataList option[value='"+$("[list='usersDataList']").val()+"']").find("a").attr("href")
+    //     });
+    // });
 
     function searchUser(event) {
 
@@ -176,6 +182,7 @@
                 console.log("succeed request!");
                 console.log(response);
                 let searchList = $('#userSearchResultList');
+                let searchDataList = $('#usersDataList');
                 let users = [];
                 $(".app").remove();
                 let foundUsers = response;
@@ -184,7 +191,9 @@
                     console.log('=-==-=-=--=-=-=');
                     users.push([f.id, f.firstName, f.lastName]);
                     console.log(f.lastName);
-                    searchList.append('<li class="app"><a href="id' + f.id + '">' + f.firstName + ' ' + f.lastName + '</a></li>')
+                    searchList.append('<li class="app"><a href="id' + f.id + '">' + f.firstName + ' ' + f.lastName + '</a></li>');
+                    searchDataList.append('<option class="app"><a href="id' + f.id + '">' + f.firstName + ' ' + f.lastName + '</a></option>');
+
                 })
 
             },

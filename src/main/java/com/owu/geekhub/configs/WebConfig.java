@@ -4,6 +4,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import javax.persistence.Persistence;
+
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
@@ -18,7 +20,6 @@ public class WebConfig implements WebMvcConfigurer {
 ////            //get method
 ////            registry.addViewController("/auth").setViewName("auth");
 ////        }
-
 
     }
 }

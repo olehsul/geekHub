@@ -42,31 +42,6 @@ public class User implements UserDetails {
     private boolean credentialsNonExpired;
     private boolean accountNonLocked;
 
-//    public User(String email, String password, String firstName, String lastName, int genderId, int cityId, Date birthDate) {
-//        this.email = email;
-//        this.password = password;
-//        this.firstName = firstName;
-//        this.lastName = lastName;
-//        this.genderId = genderId;
-//        this.cityId = cityId;
-//        this.birthDate = birthDate;
-//    }
-//
-//    public User(String email, String password, String firstName, String lastName, Date birthDate) {
-//        this.email = email;
-//        this.password = password;
-//        this.firstName = firstName;
-//        this.lastName = lastName;
-//        this.birthDate = birthDate;
-//    }
-//
-//    public User(String email, String password, String firstName, String lastName) {
-//        this.email = email;
-//        this.password = password;
-//        this.firstName = firstName;
-//        this.lastName = lastName;
-//    }
-
     @Override
     public String getUsername() {
         return username;
@@ -79,3 +54,29 @@ public class User implements UserDetails {
         return authorities;
     }
 }
+//    INSERT INTO user(id, account_non_expired,
+//                     account_non_locked, activated,
+//                     activation_key, active, birth_date,
+//                     city_id, credentials_non_expired,
+//                     enabled, first_name, gender,
+//                     last_name, password,
+//                     role, username) values
+//                                                    (71325788, true ,true, true, 43565, false , '2000-02-02', 0, true,
+//                                                            true, 'Nathan', 'MALE', 'Drake', '$2a10$jsdgsdgjhdgjkgherghjekrgehj', 'ROLE_USER',
+//                                                            'unchartedMail@gmail.com'),
+//                                                            (80455788, true ,true, true, 43565, false , '2000-02-02', 0, true,
+//                                                            true, 'Ozzy', 'MALE', 'Osbourne', '$2a10$jsdgsdgjhdgjkgherghjekrgehj', 'ROLE_USER',
+//                                                            'rockStar213@gmail.com'),
+//                                                            (18432348, true ,true, true, 43565, false , '2000-02-02', 0, true,
+//                                                            true, 'Oscar', 'MALE', 'Wilde', '$2a10$jsdgsdgjhdgjkgherghjekrgehj', 'ROLE_USER',
+//                                                            'DorianD19@gmail.com'),
+//                                                            (19435780, true ,true, true, 43565, false , '2000-02-02', 0, true,
+//                                                            true, 'Forest', 'MALE', 'Gump', '$2a10$jsdgsdgjhdgjkgherghjekrgehj', 'ROLE_USER',
+//                                                            'RunForestRun@gmail.com'),
+//                                                            (78435784, true ,true, true, 43565, false , '2000-02-02', 0, true,
+//                                                            true, 'Tony', 'MALE', 'Montana', '$2a10$jsdgsdgjhdgjkgherghjekrgehj', 'ROLE_USER',
+//                                                            'TonyGangstar@gmail.com'),
+//                                                            (41235788, true ,true, true, 43565, false , '2000-02-02', 0, true,
+//                                                            true, 'Rob', 'MALE', 'Stark', '$2a10$jsdgsdgjhdgjkgherghjekrgehj', 'ROLE_USER',
+//                                                            'RobStarkNorth@gmail.com');
+

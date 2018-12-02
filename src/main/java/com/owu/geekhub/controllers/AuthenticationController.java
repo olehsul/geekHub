@@ -61,6 +61,7 @@ public class AuthenticationController {
 
     @GetMapping("/auth")
     public String auth() {
+        System.out.println("---------you are in auth method-----------");
         if (!(SecurityContextHolder.getContext().getAuthentication()
                 instanceof AnonymousAuthenticationToken)) {
             return "redirect:/";
@@ -135,8 +136,8 @@ public class AuthenticationController {
             return "authentication/login";
         } else return "redirect:/verification-request/id" + id;
     }
-    @GetMapping("/emailrecovery")
-    public String emailrecovery(){
+    @GetMapping("/emailRecovery")
+    public String emailRecovery(){
         System.out.println("================you are in emailrecovery================");
         return "authentication/recovery-email";
     }
