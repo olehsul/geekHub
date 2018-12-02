@@ -19,13 +19,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
           integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
     <link rel="stylesheet" th:href="@{/css/style.css}" href="../../static/css/style.css" type="text/css">
-    <style type="text/css">
-        /*textarea:focus, input[type="text"]:focus,textarea[type="text"]:focus,   input[type="password"]:focus, input[type="datetime"]:focus, input[type="datetime-local"]:focus, input[type="date"]:focus, input[type="month"]:focus, input[type="time"]:focus, input[type="week"]:focus, input[type="number"]:focus, input[type="email"]:focus, input[type="url"]:focus, input[type="search"]:focus, input[type="tel"]:focus,  input[type="color"]:focus, .uneditable-input:focus, .form-control:focus {*/
-        /*border-color: rgba(255, 0, 0, 0);*/
-        /*box-shadow: none;*/
-        /*outline:  none;}*/
-
-    </style>
+    <script src="/js/userSearch.js"></script>
 </head>
 <body>
 <nav class="navbar navbar-expand-md navbar-dark bg-dark">
@@ -35,7 +29,7 @@
 
             <div class="row">
                 <div class="col-xs-7">
-                    <a href="/" class="navbar-brand">
+                    <a th:href="'id' + ${loggedUser.id}" class="navbar-brand">
                         <span style="color: white"><b>Geek </b></span>
                         <span style="color: black" class="logo-orange"><b>hub</b></span>
                     </a>
@@ -51,8 +45,6 @@
 
         </div>
 
-        </datalist>
-
 
         <!-- Collapsible content -->
         <div class="collapse navbar-collapse " id="collapsibleNavbar">
@@ -64,7 +56,7 @@
                             <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Features</a>
+                            <a class="nav-link" href="/friends">Friends</a>
                         </li>
                         <form class="form-inline my-2 my-md-0 ml-auto search-input">
                             <input oninput="searchUser(event)" id="userNameSurname" class="form-control search-input"
@@ -136,132 +128,6 @@
         </div>
     </div>
 </div>
-
-
 </body>
 </html>
-<script>
-    // $(document).ready(function() {
-    //     $("[list='usersDataList']").on("input onchange", function() {
-    //         window.location = $("#usersDataList option[value='"+$("[list='usersDataList']").val()+"']").find("a").attr("href")
-    //     });
-    // });
-
-    function searchUser(event) {
-
-        let fullName = $("#userNameSurname").val().split(' ');
-
-        let userName;
-        let surname;
-        if (fullName.length == 1) {
-            userName = fullName[0]
-            surname = "";
-        } else if (fullName.length == 2) {
-            userName = fullName[0];
-            surname = fullName[1];
-        } else {
-            userName = "";
-            surname = "";
-        }
-
-        // let userName = fullName[0] + "";
-        // let surname = fullName[1] + "";
-
-        console.log(name, surname);
-
-        let stringURL = '/findUser';
-        let dataJSON = JSON.stringify({firstName: userName, lastName: surname});
-        console.log(dataJSON);
-
-        $.ajax({
-            url: stringURL,
-            type: 'POST',
-            contentType: 'application/json',
-            data: dataJSON,
-            success: function (response) {
-                console.log("succeed request!");
-                console.log(response);
-                let searchList = $('#userSearchResultList');
-                let searchDataList = $('#usersDataList');
-                let users = [];
-                $(".app").remove();
-                let foundUsers = response;
-                $.each(foundUsers, function (i, f) {
-                    console.log(f);
-                    console.log('=-==-=-=--=-=-=');
-                    users.push([f.id, f.firstName, f.lastName]);
-                    console.log(f.lastName);
-                    searchList.append('<li class="app"><a href="id' + f.id + '">' + f.firstName + ' ' + f.lastName + '</a></li>');
-                    searchDataList.append('<option class="app"><a href="id' + f.id + '">' + f.firstName + ' ' + f.lastName + '</a></option>');
-
-                })
-
-            },
-            error: function (err) {
-
-                console.log(err);
-                console.log("not succeed request!");
-            }
-        });
-
-    }
-
-    function getCookie(name) {
-        var cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            var cookies = document.cookie.split(';');
-            for (var i = 0; i < cookies.length; i++) {
-                var cookie = jQuery.trim(cookies[i]);
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-
-    var csrftoken = getCookie('csrftoken');
-
-    function csrfSafeMethod(method) {
-        // these HTTP methods do not require CSRF protection
-        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-    }
-
-    $.ajaxSetup({
-        beforeSend: function (xhr, settings) {
-            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                xhr.setRequestHeader("X-CSRFToken", csrftoken);
-            }
-        }
-    });
-
-    $("#btn-send-friend-request").click(function () {
-
-        let userPageId = $("#friend-requested-id").val();
-        let loggedUserId = $("#user-requesting-id").val();
-        console.log(userPageId, loggedUserId);
-
-        // let stringURL = "@{'/friend-request-{friendId}-from-{userId}'(friendId=${userPage.id}, userId=${loggedUser.id})}";
-        // let stringURL = '/friend-request-' + loggedUserId + '-from-' + userPageId;
-        let stringURL = '/friend-request';
-        let dataJSON = JSON.stringify({friendId: userPageId, userId: loggedUserId});
-        console.log(dataJSON);
-
-        $.ajax({
-            url: stringURL,
-            type: 'POST',
-            contentType: 'application/json',
-            data: dataJSON,
-            success: function (response) {
-                console.log("succeed request!");
-                console.log(response);
-            },
-            error: function (err) {
-                console.log(err);
-                console.log("not succeed request!");
-            }
-        });
-    });
-</script>
+<script src="/js/friends.js"></script>

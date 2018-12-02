@@ -55,7 +55,10 @@ public class UserFriendsController {
 
         for (User user : usersFriends) {
             System.out.println("------" + user);
+
+
         }
+        model.addAttribute("loggedUser", principal);
         model.addAttribute("friendsRequests", usersRequests);
         model.addAttribute("friends", usersFriends);
         return "user/friends-list";

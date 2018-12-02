@@ -2,7 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <title>Friends</title>
-    <meta charset="UTF-8"/>
+    <meta charset="UTF-8">
+    <!--<meta name="_csrf" th:content="${_csrf.token}"/>-->
+    <!--<meta name="_csrf_header" th:content="${_csrf.headerName}"/>-->
+    <title>[[${loggedUser.firstName}]] [[${loggedUser.lastName}]] - GeekHub</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -12,19 +15,99 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
             integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
             crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
           integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
     <link rel="stylesheet" th:href="@{/css/style.css}" href="../../static/css/style.css" type="text/css">
+    <style type="text/css">
+        /*textarea:focus, input[type="text"]:focus,textarea[type="text"]:focus,   input[type="password"]:focus, input[type="datetime"]:focus, input[type="datetime-local"]:focus, input[type="date"]:focus, input[type="month"]:focus, input[type="time"]:focus, input[type="week"]:focus, input[type="number"]:focus, input[type="email"]:focus, input[type="url"]:focus, input[type="search"]:focus, input[type="tel"]:focus,  input[type="color"]:focus, .uneditable-input:focus, .form-control:focus {*/
+        /*border-color: rgba(255, 0, 0, 0);*/
+        /*box-shadow: none;*/
+        /*outline:  none;}*/
+
+    </style>
+    <script src="/js/userSearch.js"></script>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <div class="container-fluid">
         <!-- Brand -->
-        <a href="#" class="navbar-brand">
-            <span style="color: white"><b>Geek </b></span>
-            <span style="color: black" class="logo-orange"><b>hub</b></span>
-        </a>
+        <div class="navbar-header mx-auto d-sm-flex d-block flex-sm-nowrap">
+
+            <div class="row">
+                <div class="col-xs-7">
+                    <a th:href="'id' + ${loggedUser.id}" class="navbar-brand">
+                        <span style="color: white"><b>Geek </b></span>
+                        <span style="color: black" class="logo-orange"><b>hub</b></span>
+                    </a>
+                </div>
+                <div class=" col-xs-5 ">
+                    <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#collapsibleNavbar"
+                            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </div>
+                <!-- Toggler/collapsibe Button -->
+            </div>
+
+        </div>
+
+
+        <!-- Collapsible content -->
+        <div class="collapse navbar-collapse " id="collapsibleNavbar">
+            <!--<a href="#" class="navbar-item">url</a>-->
+            <div class="d-flex flex-row">
+                <div class="p-2">
+                    <ul class="navbar-nav ml-5px">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/friends">Friends</a>
+                        </li>
+                        <form class="form-inline my-2 my-md-0 ml-auto search-input">
+                            <input oninput="searchUser(event)" id="userNameSurname" class="form-control search-input"
+                                   type="text" placeholder="Search" aria-label="Search" list="usersDataList">
+                            <ul id="userSearchResultList" class="list-style-none"></ul>
+                            <datalist id="usersDataList"></datalist>
+                        </form>
+                    </ul>
+                </div>
+                <div class="ml-auto p-2">
+                    <ul class="navbar-nav list-inline mr-5px">
+                        <li class="nav-link " style="padding: 0">
+                            <a class="nav-link dropdown-toggle" id="navbarUserDropdownMenuBtn" data-toggle="dropdown"
+                               aria-haspopup="true" aria-expanded="true" style="padding: 0; cursor: pointer">
+                                <img src="https://mdbootstrap.com/img/Photos/Avatars/avatar-2.jpg"
+                                     class="rounded-circle"
+                                     height="40px" alt="avatar image">
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right " aria-labelledby="navbarUserDropdownMenuBtn"
+                                 style="margin-right: 10px">
+                                <h6 class="dropdown-header">[[${loggedUser.firstName}]] [[${loggedUser.lastName}]]</h6>
+                                <!--<a class="dropdown-item" href="#"><i class="fas fa-bell"></i> Action</a>-->
+                                <!--<a class="dropdown-item" href="#"><i class="far fa-star"></i> Another action</a>-->
+                                <a class="dropdown-item" href="#"><i class="fas fa-sliders-h"></i> Settings</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt"></i> Log out</a>
+                            </div>
+                        </li>
+                        <li>
+                            <a class="nav-link" th:href="@{/messages} ">
+                                1 <i class="fa fa-envelope mr-5px"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-link" th:href="@{/friends}">
+                                5 <i class="fas fa-user mr-5px"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
 </nav>
 
@@ -66,90 +149,6 @@
         </div>
     </div>
 </div>
-
-<script>
-
-    function acceptFriendRequest(id) {
-        console.log(id);
-        let friendId = id;
-
-        let stringURL = '/acceptFriendRequest';
-        let dataJSON = JSON.stringify({friendId});
-
-        $.ajax({
-            url: stringURL,
-            type: 'POST',
-            contentType: 'application/json',
-            data: dataJSON,
-            success: function (response) {
-                console.log("succeed request!");
-                console.log(response);
-            },
-            error: function (err) {
-                console.log(err);
-                console.log("not succeed request!");
-            }
-        });
-    }
-
-
-    function deleteFriend(id) {
-
-        console.log(id);
-        let friendId = id;
-
-        let stringURL = '/deleteFriend';
-        let dataJSON = JSON.stringify({friendId});
-
-        $.ajax({
-            url: stringURL,
-            type: 'POST',
-            contentType: 'application/json',
-            data: dataJSON,
-            success: function (response) {
-                console.log("succeed request!");
-                console.log(response);
-            },
-            error: function (err) {
-                console.log(err);
-                console.log("not succeed request!");
-            }
-        });
-    }
-
-
-    // $().click(function () {
-    //
-    //     let id = $(this).val();
-    //     console.log(id);
-
-    // // let stringURL = "@{'/friend-request-{friendId}-from-{userId}'(friendId=${userPage.id}, userId=${loggedUser.id})}";
-    // // let stringURL = '/friend-request-' + loggedUserId + '-from-' + userPageId;
-    // let stringURL = '/friend-request';
-    // let dataJSON = JSON.stringify({friendId: userPageId, userId: loggedUserId});
-    // console.log(dataJSON);
-    //
-    // $.ajax({
-    //     url: stringURL,
-    //     type: 'POST',
-    //     contentType: 'application/json',
-    //     data: dataJSON,
-    //     success: function (response) {
-    //         console.log("succeed request!");
-    //         console.log(response);
-    //     },
-    //     error: function (err) {
-    //         console.log(err);
-    //         console.log("not succeed request!");
-    //     }
-    // });
-    // });
-
-</script>
-<!--<form th:action="@{'/verify/sendCodeAgainFor/id{id}'(id=${userId})}" method="POST">-->
-<!--<button type="submit" >Send code again</button>-->
-<!--</form>-->
-<!--<script src="/js/script.js"></script>-->
-<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>-->
 </body>
 </html>
+<script src="/js/friends.js"></script>
