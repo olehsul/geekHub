@@ -1,10 +1,44 @@
+window.addEventListener('resize', function(event){
+    locateSearchResults();
+});
+
 function goToUserPage(event) {
     alert('asdafdsf');
     console.log('bla');
 
 }
 
-function searchUser(event) {
+function navbarOnResizeFunc(event) {
+    locateSearchResults();
+}
+
+function locateSearchResults() {
+    let searchInput = $('#userNameSurname')[0];
+
+    let searchResults = $('#userSearchResultList')[0];
+    console.log(searchResults);
+    console.log('dsfdssssssssssssssssssssssssssssssssssssssssssss');
+    console.log(searchInput);
+    console.log('dsfdssssssssssssssssssssssssssssssssssssssssssss');
+    let offsetTop = searchInput.offsetTop;
+    let offsetLeft = searchInput.offsetLeft;
+    let height = searchInput.offsetHeight;
+    console.log(height, offsetTop, offsetLeft);
+
+    searchResults.style.position = "absolute";
+    console.log(searchResults.style.top = (offsetTop + height) + "px");
+    console.log(searchResults.style.left = offsetLeft + "px");
+
+
+    console.log(searchResults);
+    console.log('dsfdssssssssssssssssssssssssssssssssssssssssssss');
+    console.log(searchInput);
+    console.log('dsfdssssssssssssssssssssssssssssssssssssssssssss');
+
+
+}
+
+function searchUser() {
 
     let fullName = $("#userNameSurname").val().split(' ');
 
@@ -36,6 +70,7 @@ function searchUser(event) {
         contentType: 'application/json',
         data: dataJSON,
         success: function (response) {
+            locateSearchResults();
             console.log("succeed request!");
             let searchList = $('#userSearchResultList');
             let searchDataList = $('#usersDataList');
@@ -45,10 +80,6 @@ function searchUser(event) {
             let it = 0;
             $.each(foundUsers, function (i, f) {
                 it = i + 1;
-                // console.log(f);
-                // console.log('=-==-=-=--=-=-=');
-                // users.push([f.id, f.firstName, f.lastName]);
-                // console.log(f.lastName);
                 console.log(it);
                 if (it == 5) {
                     searchList.append('<a class="list-group-item list-group-item-action list-group-item-warning app color-red" style="color: red; width: 100%"> Find All </a>');

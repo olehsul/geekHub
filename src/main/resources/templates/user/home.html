@@ -22,7 +22,7 @@
     <script src="/js/userSearch.js"></script>
 </head>
 <body>
-<nav class="navbar navbar-expand-md navbar-dark bg-dark rounded-0">
+<nav class="navbar navbar-expand-md navbar-dark bg-dark rounded-0" onresize="navbarOnResizeFunc(event)">
     <div class="container-fluid">
         <!-- Brand -->
         <div class="navbar-header mx-auto d-sm-flex d-block flex-sm-nowrap">
@@ -61,10 +61,9 @@
                         <form class="form-inline my-2 my-md-0 ml-auto search-input">
                             <input oninput="searchUser(event)" id="userNameSurname" class="form-control search-input"
                                    type="text" placeholder="Search" aria-label="Search">
-                            <div class="position-absolute top-50">
+                            <div class="top-50">
                                 <div id="userSearchResultList" class="list-group"></div>
                             </div>
-                            <!--<datalist id="usersDataList"></datalist>-->
                         </form>
                     </ul>
                 </div>
