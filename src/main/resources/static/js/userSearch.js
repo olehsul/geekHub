@@ -39,16 +39,24 @@ function searchUser(event) {
             console.log("succeed request!");
             let searchList = $('#userSearchResultList');
             let searchDataList = $('#usersDataList');
-            let users = [];
+            // let users = [];
             $(".app").remove();
             let foundUsers = response;
+            let it = 0;
             $.each(foundUsers, function (i, f) {
+                it = i + 1;
                 // console.log(f);
                 // console.log('=-==-=-=--=-=-=');
-                users.push([f.id, f.firstName, f.lastName]);
+                // users.push([f.id, f.firstName, f.lastName]);
                 // console.log(f.lastName);
-                searchList.append('<li class="app"><a href="id' + f.id + '">' + f.firstName + ' ' + f.lastName + '</a></li>');
-                searchDataList.append('<option name="hueim" class="app" onclick="goToUserPage(event)">' + f.firstName + ' ' + f.lastName + '</option>');
+                console.log(it);
+                if (it == 5) {
+                    searchList.append('<a class="list-group-item list-group-item-action list-group-item-warning app color-red" style="color: red; width: 100%"> Find All </a>');
+
+                } else if (it < 5) {
+                    searchList.append('<a class="list-group-item list-group-item-action list-group-item-secondary app" style="  width: 200px" href="id' + f.id + '">' + f.firstName + ' ' + f.lastName + '</a>');
+                }
+                // searchDataList.append('<option name="" class="app" onclick="goToUserPage(event)">' + f.firstName + ' ' + f.lastName + '</option>');
 
             })
 

@@ -80,5 +80,8 @@ a:hover {
     top: 50px;
     z-index: 9999;
 }
+.color-red{
+    color: red;
+}
 
 
