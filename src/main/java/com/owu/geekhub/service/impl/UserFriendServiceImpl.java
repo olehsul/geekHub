@@ -44,12 +44,17 @@ public class UserFriendServiceImpl implements UserFriendService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User principal = (User) authentication.getPrincipal();
         UserFriend friendship = userFriendDao.findByFriendIdAndUserId(principal.getId(), id);
-        friendship.setStatus(FriendStatus.APPROVED);
-        userFriendDao.save(friendship);
-        UserFriend duplicate = new UserFriend(friendship.getFriendId(), friendship.getUserId());
-        duplicate.setStatus(FriendStatus.APPROVED);
-        userFriendDao.save(duplicate);
-        System.out.println("=============hello_new_friend===========");
+        if (!userFriendDao.existsDistinctByFriendIdAndUserIdAndStatus(
+                friendship.getUserId(),
+                friendship.getFriendId(),
+                FriendStatus.APPROVED)) {
+            friendship.setStatus(FriendStatus.APPROVED);
+            userFriendDao.save(friendship);
+            UserFriend duplicate = new UserFriend(friendship.getFriendId(), friendship.getUserId());
+            duplicate.setStatus(FriendStatus.APPROVED);
+            userFriendDao.save(duplicate);
+            System.out.println("=============hello_new_friend===========");
+        }
     }
 
     @Override

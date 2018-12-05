@@ -136,11 +136,11 @@ public class AuthenticationController {
             return "authentication/login";
         } else return "redirect:/verification-request/id" + id;
     }
-    @GetMapping("/emailRecovery")
-    public String emailRecovery(){
-        System.out.println("================you are in emailrecovery================");
-        return "authentication/recovery-email";
-    }
+//    @GetMapping("/emailRecovery")
+//    public String emailRecovery(){
+////        System.out.println("================you are in emailrecovery================");
+//        return "authentication/recovery-email";
+//    }
 
     @PostMapping("/passwordRecovery")
     public String passwordRecovery(

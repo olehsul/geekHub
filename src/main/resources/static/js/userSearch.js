@@ -1,3 +1,9 @@
+function goToUserPage(event) {
+    alert('asdafdsf');
+    console.log('bla');
+
+}
+
 function searchUser(event) {
 
     let fullName = $("#userNameSurname").val().split(' ');
@@ -31,19 +37,18 @@ function searchUser(event) {
         data: dataJSON,
         success: function (response) {
             console.log("succeed request!");
-            console.log(response);
             let searchList = $('#userSearchResultList');
             let searchDataList = $('#usersDataList');
             let users = [];
             $(".app").remove();
             let foundUsers = response;
             $.each(foundUsers, function (i, f) {
-                console.log(f);
-                console.log('=-==-=-=--=-=-=');
+                // console.log(f);
+                // console.log('=-==-=-=--=-=-=');
                 users.push([f.id, f.firstName, f.lastName]);
-                console.log(f.lastName);
+                // console.log(f.lastName);
                 searchList.append('<li class="app"><a href="id' + f.id + '">' + f.firstName + ' ' + f.lastName + '</a></li>');
-                searchDataList.append('<option class="app"><a href="id' + f.id + '">' + f.firstName + ' ' + f.lastName + '</a></option>');
+                searchDataList.append('<option name="hueim" class="app" onclick="goToUserPage(event)">' + f.firstName + ' ' + f.lastName + '</option>');
 
             })
 

@@ -11,7 +11,8 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-//        registry.addViewController("/emailrecovery").setViewName("recovery-email");
+        registry.addViewController("/emailRecovery")
+                .setViewName("authentication/recovery-email");
 //        registry.addViewController("/verification").setViewName("verification");
 ////        if (!(SecurityContextHolder.getContext().getAuthentication()
 ////                instanceof AnonymousAuthenticationToken)) {
@@ -22,4 +23,5 @@ public class WebConfig implements WebMvcConfigurer {
 ////        }
 
     }
+    //
 }
