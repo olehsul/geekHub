@@ -61,11 +61,11 @@
             <div class="d-flex flex-row">
                 <div class="p-2">
                     <ul class="navbar-nav ml-5px">
-                        <li class="nav-item active">
-                            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                        <li class="nav-item">
+                            <a class="nav-link"  th:href="'id' + ${loggedUser.id}" >Home <span class="sr-only">(current)</span></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/friends">Friends</a>
+                            <a class="nav-link active" href="/friends">Friends</a>
                         </li>
                         <form class="form-inline my-2 my-md-0 ml-auto search-input">
                             <input oninput="searchUser(event)" id="userNameSurname" class="form-control search-input"
@@ -119,8 +119,8 @@
             <div id="friendRequest">
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item" th:each="user : ${friendsRequests}">
-                        <div class="row">
-                            <p th:text="${user.firstName}+' '+${user.lastName}" class="col"></p>
+                        <div class="row pr-3">
+                            <p th:text="${user.firstName}+' '+${user.lastName}" class="col text-left"></p>
                             <button class="btn btn-primary col-md-2"
                                     th:onclick="'acceptFriendRequest(\'' + ${user.id} + '\');'" th:value="${user.id}">
                                 accept
@@ -134,14 +134,13 @@
             <div id="friendRequestList">
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item" th:each="friend : ${friends}">
-                        <p th:text="${friend.firstName}"></p>
-                        <p th:text="${friend.lastName}"></p>
-                        <button class="btn btn-primary" th:onclick="'deleteFriend(\'' + ${friend.id} + '\');'"
-                                th:value="${friend.id}">
-                            delete friend
-                        </button>
-                        <hr>
-                        <!--<input type="hidden" th:value="${user.id}" id="friend-requested-id">-->
+                        <div class="row pr-3">
+                            <p th:text="${friend.firstName}+' '+${friend.lastName}" class="col text-left"></p>
+                            <button class="btn btn-primary" th:onclick="'deleteFriend(\'' + ${friend.id} + '\');'"
+                                    th:value="${friend.id}">
+                                delete friend
+                            </button>
+                        </div>
                     </li>
                 </ul>
             </div>

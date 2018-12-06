@@ -15,6 +15,8 @@
             integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
             crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
           integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
@@ -109,12 +111,9 @@
     <div class="row">
         <div class="col-md-8 mx-auto" style="background: aquamarine;">
             <h5 class="col-md-4">[[${userPage.firstName}]] [[${userPage.lastName}]]</h5>
-            <!--th:action="@{'/verify/id{id}'(id=${userId})}"-->
-            <!--<h5 class="col-md-4">Sviatoslav Khrystyna</h5>-->
             <div th:if="${!areFriends}">
                 <div th:if="${userPage.id} != ${loggedUser.id}">
                     <a class="btn btn-primary" id="btn-send-friend-request">
-                        <!--th:href="@{'/friend-request-id{friendId}-from-id{userId}'(userId = ${loggedUser.id}, friendId = ${userPage.id})}">-->
                         <input type="hidden" th:value="${userPage.id}" id="friend-requested-id">
                         <input type="hidden" th:value="${loggedUser.id}" id="user-requesting-id">
                         <p>Send friend request</p>
@@ -132,3 +131,19 @@
 </body>
 </html>
 <script src="/js/friends.js"></script>
+<script>
+    let stompClient;
+    let socket = new SockJS("/entryPoint");
+    stompClient = Stomp.over(socket);
+    // connecting
+    stompClient.connect({}, function () {
+        console.log("Connected successfully!");
+        // following the channel
+    });
+    setTimeout(function () {
+        console.log("creating message");
+        stompClient.send('/prefixForSendMessage/roomName', {}, JSON.stringify({incomingMessage: 'message!!!!'}));
+        console.log("message gone");
+    }, 1500);
+
+</script>

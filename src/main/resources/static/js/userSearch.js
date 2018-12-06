@@ -39,6 +39,7 @@ function locateSearchResults() {
 }
 
 function searchUser() {
+    locateSearchResults();
 
     let fullName = $("#userNameSurname").val().split(' ');
 
@@ -70,7 +71,6 @@ function searchUser() {
         contentType: 'application/json',
         data: dataJSON,
         success: function (response) {
-            locateSearchResults();
             console.log("succeed request!");
             let searchList = $('#userSearchResultList');
             let searchDataList = $('#usersDataList');

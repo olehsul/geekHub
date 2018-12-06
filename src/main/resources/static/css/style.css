@@ -26,14 +26,16 @@ a.deco-none {
     color: white;
     border-radius: 0;
     background: none;
-    border-color: rgba(255,0,0,0);
+    border-top: none;
+    border-right: none;
+    border-left: none;
     border-bottom-color: darkgray;
+    box-shadow: none;
 }
 .search-input:focus {
     color: white;
     border-radius: 0;
     background: none;
-    border-color: rgba(255,0,0,0);
     border-bottom-color: darkgray;
 }
 .search-btn {
