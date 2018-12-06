@@ -21,33 +21,38 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 </head>
 <body>
-<div class="">
-    <nav class="row navbar navbar-expand-lg navbar-dark bg-dark">
-        <!-- Brand -->
-        <div class="col-md-1 offset-md-1">
+
+<nav class="row navbar navbar-expand-md navbar-dark bg-dark">
+    <!-- Brand -->
+
+    <div class="container-fluid">
+        <div class="col-sm-2 col-md-2 col-xs-12 col-lg-2">
             <a href="#" class="navbar-brand">
                 <span style="color: white"><b>Geek </b></span>
                 <span style="color: black" class="logo-orange"><b>hub</b></span>
             </a>
         </div>
-        <div class="col-md-6 offset-md-4 text-right">
+        <div class="col-sm-12 col-md-9 col-lg-6 offset-lg-4">
             <form th:action="@{'/login'}" class="form-inline" method="POST">
                 <div class="form-row">
-                    <div class="form-group col-md-5">
+                    <div class="form-group col-sm-9 col-md-5">
                         <label for="mailId" class="color-aliceblue">email&nbsp</label>
-                        <input class="form-control" type="text" name="username" placeholder="email" id="mailId">
+                        <!--<input class="form-control" type="text" name="username" placeholder="email" id="mailId">-->
+                        <input id="mailId" class="form-control" name="username"
+                               type="text" placeholder="email" aria-label="Search">
                     </div>
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-sm-9 col-md-6">
                         <label for="passId" class="color-aliceblue">password&nbsp</label>
-                        <input class="form-control" type="password" name="password" placeholder="password"
-                               id="passId">
+                        <!--<input class="form-control" type="password" name="password" placeholder="password" id="passId">-->
+                        <input id="passId" name="password" class="form-control"
+                               type="text" placeholder="password" aria-label="Search">
                     </div>
                     <div class="form-group col-md-1"><input type="submit" value="Sign in"></div>
                 </div>
             </form>
         </div>
-    </nav>
-</div>
+    </div>
+</nav>
 
 <div class="col-md-4 mx-auto">
     <form class="px-4 py-3" th:action="@{'/registerNewUser'}" method="POST">
@@ -55,7 +60,7 @@
             <div class="col-md-6" style="margin: 0">
                 <div class="form-group">
                     <label for="fname">First name</label>
-                    <input class="form-control" name="firstName"  type="text" placeholder="First name" id="fname"/>
+                    <input class="form-control" name="firstName" type="text" placeholder="First name" id="fname"/>
                 </div>
             </div><!-- /.col -->
             <div class="col-md-6">

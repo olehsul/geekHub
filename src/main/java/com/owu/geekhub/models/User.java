@@ -12,6 +12,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Data
@@ -41,6 +42,59 @@ public class User implements UserDetails {
     private boolean accountNonExpired;
     private boolean credentialsNonExpired;
     private boolean accountNonLocked;
+
+
+    @ManyToMany
+    @JoinTable(name="user_friend",
+            joinColumns={@JoinColumn(name="user_id")},
+            inverseJoinColumns={@JoinColumn(name="friend_id")})
+    private List<User> friends = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(name="user_friend",
+            joinColumns={@JoinColumn(name="friend_id")},
+            inverseJoinColumns={@JoinColumn(name="user_id")})
+    private List<User> friendOf = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", firstName='" + firstName + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return cityId == user.cityId &&
+                activationKey == user.activationKey &&
+                active == user.active &&
+                activated == user.activated &&
+                enabled == user.enabled &&
+                accountNonExpired == user.accountNonExpired &&
+                credentialsNonExpired == user.credentialsNonExpired &&
+                accountNonLocked == user.accountNonLocked &&
+                Objects.equals(id, user.id) &&
+                Objects.equals(username, user.username) &&
+                Objects.equals(password, user.password) &&
+                Objects.equals(lastName, user.lastName) &&
+                Objects.equals(firstName, user.firstName) &&
+                gender == user.gender &&
+                Objects.equals(birthDate, user.birthDate) &&
+                role == user.role &&
+                Objects.equals(friends, user.friends) &&
+                Objects.equals(friendOf, user.friendOf);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, password, lastName, firstName, gender, cityId, birthDate, activationKey, role, active, activated, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, friends, friendOf);
+    }
 
     @Override
     public String getUsername() {

@@ -1,14 +1,19 @@
 package com.owu.geekhub.service.impl;
 
+import com.owu.geekhub.dao.UserDao;
 import com.owu.geekhub.dao.UserFriendDao;
 import com.owu.geekhub.models.FriendStatus;
 import com.owu.geekhub.models.User;
 import com.owu.geekhub.models.UserFriend;
 import com.owu.geekhub.service.UserFriendService;
+import com.owu.geekhub.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserFriendServiceImpl implements UserFriendService {
@@ -16,11 +21,45 @@ public class UserFriendServiceImpl implements UserFriendService {
     @Autowired
     private UserFriendDao userFriendDao;
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private UserDao userDao;
+
+    @Override
+    public void addAFriend(Long id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User principal = (User) authentication.getPrincipal();
+        User friend = userDao.findById(id).get();
+        System.out.println("you are in add friend " + friend.getId());
+        boolean friendIsInList = false;
+        List<User> friendList = principal.getFriends();
+        for (User user : friendList) {
+            if (user.getId().equals(friend.getId())) {
+                friendIsInList = true;
+                break;
+            }
+        }
+        if (!friendIsInList) {
+            principal.getFriends().add(friend);
+            principal.getFriendOf().add(friend);
+            userService.update(principal);
+        }
+        List<User> friends = principal.getFriends();
+        for (User f : friends) {
+            System.out.println("8888888888888888888888888");
+            System.out.println(f);
+        }
+    }
+
+
     @Override
     public void friendRequest(UserFriend userFriend) {
         System.out.println("================you are in method friend request============");
         Long friendId = userFriend.getFriendId();
         Long userId = userFriend.getUserId();
+
 
         if (userFriendDao.existsDistinctByFriendIdAndUserId(userId, friendId)) {
             System.out.println("user already Requested");

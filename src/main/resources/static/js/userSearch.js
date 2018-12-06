@@ -2,39 +2,22 @@ window.addEventListener('resize', function(event){
     locateSearchResults();
 });
 
-function goToUserPage(event) {
-    alert('asdafdsf');
-    console.log('bla');
-
-}
-
-function navbarOnResizeFunc(event) {
-    locateSearchResults();
-}
-
 function locateSearchResults() {
     let searchInput = $('#userNameSurname')[0];
-
     let searchResults = $('#userSearchResultList')[0];
-    console.log(searchResults);
-    console.log('dsfdssssssssssssssssssssssssssssssssssssssssssss');
-    console.log(searchInput);
-    console.log('dsfdssssssssssssssssssssssssssssssssssssssssssss');
+    // console.log(searchResults);
+    // console.log('dsfdssssssssssssssssssssssssssssssssssssssssssss');
+    // console.log(searchInput);
+    // console.log('dsfdssssssssssssssssssssssssssssssssssssssssssss');
     let offsetTop = searchInput.offsetTop;
     let offsetLeft = searchInput.offsetLeft;
     let height = searchInput.offsetHeight;
-    console.log(height, offsetTop, offsetLeft);
+    // console.log(height, offsetTop, offsetLeft);
 
     searchResults.style.position = "absolute";
     console.log(searchResults.style.top = (offsetTop + height) + "px");
     console.log(searchResults.style.left = offsetLeft + "px");
-
-
-    console.log(searchResults);
-    console.log('dsfdssssssssssssssssssssssssssssssssssssssssssss');
-    console.log(searchInput);
-    console.log('dsfdssssssssssssssssssssssssssssssssssssssssssss');
-
+    // console.log(searchResults);
 
 }
 
@@ -55,8 +38,6 @@ function searchUser() {
         surname = "";
     }
 
-    // let userName = fullName[0] + "";
-    // let surname = fullName[1] + "";
 
     console.log(name, surname);
 

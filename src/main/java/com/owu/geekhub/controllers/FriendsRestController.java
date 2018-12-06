@@ -19,6 +19,7 @@ public class FriendsRestController{
     ) {
         System.out.println("INSIDE FRIEND REQUEST POSTMAPPING");
         friendService.friendRequest(userFriend);
+        friendService.addAFriend(userFriend.getFriendId());
     }
 
 

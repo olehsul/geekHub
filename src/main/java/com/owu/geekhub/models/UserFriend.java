@@ -11,6 +11,7 @@ import javax.persistence.*;
 @Data
 @Builder
 @AllArgsConstructor
+@Table(name = "u_f")
 public class UserFriend {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
