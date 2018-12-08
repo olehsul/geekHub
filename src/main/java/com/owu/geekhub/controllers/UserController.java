@@ -1,13 +1,10 @@
 package com.owu.geekhub.controllers;
 
 import com.owu.geekhub.dao.UserDao;
-import com.owu.geekhub.dao.UserFriendDao;
 import com.owu.geekhub.models.FriendStatus;
 import com.owu.geekhub.models.Gender;
 import com.owu.geekhub.models.Role;
 import com.owu.geekhub.models.User;
-import com.owu.geekhub.service.UserService;
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -15,32 +12,38 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.List;
+
 @Controller
 public class UserController {
 
     @Autowired
     private UserDao userDao;
-    @Autowired
-    private UserFriendDao userFriendDao;
+
 
     @GetMapping("/id{userId}")
     public String userId(@PathVariable Long userId,
                          Model model) {
-        User user = userDao.findById(userId).get();
+        User friend = userDao.findById(userId).get();
         User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         System.out.println("=========going home user" + principal.getUsername());
+        User user = userDao.findById(principal.getId()).get();
 
         model.addAttribute("loggedUser", principal);
-        model.addAttribute("userPage", user);
+        model.addAttribute("userPage", friend);
 
-        Boolean areUserFriends = userFriendDao
-                .existsDistinctByFriendIdAndUserIdAndStatus(
-                        user.getId(),
-                        principal.getId(),
-                        FriendStatus.APPROVED);
+        boolean areUserFriends = false;
+        List<User> userFriends = user.getFriends();
+        for (User userFriend : userFriends) {
+            if (userFriend.getId().equals(friend.getId())){
+                areUserFriends = true;
+                break;
+            }
+        }
+        System.out.println("are users friends " + areUserFriends);
         model.addAttribute("areFriends", areUserFriends);
 
-        System.out.println(user);
+        System.out.println(friend);
         return "user/home";
     }
 

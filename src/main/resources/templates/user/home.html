@@ -113,12 +113,10 @@
             <!--<h5 class="col-md-4">Sviatoslav Khrystyna</h5>-->
             <div th:if="${!areFriends}">
                 <div th:if="${userPage.id} != ${loggedUser.id}">
-                    <a class="btn btn-primary" id="btn-send-friend-request">
-                        <!--th:href="@{'/friend-request-id{friendId}-from-id{userId}'(userId = ${loggedUser.id}, friendId = ${userPage.id})}">-->
-                        <input type="hidden" th:value="${userPage.id}" id="friend-requested-id">
-                        <input type="hidden" th:value="${loggedUser.id}" id="user-requesting-id">
-                        <p>Send friend request</p>
-                    </a>
+                    <button class="btn btn-secondary btn-sm col-md-2"
+                            th:onclick="'friendRequest(\'' + ${userPage.id} + '\');'" th:value="${userPage.id}">
+                        friendship request
+                    </button>
                 </div>
             </div>
         </div>

@@ -10,16 +10,17 @@ import java.util.Map;
 public class FriendsRestController{
 
     @Autowired
-    private UserFriendService friendService;
+    private UserFriendService userFriendService;
 
 
-    @PostMapping("/friend-request")
+    @PostMapping("/friendRequest")
     public void friendRequest(
-            @RequestBody UserFriend userFriend
+            @RequestBody Map<String, Long> friendId
     ) {
-        System.out.println("INSIDE FRIEND REQUEST POSTMAPPING");
-        friendService.friendRequest(userFriend);
-        friendService.addAFriend(userFriend.getFriendId());
+        System.out.println("INSIDE FRIEND REQUEST POST MAPPING");
+        System.out.println(friendId);
+        Long id = friendId.get("friendId");
+        userFriendService.friendRequest(id);
     }
 
 
@@ -30,8 +31,7 @@ public class FriendsRestController{
     ) {
         System.out.println(friendId);
         Long id = friendId.get("friendId");
-        friendService.acceptFriendRequest(id);
-
+        userFriendService.acceptFriendRequest(id);
     }
 
     @PostMapping("/deleteFriend")
@@ -40,7 +40,7 @@ public class FriendsRestController{
     ){
         System.out.println("delete friend " + friendId);
         Long id = friendId.get("friendId");
-        friendService.deleteFriend(id);
+        userFriendService.deleteFriend(id);
     }
 
 }

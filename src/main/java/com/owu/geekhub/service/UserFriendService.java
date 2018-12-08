@@ -5,8 +5,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface UserFriendService {
-    void friendRequest(UserFriend userFriend);
+    void friendRequest(Long id);
     void acceptFriendRequest(Long id);
     void deleteFriend(Long id);
-    void addAFriend(Long id);
 }
