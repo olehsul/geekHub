@@ -56,6 +56,22 @@ public class User implements UserDetails {
             inverseJoinColumns={@JoinColumn(name="user_id")})
     private List<User> friendOf = new ArrayList<>();
 
+
+    @ManyToMany
+    @JoinTable(name="friendship_requests",
+            joinColumns={@JoinColumn(name="user_id")},
+            inverseJoinColumns={@JoinColumn(name="friend_id")})
+    private List<User> outGoingFriendShipRequests = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(name="friendship_requests",
+            joinColumns={@JoinColumn(name="friend_id")},
+            inverseJoinColumns={@JoinColumn(name="user_id")})
+    private List<User> incomingFriendShipRequests = new ArrayList<>();
+
+
+
+
     @Override
     public String toString() {
         return "User{" +
@@ -88,12 +104,14 @@ public class User implements UserDetails {
                 Objects.equals(birthDate, user.birthDate) &&
                 role == user.role &&
                 Objects.equals(friends, user.friends) &&
-                Objects.equals(friendOf, user.friendOf);
+                Objects.equals(friendOf, user.friendOf) &&
+                Objects.equals(outGoingFriendShipRequests, user.outGoingFriendShipRequests) &&
+                Objects.equals(incomingFriendShipRequests, user.incomingFriendShipRequests);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, password, lastName, firstName, gender, cityId, birthDate, activationKey, role, active, activated, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, friends, friendOf);
+        return Objects.hash(id, username, password, lastName, firstName, gender, cityId, birthDate, activationKey, role, active, activated, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, friends, friendOf, outGoingFriendShipRequests, incomingFriendShipRequests);
     }
 
     @Override

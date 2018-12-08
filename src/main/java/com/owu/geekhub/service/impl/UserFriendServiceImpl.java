@@ -32,23 +32,29 @@ public class UserFriendServiceImpl implements UserFriendService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User principal = (User) authentication.getPrincipal();
         User friend = userDao.findById(id).get();
+        User user = userDao.findById(principal.getId()).get();
         System.out.println("you are in add friend " + friend.getId());
         boolean friendIsInList = false;
-        List<User> friendList = principal.getFriends();
-        for (User user : friendList) {
-            if (user.getId().equals(friend.getId())) {
+        List<User> friendList = user.getOutGoingFriendShipRequests();
+        for (User user1 : friendList) {
+            if (user1.getId().equals(friend.getId())) {
                 friendIsInList = true;
                 break;
             }
         }
         if (!friendIsInList) {
-            principal.getFriends().add(friend);
-            principal.getFriendOf().add(friend);
-            userService.update(principal);
+            user.getOutGoingFriendShipRequests().add(friend);
+//            user.getFriendOf().add(friend);
+            userService.update(user);
         }
-        List<User> friends = principal.getFriends();
+        List<User> friends = user.getIncomingFriendShipRequests();
         for (User f : friends) {
             System.out.println("8888888888888888888888888");
+            System.out.println(f);
+        }
+        List<User> friendOf = user.getOutGoingFriendShipRequests();
+        for (User f : friendOf) {
+            System.out.println("7777777777777777777777777");
             System.out.println(f);
         }
     }
