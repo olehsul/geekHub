@@ -1,13 +1,14 @@
 package com.owu.geekhub.models;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 public class IncomingMessage {
-    private String incomingMessage;
+    private String content;
+    private Long senderId;
 
-    public IncomingMessage(String incomingMessage) {
-        this.incomingMessage = incomingMessage;
+    public IncomingMessage(String content, Long senderId) {
+        this.content = content;
+        this.senderId = senderId;
     }
 }

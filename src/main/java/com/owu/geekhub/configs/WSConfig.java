@@ -16,7 +16,7 @@ public class WSConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/channelName"); // subscribe the channel
         config.setApplicationDestinationPrefixes("/prefixForSendMessage"); // prefix for messages (filter)
+        config.enableSimpleBroker("/channelName"); // subscribe to channel
     }
 }

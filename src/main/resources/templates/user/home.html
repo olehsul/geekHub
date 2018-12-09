@@ -124,7 +124,13 @@
     </div>
     <div class="row">
         <div class="col-md-8 mx-auto" style="background: aquamarine;">
-
+            <div th:if="${userPage.id} == ${loggedUser.id} or ${areFriends} or not ${areFriends}">
+                <input type="hidden" th:value="${userPage.id}" id="recipient-id">
+                <input type="hidden" th:value="${loggedUser.id}" id="logged-user-id">
+                <input type="" id="msg" placeholder="msg">
+                <button id="send-btn">Send</button>
+                <div id="msg-block"></div>
+            </div>
         </div>
     </div>
 </div>
@@ -133,17 +139,34 @@
 <script src="/js/friends.js"></script>
 <script>
     let stompClient;
+
+    $("#send-btn").click(function () {
+        let msg = $("#msg").val();
+
+        console.log('sending message: ', msg);
+        sendMessage(msg);
+    });
+
+    function sendMessage(msg) {
+        let loggedUserId = $("#logged-user-id").val();
+        stompClient.send('/prefixForSendMessage/roomName', {}, JSON.stringify({content: msg, senderId: loggedUserId}));
+        console.log("message gone");
+    }
+
+
     let socket = new SockJS("/entryPoint");
     stompClient = Stomp.over(socket);
     // connecting
     stompClient.connect({}, function () {
         console.log("Connected successfully!");
         // following the channel
+        stompClient.subscribe('/channelName/answer', function (answer) {
+            console.log('message came - ' + answer.body);
+            let msgObj = JSON.parse(answer.body);
+            console.log("msg object:", msgObj);
+            console.log("msg content:", msgObj.content);
+            $("#msg-block").append($('<p/>', {text: msgObj.sender.firstName + ": " + msgObj.content}));
+        });
     });
-    setTimeout(function () {
-        console.log("creating message");
-        stompClient.send('/prefixForSendMessage/roomName', {}, JSON.stringify({incomingMessage: 'message!!!!'}));
-        console.log("message gone");
-    }, 1500);
 
 </script>

@@ -1,17 +1,21 @@
 package com.owu.geekhub.models;
 
+import lombok.Builder;
+import lombok.Data;
+
 import javax.persistence.*;
 import java.sql.Date;
 
+@Builder
+@Data
 @Entity
 public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY,
-        cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
-    private User userSender;
+            targetEntity = User.class)
+    private User sender;
     private String content;
     private Date createDate;
     private Date expiryDate;
