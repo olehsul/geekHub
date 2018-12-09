@@ -6,13 +6,16 @@ import com.owu.geekhub.models.IncomingMessage;
 import com.owu.geekhub.models.Message;
 import com.owu.geekhub.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
-import sun.awt.AWTAutoShutdown;
 
 import java.sql.Date;
-import java.util.Optional;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Controller
 public class MessageController {
@@ -21,20 +24,30 @@ public class MessageController {
     @Autowired
     MessageDAO messageDAO;
 
-    @MessageMapping("/roomName")
-    @SendTo("/channelName/answer") // uncomment when build subscribe
-    public Message answer(IncomingMessage incomingMessage) {
+    @MessageMapping("/sender-id{senderId}/receiver-id{recipientId}")
+    @SendTo({"/topic/msg-answer/id{recipientId}", "/topic/msg-answer/id{senderId}"})
+    public Set<Message> answer(IncomingMessage incomingMessage, @DestinationVariable Long senderId, @DestinationVariable Long recipientId) {
         System.out.println(incomingMessage);
         Message message = Message.builder()
                 .content(incomingMessage.getContent())
                 .build();
         message.setCreateDate(new Date(System.currentTimeMillis()));
-        User sender = userDao.findById(incomingMessage.getSenderId()).get();
+        User sender = userDao.findById(senderId).get();
+        User recipient = userDao.findById(recipientId).get();
         message.setSender(sender);
-        System.out.println("Sender: " + sender);
+        message.setRecipient(recipient);
+        System.out.println("sender: " + sender);
+        System.out.println("recipient: " + recipient);
         System.out.println("message: " + message);
         messageDAO.save(message);
+
+        Set<Message> messages = messageDAO.findMessagesBySenderIdAndRecipientId(sender.getId(), recipient.getId());
+        messages.addAll(messageDAO.findMessagesBySenderIdAndRecipientId(recipient.getId(), sender.getId()));
+
+        LinkedHashSet<Message> collected = messages.stream()
+                .sorted((o1, o2) -> (int) (o1.getId() - o2.getId()))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
 //        return new Date(System.currentTimeMillis()) + ": " + message.getContent();
-        return message;
+        return collected;
     }
 }

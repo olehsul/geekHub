@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
           integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
     <link rel="stylesheet" th:href="@{/css/style.css}" href="../../static/css/style.css" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/messages.css}" href="../../static/css/messages.css" type="text/css">
     <script src="/js/userSearch.js"></script>
 </head>
 <body>
@@ -89,9 +90,19 @@
                             </div>
                         </li>
                         <li>
-                            <a class="nav-link" th:href="@{/messages} ">
+                               <!--th:href="@{/messages}"-->
+                            <a class="nav-link dropdown-toggle" id="navbarMessageDropDownBtn" data-toggle="dropdown"
+                               aria-haspopup="true" aria-expanded="true" >
                                 1 <i class="fa fa-envelope mr-5px"></i>
                             </a>
+                            <div class="dropdown-menu dropdown-menu-right " aria-labelledby="navbarMessageDropDownBtn"
+                                 style="margin-right: 10px" id="dropdown-message-box">
+                                <div class="col-md-6" id="msg-nav-main-block">
+                                    <div id="nav-msg-block"></div>
+                                    <input type="" id="msg-nav" placeholder="msg">
+                                    <button id="nav-send-btn">Send</button>
+                                </div>
+                            </div>
                         </li>
                         <li>
                             <a class="nav-link" th:href="@{/friends}">
@@ -111,11 +122,11 @@
     <div class="row">
         <div class="col-md-8 mx-auto" style="background: aquamarine;">
             <h5 class="col-md-4">[[${userPage.firstName}]] [[${userPage.lastName}]]</h5>
+            <input type="hidden" th:value="${userPage.id}" id="recipient-id">
+            <input type="hidden" th:value="${loggedUser.id}" id="logged-user-id">
             <div th:if="${!areFriends}">
                 <div th:if="${userPage.id} != ${loggedUser.id}">
                     <a class="btn btn-primary" id="btn-send-friend-request">
-                        <input type="hidden" th:value="${userPage.id}" id="friend-requested-id">
-                        <input type="hidden" th:value="${loggedUser.id}" id="user-requesting-id">
                         <p>Send friend request</p>
                     </a>
                 </div>
@@ -123,13 +134,14 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-8 mx-auto" style="background: aquamarine;">
-            <div th:if="${userPage.id} == ${loggedUser.id} or ${areFriends} or not ${areFriends}">
-                <input type="hidden" th:value="${userPage.id}" id="recipient-id">
-                <input type="hidden" th:value="${loggedUser.id}" id="logged-user-id">
-                <input type="" id="msg" placeholder="msg">
-                <button id="send-btn">Send</button>
-                <div id="msg-block"></div>
+        <div class="col-md-8 mx-auto">
+            <div th:if="${areFriends} or not ${areFriends} and ${userPage.id != loggedUser.id}">
+                <button id="msg-dialog-btn" class="btn btn-primary">Write message</button>
+                <div class="col-md-4" id="msg-main-block">
+                    <div id="msg-block"></div>
+                    <input type="" id="msg" placeholder="msg">
+                    <button id="send-btn">Send</button>
+                </div>
             </div>
         </div>
     </div>
@@ -137,36 +149,5 @@
 </body>
 </html>
 <script src="/js/friends.js"></script>
-<script>
-    let stompClient;
-
-    $("#send-btn").click(function () {
-        let msg = $("#msg").val();
-
-        console.log('sending message: ', msg);
-        sendMessage(msg);
-    });
-
-    function sendMessage(msg) {
-        let loggedUserId = $("#logged-user-id").val();
-        stompClient.send('/prefixForSendMessage/roomName', {}, JSON.stringify({content: msg, senderId: loggedUserId}));
-        console.log("message gone");
-    }
-
-
-    let socket = new SockJS("/entryPoint");
-    stompClient = Stomp.over(socket);
-    // connecting
-    stompClient.connect({}, function () {
-        console.log("Connected successfully!");
-        // following the channel
-        stompClient.subscribe('/channelName/answer', function (answer) {
-            console.log('message came - ' + answer.body);
-            let msgObj = JSON.parse(answer.body);
-            console.log("msg object:", msgObj);
-            console.log("msg content:", msgObj.content);
-            $("#msg-block").append($('<p/>', {text: msgObj.sender.firstName + ": " + msgObj.content}));
-        });
-    });
-
-</script>
+<script src="/js/ws-messages.js"></script>
+<script src="/js/messages.js"></script>

@@ -1,7 +1,6 @@
 package com.owu.geekhub.models;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -9,13 +8,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Data
 @Builder
+@AllArgsConstructor
 public class User implements UserDetails {
     @Id
     private Long id;
@@ -41,6 +39,11 @@ public class User implements UserDetails {
     private boolean accountNonExpired;
     private boolean credentialsNonExpired;
     private boolean accountNonLocked;
+
+//    @OneToMany(targetEntity = Message.class)
+//    @ToString.Exclude private Set<Message> messages = new HashSet<>();
+
+    public User() {}
 
     @Override
     public String getUsername() {

@@ -6,8 +6,6 @@ import com.owu.geekhub.models.FriendStatus;
 import com.owu.geekhub.models.Gender;
 import com.owu.geekhub.models.Role;
 import com.owu.geekhub.models.User;
-import com.owu.geekhub.service.UserService;
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;

@@ -1,7 +1,7 @@
 $("#btn-send-friend-request").click(function () {
 
-    let userPageId = $("#friend-requested-id").val();
-    let loggedUserId = $("#user-requesting-id").val();
+    let userPageId = $("#recipient-id").val();
+    let loggedUserId = $("#logged-user-id").val();
     console.log(userPageId, loggedUserId);
 
     // let stringURL = "@{'/friend-request-{friendId}-from-{userId}'(friendId=${userPage.id}, userId=${loggedUser.id})}";
