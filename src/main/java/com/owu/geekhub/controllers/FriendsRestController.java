@@ -1,6 +1,5 @@
 package com.owu.geekhub.controllers;
 
-import com.owu.geekhub.models.UserFriend;
 import com.owu.geekhub.service.UserFriendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

@@ -1,7 +1,6 @@
 package com.owu.geekhub.controllers;
 
 import com.owu.geekhub.dao.UserDao;
-import com.owu.geekhub.models.FriendStatus;
 import com.owu.geekhub.models.Gender;
 import com.owu.geekhub.models.Role;
 import com.owu.geekhub.models.User;

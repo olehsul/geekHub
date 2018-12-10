@@ -1,6 +1,5 @@
 package com.owu.geekhub.service;
 
-import com.owu.geekhub.models.UserFriend;
 import org.springframework.stereotype.Service;
 
 @Service

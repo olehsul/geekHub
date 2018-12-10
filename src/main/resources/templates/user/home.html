@@ -90,9 +90,9 @@
                             </div>
                         </li>
                         <li>
-                               <!--th:href="@{/messages}"-->
+                            <!--th:href="@{/messages}"-->
                             <a class="nav-link dropdown-toggle" id="navbarMessageDropDownBtn" data-toggle="dropdown"
-                               aria-haspopup="true" aria-expanded="true" >
+                               aria-haspopup="true" aria-expanded="true">
                                 1 <i class="fa fa-envelope mr-5px"></i>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right " aria-labelledby="navbarMessageDropDownBtn"
@@ -136,12 +136,9 @@
     <div class="row">
         <div class="col-md-8 mx-auto">
             <div th:if="${areFriends} or not ${areFriends} and ${userPage.id != loggedUser.id}">
-                <button id="msg-dialog-btn" class="btn btn-primary">Write message</button>
-                <div class="col-md-4" id="msg-main-block">
-                    <div id="msg-block"></div>
-                    <input type="" id="msg" placeholder="msg">
-                    <button id="send-btn">Send</button>
-                </div>
+                <a>
+                    <button th:onclick="'createConversationOrMessage(\'' + ${userPage.id} + '\');'" class="btn btn-primary">Write message</button>
+                </a>
             </div>
         </div>
     </div>

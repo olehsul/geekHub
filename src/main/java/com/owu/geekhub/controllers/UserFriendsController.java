@@ -1,9 +1,7 @@
 package com.owu.geekhub.controllers;
 
 import com.owu.geekhub.dao.UserDao;
-import com.owu.geekhub.models.FriendStatus;
 import com.owu.geekhub.models.User;
-import com.owu.geekhub.models.UserFriend;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

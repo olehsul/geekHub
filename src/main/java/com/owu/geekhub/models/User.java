@@ -69,8 +69,11 @@ public class User implements UserDetails {
             inverseJoinColumns={@JoinColumn(name="user_id")})
     private List<User> incomingFriendShipRequests = new ArrayList<>();
 
-
-
+    @ManyToMany
+    @JoinTable(name = "user_conversation",
+            joinColumns={@JoinColumn(name="user_id")},
+            inverseJoinColumns={@JoinColumn(name="conversation_id")})
+    List<Conversation> conversations;
 
     @Override
     public String toString() {
@@ -82,37 +85,6 @@ public class User implements UserDetails {
                 '}';
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return cityId == user.cityId &&
-                activationKey == user.activationKey &&
-                active == user.active &&
-                activated == user.activated &&
-                enabled == user.enabled &&
-                accountNonExpired == user.accountNonExpired &&
-                credentialsNonExpired == user.credentialsNonExpired &&
-                accountNonLocked == user.accountNonLocked &&
-                Objects.equals(id, user.id) &&
-                Objects.equals(username, user.username) &&
-                Objects.equals(password, user.password) &&
-                Objects.equals(lastName, user.lastName) &&
-                Objects.equals(firstName, user.firstName) &&
-                gender == user.gender &&
-                Objects.equals(birthDate, user.birthDate) &&
-                role == user.role &&
-                Objects.equals(friends, user.friends) &&
-                Objects.equals(friendOf, user.friendOf) &&
-                Objects.equals(outGoingFriendShipRequests, user.outGoingFriendShipRequests) &&
-                Objects.equals(incomingFriendShipRequests, user.incomingFriendShipRequests);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, username, password, lastName, firstName, gender, cityId, birthDate, activationKey, role, active, activated, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, friends, friendOf, outGoingFriendShipRequests, incomingFriendShipRequests);
-    }
 
     @Override
     public String getUsername() {

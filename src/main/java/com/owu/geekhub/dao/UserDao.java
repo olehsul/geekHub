@@ -15,8 +15,6 @@ public interface UserDao extends JpaRepository<User, Long> {
     User findByUsername(String s);
     boolean existsDistinctByUsername(String username);
     boolean existsDistinctById(Long id);
-
-
     List<User> findAllByFirstNameContainsAndLastNameContains(String name, String surname);
     
 }
