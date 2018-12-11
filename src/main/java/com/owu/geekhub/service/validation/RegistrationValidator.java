@@ -8,18 +8,22 @@ import java.text.SimpleDateFormat;
 
 @Service
 public class RegistrationValidator {
-    public boolean isNameValid(String name){
+    public boolean isNameValid(String name) {
         String cyrillicPattern = "[А-ЯЄІЇ][а-яєіїА-ЯЄІЇ]*";
         String latinPattern = "[A-Z][a-zA-Z]*";
         return (
-                (name.matches( cyrillicPattern) ||(name.matches(latinPattern)))
+                (name.matches(cyrillicPattern) || (name.matches(latinPattern)))
                         &&
-                (name.length() < 40)
+                        (name.length() < 40)
         );
+
+
     }
 
-    public boolean isDateValid(String date){
-        if(date == null){
+    public boolean isDateValid(String date) {
+        if (date == null) {
+
+
             return false;
         }
 
@@ -32,23 +36,25 @@ public class RegistrationValidator {
             System.out.println("=========date are invalid========");
             return false;
         }
+
+
     }
 
-    public boolean isPasswordValid(String password){
+    public boolean isPasswordValid(String password) {
         String passwordPattern = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,}";
         boolean bool = password.matches(passwordPattern);
         System.out.println("==========is password valid " + bool);
         return bool;
     }
 
-    public boolean validateRegistrationData(User user){
+    public boolean validateRegistrationData(User user) {
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 
         String date = format.format(user.getBirthDate());
         if (!isNameValid(user.getFirstName())
 
-                        || !isDateValid(date)
-                        || !isPasswordValid(user.getPassword())
+                || !isDateValid(date)
+                || !isPasswordValid(user.getPassword())
         ) {
             System.out.println("-----some registration data are wrong--------");
             return false;

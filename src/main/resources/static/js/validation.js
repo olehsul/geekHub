@@ -11,7 +11,7 @@ function validateNewPassword(event) {
         $('#recoveryConfirmPasswordId').val("").attr("placeholder", "password is not match").css('border-color', 'red').addClass("placeholderRed");
 
     }
-    else console.log('password is mach');
+    else console.log('password is match');
 
     if ((validatePassword(recoveryPassword) == false)
         || (isPasswordMatches(recoveryPassword, recoveryConfirmPassword) == false)
@@ -32,7 +32,7 @@ function validate(event) {
 
     if (password !== confirmPassword) {
         event.preventDefault();
-        $('#confirmPasswordId').val("").attr("placeholder", "password is not mach").css('border-color', 'red').addClass("placeholderRed");
+        $('#confirmPasswordId').val("").attr("placeholder", "password is not match").css('border-color', 'red').addClass("placeholderRed");
     }
     else console.log('password is mach');
 
@@ -153,4 +153,7 @@ function validatePassword(password) {
         return false;
     }
 }
+
+
+
 
