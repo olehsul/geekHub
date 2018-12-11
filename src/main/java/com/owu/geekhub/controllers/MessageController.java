@@ -1,31 +1,34 @@
 package com.owu.geekhub.controllers;
 
+import com.owu.geekhub.dao.ConversationDao;
 import com.owu.geekhub.dao.MessageDAO;
+import com.owu.geekhub.dao.UserConversationDao;
 import com.owu.geekhub.dao.UserDao;
-import com.owu.geekhub.models.IncomingMessage;
-import com.owu.geekhub.models.Message;
-import com.owu.geekhub.models.User;
+import com.owu.geekhub.models.*;
+import com.owu.geekhub.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.sql.Date;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Controller
 public class MessageController {
     @Autowired
-    UserDao userDao;
+    private UserDao userDao;
     @Autowired
-    MessageDAO messageDAO;
+    private MessageDAO messageDAO;
+    @Autowired
+    private MessageService messageService;
 
     @MessageMapping("/sender-id{senderId}/receiver-id{recipientId}")
     @SendTo({"/topic/msg-answer/id{recipientId}", "/topic/msg-answer/id{senderId}"})
@@ -53,14 +56,21 @@ public class MessageController {
 //        return new Date(System.currentTimeMillis()) + ": " + message.getContent();
         return null;
     }
+
     @PostMapping("/createConversationOrMessage")
     public String createConversationOrMessage(
             @RequestBody Map<String, Long> friendId
-    ){
+    ) {
+        System.out.println("you are in createConversationOrMessage----------------");
         Long id = friendId.get("friendId");
-        System.out.println(id);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User principal = (User) authentication.getPrincipal();
+        User user = userDao.findById(principal.getId()).get();
+        User friend = userDao.findById(id).get();
+        messageService.createConversationIfNotExists(user.getId(), friend.getId());
 
 
+//        System.out.println("Does conv exists " + conversationDao.existsDistinctByUsers(users));
         return "redirect:/friends";
     }
 }

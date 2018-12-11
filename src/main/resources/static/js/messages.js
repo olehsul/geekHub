@@ -29,8 +29,10 @@ function createConversationOrMessage(id) {
         success: function (response) {
             console.log("succeed request!");
             console.log(response);
+            window.location.replace("http://stackoverflow.com");
         },
         error: function (err) {
+
             console.log(err);
             console.log("not succeed request!");
         }

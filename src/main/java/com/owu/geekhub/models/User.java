@@ -73,7 +73,7 @@ public class User implements UserDetails {
     @JoinTable(name = "user_conversation",
             joinColumns={@JoinColumn(name="user_id")},
             inverseJoinColumns={@JoinColumn(name="conversation_id")})
-    List<Conversation> conversations;
+    List<Conversation> conversations = new ArrayList<>();
 
     @Override
     public String toString() {

@@ -5,5 +5,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface MessageService {
-    public void save(Message msg);
+    void save(Message msg);
+    void createConversationIfNotExists(Long userId, Long friendId);
+
 }
