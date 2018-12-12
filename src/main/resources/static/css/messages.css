@@ -1,3 +1,50 @@
+html {
+    padding: 50px 0 0;
+}
+html > *{
+    padding: 0;
+}
+
+#navbar-main {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding-top: 0;
+    height: 50px;
+    /*height: 8vh;*/
+    width: 100%;
+}
+
+#content-main {
+    /*margin-top: 50px;*/
+    padding: 0;
+    height: 92vh;
+
+    /*padding-bottom: 0;*/
+    /*margin-bottom: 0;*/
+}
+
+#users-msg-block > * {
+    padding: 0;
+    margin: 0;
+}
+
+#messaging-block {
+    padding: 0;
+}
+
+#messaging-block > * {
+    padding: 0;
+}
+
 #msg-main-block {
     display: none;
+}
+
+#send-msg-block {
+    line-height: 10vh;
+}
+
+#send-msg-block {
+    vertical-align: center;
 }

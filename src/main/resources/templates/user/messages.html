@@ -24,7 +24,7 @@
     <link rel="stylesheet" th:href="@{/css/messages.css}" href="../../static/css/messages.css" type="text/css">
 </head>
 <body>
-<nav class="navbar navbar-expand-md navbar-dark bg-dark rounded-0" onresize="navbarOnResizeFunc(event)">
+<nav class="navbar navbar-expand-md navbar-dark bg-dark rounded-0 mb-0" id="navbar-main" onresize="navbarOnResizeFunc(event)">
     <div class="container-fluid">
         <!-- Brand -->
         <div class="navbar-header mx-auto d-sm-flex d-block flex-sm-nowrap">
@@ -73,7 +73,7 @@
                     <ul class="navbar-nav list-inline mr-5px">
 
                         <!--PROFILE DROPDOWN-->
-                        <li class="nav-link " style="padding: 0">
+                        <li class="my-auto">
                             <a class="nav-link dropdown-toggle" id="navbarUserDropdownMenuBtn" data-toggle="dropdown"
                                aria-haspopup="true" aria-expanded="true" style="padding: 0; cursor: pointer">
                                 <img src="https://mdbootstrap.com/img/Photos/Avatars/avatar-2.jpg"
@@ -97,7 +97,7 @@
                         <li>
                             <!--th:href="@{/messages}"-->
                             <a class="nav-link dropdown-toggle" id="navbarMessageDropDownBtn" data-toggle="dropdown"
-                               aria-haspopup="true" aria-expanded="true">
+                               aria-haspopup="true" aria-expanded="true" >
                                 1 <i class="fa fa-envelope mr-5px"></i>
                             </a>
                             <!--<div class="dropdown-menu dropdown-menu-right " aria-labelledby="navbarMessageDropDownBtn"-->
@@ -124,39 +124,95 @@
         </div>
     </div>
 </nav>
-<!--navbar-->
 
-<!--content-->
-<div class="container">
+<div class="container" id="content-main">
     <div class="row">
-        <!--USER PAGE PROFILE-->
-        <div class="col-md-8 mx-auto" style="background: aquamarine;">
-            <h5 class="col-md-4">[[${userPage.firstName}]] [[${userPage.lastName}]]</h5>
-            <input type="hidden" th:value="${userPage.id}" id="recipient-id">
-            <input type="hidden" th:value="${loggedUser.id}" id="logged-user-id">
-            <div th:if="${!areFriends}">
-                <div th:if="${userPage.id} != ${loggedUser.id}">
-                    <a class="btn btn-primary" id="btn-send-friend-request">
-                        <p>Send friend request</p>
-                    </a>
+        <!--USERS MESSAGING LIST-->
+        <div class="col-sm-3 px-0 block rounded-0" id="users-msg-block" style="height: 92vh; padding: 0; margin: 0">
+            <div class="list-group px-0 mx-0 rounded-0 alert-light" style="overflow: auto; max-height: 92vh">
+                <div class="list-group-item list-group-item-action row px-0 mx-0 rounded-0">
+                    <p><b class="mx-2">User 1: </b>Message 1</p>
+                </div>
+                <div class="list-group-item list-group-item-action active row px-0 mx-0 rounded-0">
+                     <p><b class="mx-2">Barack Obama: </b>Message 1</p>
+                </div>
+                <div class="list-group-item list-group-item-action row px-0 mx-0 rounded-0">
+                     <p><b class="mx-2">User 3: </b>Message 1</p>
+                </div>
+                <div class="list-group-item list-group-item-action row px-0 mx-0 rounded-0">
+                     <p><b class="mx-2">User 4: </b>Message 1</p>
+                </div>
+                <div class="list-group-item list-group-item-action row px-0 mx-0 rounded-0">
+                     <p><b class="mx-2">User 5: </b>Message 1</p>
+                </div>
+                <div class="list-group-item list-group-item-action row px-0 mx-0 rounded-0">
+                     <p><b class="mx-2">User 6: </b>Message 1</p>
+                </div>
+                <div class="list-group-item list-group-item-action row px-0 mx-0 rounded-0">
+                     <p><b class="mx-2">User 7: </b>Message 1</p>
+                </div>
+                <div class="list-group-item list-group-item-action row px-0 mx-0 rounded-0">
+                     <p><b class="mx-2">User 8: </b>Message 1</p>
+                </div>
+                <div class="list-group-item list-group-item-action row px-0 mx-0 rounded-0">
+                     <p><b class="mx-2">User 9: </b>Message 1</p>
+                </div>
+                <div class="list-group-item list-group-item-action row px-0 mx-0 rounded-0">
+                     <p><b class="mx-2">User 9: </b>Message 1</p>
+                </div>
+                <div class="list-group-item list-group-item-action row px-0 mx-0 rounded-0">
+                     <p><b class="mx-2">User 9: </b>Message 1</p>
+                </div>
+                <div class="list-group-item list-group-item-action row px-0 mx-0 rounded-0">
+                     <p><b class="mx-2">User 9: </b>Message 1</p>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <!--MESSAGE PROFILE-->
-        <div class="col-md-8 mx-auto">
-            <div th:if="${areFriends} or not ${areFriends} and ${userPage.id != loggedUser.id}">
-                <a>
-                    <button th:onclick="'createConversationOrMessage(\'' + ${userPage.id} + '\');'" class="btn btn-primary">Write message</button>
-                </a>
+        <!--USERS MESSAGING-->
+        <div class="col-sm-9 mx-0 px-0 h-100" id="messaging-block">
+            <div class="col-12 alert m-0 text-center alert-light rounded-0 py-auto" style="height: 6vh">Barack Obama</div>
+            <div class="list-group-item" style="overflow: auto; max-height: 86vh">
+                <div>
+                    <p class="alert alert-primary text-right rounded-left ml-4">Enrico Fermi (1901–1954) was an
+                        Italian-American physicist who was awarded the 1938 Nobel Prize in Physics. </p>
+                    <p class="alert alert-secondary text-left rounded-top mr-4">He created the world's first nuclear
+                        reactor, Chicago Pile-1, and is one of 16 scientists who have elements named after them.</p>
+                    <p class="alert alert-primary text-right rounded-left ml-4">One of the few physicists to excel in
+                        both
+                        theoretical and experimental work, he made significant contributions to quantum theory,
+                        statistical
+                        mechanics, and nuclear and particle physics. He helped formulate the Fermi–Dirac statistics for
+                        particles that obey Wolfgang Pauli's exclusion principle, called "fermions".</p>
+                    <p class="alert alert-secondary text-left rounded-right mr-4">His theory of beta decay correctly
+                        predicted that a particle he named the "neutrino" would be emitted along with an electron,
+                        satisfying the law of conservation of energy.</p>
+                    <p class="alert alert-primary text-right rounded-left ml-4">He left Italy in 1938 to escape the
+                        Italian
+                        racial laws that affected his Jewish wife Laura, and emigrated to the United States.</p>
+                    <p class="alert alert-primary text-right rounded-left ml-4">He worked on the Manhattan Project
+                        during
+                        World War II, but later opposed development of the hydrogen bomb on moral and technical
+                        grounds.</p>
+                    <p class="alert alert-secondary text-left rounded-right mr-4">Li was born on 2 November 1917 in Wu
+                        County (now Suzhou), Jiangsu, China. </p>
+                    <p class="alert alert-primary text-right rounded-left ml-4">She graduated from Wu Pen Girls' School
+                        in
+                        Shanghai and was admitted to Tsinghua University in 1935.</p>
+                </div>
+                <div class="input-group mb-3 align-middle" id="send-msg-block" style="max-height: 10vh; line-height: 10vh">
+                    <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button">Button</button>
+                    </div>
+                </div>
             </div>
+
         </div>
     </div>
 </div>
 </body>
 </html>
-<script src="/js/userSearch.js"></script>
-<script src="/js/friends.js"></script>
-<script src="/js/ws-messages.js"></script>
-<script src="/js/messages.js"></script>
+<script src="../../static/js/userSearch.js"></script>
+<script src="../../static/js/friends.js"></script>
+<script src="../../static/js/ws-messages.js"></script>
+<script src="../../static/js/messages.js"></script>
