@@ -36,16 +36,18 @@ function wsInit() {
         stompClient.subscribe('/topic/msg-answer/id' + loggedUserId, function (answer) {
             let msgArray = JSON.parse(answer.body);
             console.log(msgArray);
-            $("#nav-msg-block").empty();
-            $("#msg-block").empty();
+            let msgNavBlock = $("#nav-msg-block");
+            let $msgBlock = $("#msg-block");
+            msgNavBlock.empty();
+            $msgBlock.empty();
             for (let msgObj of msgArray) {
                 // console.log("MESSAGE CAME:", msgObj);
                 let p = $('<p/>', {text: msgObj.content,}).addClass("alert alert-primary");
                 p.prepend($('<b/>', {text: msgObj.sender.firstName + ": "}));
                 if (msgObj.sender.id === loggedUserId || (msgObj.sender.id === recipientId && $("#send-btn").text() === 'Close')) {
-                    $("#msg-block").append(p);
+                    $msgBlock.append(p);
                 } else {
-                    $("#nav-msg-block").append(p);
+                    msgNavBlock.append(p);
                 }
             }
             ;
