@@ -125,53 +125,56 @@
     </div>
 </nav>
 
+<!--<input type="hidden" th:value="${userPage.id}" id="recipient-id">-->
+<input type="hidden" th:value="${loggedUser.id}" id="logged-user-id">
+
 <div class="container" id="content-main">
     <div class="row">
         <!--USERS MESSAGING LIST-->
-        <div class="col-sm-3 px-0 block rounded-0" id="users-msg-block" style="height: 92vh; padding: 0; margin: 0">
-            <div class="list-group px-0 mx-0 rounded-0 alert-light" style="overflow: auto; max-height: 92vh">
-                <div class="list-group-item list-group-item-action row px-0 mx-0 rounded-0">
-                    <p><b class="mx-2">User 1: </b>Message 1</p>
-                </div>
-                <div class="list-group-item list-group-item-action active row px-0 mx-0 rounded-0">
-                     <p><b class="mx-2">Barack Obama: </b>Message 1</p>
-                </div>
-                <div class="list-group-item list-group-item-action row px-0 mx-0 rounded-0">
-                     <p><b class="mx-2">User 3: </b>Message 1</p>
-                </div>
-                <div class="list-group-item list-group-item-action row px-0 mx-0 rounded-0">
-                     <p><b class="mx-2">User 4: </b>Message 1</p>
-                </div>
-                <div class="list-group-item list-group-item-action row px-0 mx-0 rounded-0">
-                     <p><b class="mx-2">User 5: </b>Message 1</p>
-                </div>
-                <div class="list-group-item list-group-item-action row px-0 mx-0 rounded-0">
-                     <p><b class="mx-2">User 6: </b>Message 1</p>
-                </div>
-                <div class="list-group-item list-group-item-action row px-0 mx-0 rounded-0">
-                     <p><b class="mx-2">User 7: </b>Message 1</p>
-                </div>
-                <div class="list-group-item list-group-item-action row px-0 mx-0 rounded-0">
-                     <p><b class="mx-2">User 8: </b>Message 1</p>
-                </div>
-                <div class="list-group-item list-group-item-action row px-0 mx-0 rounded-0">
-                     <p><b class="mx-2">User 9: </b>Message 1</p>
-                </div>
-                <div class="list-group-item list-group-item-action row px-0 mx-0 rounded-0">
-                     <p><b class="mx-2">User 9: </b>Message 1</p>
-                </div>
-                <div class="list-group-item list-group-item-action row px-0 mx-0 rounded-0">
-                     <p><b class="mx-2">User 9: </b>Message 1</p>
-                </div>
-                <div class="list-group-item list-group-item-action row px-0 mx-0 rounded-0">
-                     <p><b class="mx-2">User 9: </b>Message 1</p>
-                </div>
+        <div class="col-sm-3 px-0 block rounded-0" id="users-msg-block" style="max-height: 100vh; padding: 0; margin: 0">
+            <div class="list-group px-0 mx-0 rounded-0 alert-light" style="overflow: auto; max-height: 100vh">
+                <!--<div class="list-group-item list-group-item-action row px-0 mx-0 rounded-0">-->
+                    <!--<p><b class="mx-2">User 1: </b>Message 1</p>-->
+                <!--</div>-->
+                <!--<div class="list-group-item list-group-item-action active row px-0 mx-0 rounded-0">-->
+                     <!--<p><b class="mx-2">Barack Obama: </b>Message 1</p>-->
+                <!--</div>-->
+                <!--<div class="list-group-item list-group-item-action row px-0 mx-0 rounded-0">-->
+                     <!--<p><b class="mx-2">User 3: </b>Message 1</p>-->
+                <!--</div>-->
+                <!--<div class="list-group-item list-group-item-action row px-0 mx-0 rounded-0">-->
+                     <!--<p><b class="mx-2">User 4: </b>Message 1</p>-->
+                <!--</div>-->
+                <!--<div class="list-group-item list-group-item-action row px-0 mx-0 rounded-0">-->
+                     <!--<p><b class="mx-2">User 5: </b>Message 1</p>-->
+                <!--</div>-->
+                <!--<div class="list-group-item list-group-item-action row px-0 mx-0 rounded-0">-->
+                     <!--<p><b class="mx-2">User 6: </b>Message 1</p>-->
+                <!--</div>-->
+                <!--<div class="list-group-item list-group-item-action row px-0 mx-0 rounded-0">-->
+                     <!--<p><b class="mx-2">User 7: </b>Message 1</p>-->
+                <!--</div>-->
+                <!--<div class="list-group-item list-group-item-action row px-0 mx-0 rounded-0">-->
+                     <!--<p><b class="mx-2">User 8: </b>Message 1</p>-->
+                <!--</div>-->
+                <!--<div class="list-group-item list-group-item-action row px-0 mx-0 rounded-0">-->
+                     <!--<p><b class="mx-2">User 9: </b>Message 1</p>-->
+                <!--</div>-->
+                <!--<div class="list-group-item list-group-item-action row px-0 mx-0 rounded-0">-->
+                     <!--<p><b class="mx-2">User 9: </b>Message 1</p>-->
+                <!--</div>-->
+                <!--<div class="list-group-item list-group-item-action row px-0 mx-0 rounded-0">-->
+                     <!--<p><b class="mx-2">User 9: </b>Message 1</p>-->
+                <!--</div>-->
+                <!--<div class="list-group-item list-group-item-action row px-0 mx-0 rounded-0">-->
+                     <!--<p><b class="mx-2">User 9: </b>Message 1</p>-->
+                <!--</div>-->
             </div>
         </div>
         <!--USERS MESSAGING-->
         <div class="col-sm-9 mx-0 px-0 h-100" id="messaging-block">
-            <div class="col-12 alert m-0 text-center alert-light rounded-0 py-auto" style="height: 6vh">Barack Obama</div>
-            <div class="list-group-item" style="overflow: auto; max-height: 86vh">
+            <div class="col-12 alert m-0 text-center alert-light rounded-0 py-auto" style="max-height: 8vh">Barack Obama</div>
+            <div class="list-group-item" style="overflow: auto; max-height: 92vh">
                 <div>
                     <p class="alert alert-primary text-right rounded-left ml-4">Enrico Fermi (1901–1954) was an
                         Italian-American physicist who was awarded the 1938 Nobel Prize in Physics. </p>
@@ -199,20 +202,21 @@
                         in
                         Shanghai and was admitted to Tsinghua University in 1935.</p>
                 </div>
-                <div class="input-group mb-3 align-middle" id="send-msg-block" style="max-height: 10vh; line-height: 10vh">
-                    <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button">Button</button>
-                    </div>
+            </div>
+            <div class="input-group mb-3" style="width: 40vw">
+                <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                <div class="input-group-append">
+                    <span class="input-group-text btn" id="basic-addon2">@example.com</span>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
+
+
 </body>
 </html>
-<script src="../../static/js/userSearch.js"></script>
-<script src="../../static/js/friends.js"></script>
-<script src="../../static/js/ws-messages.js"></script>
-<script src="../../static/js/messages.js"></script>
+<script src="/js/userSearch.js"></script>
+<script src="/js/friends.js"></script>
+<script src="/js/ws-messages.js"></script>
+<script src="/js/messages.js"></script>

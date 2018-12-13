@@ -46,8 +46,14 @@ public class MessageServiceImpl implements MessageService {
                 }
             }
         }
+
         User user = userDao.findById(userId).get();
         User friend = userDao.findById(friendId).get();
+        List<Conversation> conversations = user.getConversations();
+        for (Conversation conversation : conversations) {
+            System.out.println("-----Conversation");
+            System.out.println(conversation);
+        }
         if (!conversationExists) {
             Conversation conversation = new Conversation();
             conversationDao.save(conversation);

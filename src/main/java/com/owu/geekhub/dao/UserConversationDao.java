@@ -13,4 +13,5 @@ public interface UserConversationDao extends JpaRepository<UserConversation, Lon
 
     @Query("select uc from UserConversation uc where uc.user_id=:id")
     List<UserConversation> findAllByUser_id(@Param("id") Long id);
+
 }

@@ -18,6 +18,15 @@ $("#nav-send-btn").click(function () {
     sendMessage(msg);
 });
 
+function wsInit() {
+    let socket = new SockJS("/message-web-socket");
+    stompClient = Stomp.over(socket);
+    connectToConversations();
+    setTimeout(loadConversations, 3000);
+    // loadConversations();
+
+
+}
 function sendMessage(msg) {
     stompClient.send('/message/sender-id' + loggedUserId + '/receiver-id' + recipientId, {}, JSON.stringify({
         content: msg,
@@ -26,34 +35,42 @@ function sendMessage(msg) {
     console.log("message gone");
 }
 
-function wsInit() {
-    let socket = new SockJS("/message-web-socket");
-    stompClient = Stomp.over(socket);
-// connecting
+function loadConversations() {
+    console.log("LOADING MESAGES...");
+    stompClient.send('/conversation/conversation-for-id' + loggedUserId), {}, JSON.stringify({});
+}
+
+function connectToConversations() {
     stompClient.connect({}, function () {
         console.log("Connected successfully!");
         // following the channel
-        stompClient.subscribe('/topic/msg-answer/id' + loggedUserId, function (answer) {
-            let msgArray = JSON.parse(answer.body);
-            console.log(msgArray);
-            let msgNavBlock = $("#nav-msg-block");
-            let $msgBlock = $("#msg-block");
-            msgNavBlock.empty();
-            $msgBlock.empty();
-            for (let msgObj of msgArray) {
-                // console.log("MESSAGE CAME:", msgObj);
-                let p = $('<p/>', {text: msgObj.content,}).addClass("alert alert-primary");
-                p.prepend($('<b/>', {text: msgObj.sender.firstName + ": "}));
-                if (msgObj.sender.id === loggedUserId || (msgObj.sender.id === recipientId && $("#send-btn").text() === 'Close')) {
-                    $msgBlock.append(p);
-                } else {
-                    msgNavBlock.append(p);
-                }
-            }
-            ;
+        stompClient.subscribe('/topic/conversations-list-for-id' + loggedUserId, function (answer) {
+            console.log("INSIDE SUBSCRIBE FUNCTION");
+            let conversationsArray = JSON.parse(answer.body);
+            console.log({conversationsArray});
+
+
+            // let msgArray = JSON.parse(answer.body);
+            // console.log(msgArray);
+            // let msgNavBlock = $("#nav-msg-block");
+            // let $msgBlock = $("#msg-block");
+            // msgNavBlock.empty();
+            // $msgBlock.empty();
+            // for (let msgObj of msgArray) {
+            //     // console.log("MESSAGE CAME:", msgObj);
+            //     let p = $('<p/>', {text: msgObj.content,}).addClass("alert alert-primary");
+            //     p.prepend($('<b/>', {text: msgObj.sender.firstName + ": "}));
+            //     if (msgObj.sender.id === loggedUserId || (msgObj.sender.id === recipientId && $("#send-btn").text() === 'Close')) {
+            //         $msgBlock.append(p);
+            //     } else {
+            //         msgNavBlock.append(p);
+            //     }
+            // }
+            // ;
         });
     });
 }
+
 
 function wsDisconnect() {
     stompClient.disconnect();
