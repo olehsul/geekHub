@@ -1,7 +1,7 @@
-html {
-    padding: 50px 0 0;
+body {
+    padding: 50px 0;
 }
-html > *{
+body > *{
     padding: 0;
 }
 
@@ -18,33 +18,44 @@ html > *{
 #content-main {
     /*margin-top: 50px;*/
     padding: 0;
-    height: 92vh;
+    height: 100vh;
 
     /*padding-bottom: 0;*/
     /*margin-bottom: 0;*/
 }
 
-#users-msg-block > * {
-    padding: 0;
+#users-msg-block {
+
+}
+
+#users-msg-block .list-group-item {
+    /*padding: 0;*/
     margin: 0;
 }
 
 #messaging-block {
     padding: 0;
+    margin: 0;
 }
 
-#messaging-block > * {
-    padding: 0;
+#messaging-block * {
 }
 
+#messaging-block p {
+    /*padding: 0;*/
+    /*margin: 0;*/
+
+}
 #msg-main-block {
     display: none;
 }
 
 #send-msg-block {
-    line-height: 10vh;
-}
-
-#send-msg-block {
-    vertical-align: center;
+    position: absolute;
+    padding: 0;
+    width: 80vh;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    height: 50px;
 }

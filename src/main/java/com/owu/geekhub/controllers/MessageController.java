@@ -1,6 +1,5 @@
 package com.owu.geekhub.controllers;
 
-import com.owu.geekhub.dao.ConversationDao;
 import com.owu.geekhub.dao.MessageDAO;
 import com.owu.geekhub.dao.UserConversationDao;
 import com.owu.geekhub.dao.UserDao;
@@ -13,13 +12,13 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.sql.Date;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Controller
 public class MessageController {
@@ -29,6 +28,15 @@ public class MessageController {
     private MessageDAO messageDAO;
     @Autowired
     private MessageService messageService;
+    @Autowired
+    private UserConversationDao userConversationDao;
+
+    @GetMapping("/messages")
+    public String messages(Model model) {
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        model.addAttribute("loggedUser", principal);
+        return "user/messages";
+    }
 
     @MessageMapping("/sender-id{senderId}/receiver-id{recipientId}")
     @SendTo({"/topic/msg-answer/id{recipientId}", "/topic/msg-answer/id{senderId}"})
@@ -55,6 +63,22 @@ public class MessageController {
 //                .collect(Collectors.toCollection(LinkedHashSet::new));
 //        return new Date(System.currentTimeMillis()) + ": " + message.getContent();
         return null;
+    }
+
+    @MessageMapping("/conversation-for-id{userId}")
+    @SendTo("/topic/conversations-list-for-id{userId}")
+    public List<Conversation> getConversations(@DestinationVariable Long userId) {
+        System.out.println("INSIDE CONVERSATION MESSAGE MAPPING");
+        User user = userDao.findById(userId).get();
+        System.out.println(user);
+        List<Conversation> collected = null;
+        List<UserConversation> found = userConversationDao.findAllByUser_id(userId);
+
+//        List<Conversation> collected = user.getConversations().stream().sorted(Comparator.comparing(o -> o.getTheLastMessage().getCreateDate())).collect(Collectors.toList());
+        for (Conversation conversation : collected) {
+            System.out.println(conversation);
+        }
+        return collected;
     }
 
     @PostMapping("/createConversationOrMessage")

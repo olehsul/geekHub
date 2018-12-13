@@ -69,7 +69,7 @@ public class User implements UserDetails {
             inverseJoinColumns={@JoinColumn(name="user_id")})
     private List<User> incomingFriendShipRequests = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_conversation",
             joinColumns={@JoinColumn(name="user_id")},
             inverseJoinColumns={@JoinColumn(name="conversation_id")})

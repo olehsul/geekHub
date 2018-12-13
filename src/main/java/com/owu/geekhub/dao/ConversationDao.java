@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface ConversationDao extends JpaRepository<Conversation, Long> {
     boolean existsDistinctByUsers(List<User> users);
+
 }

@@ -17,7 +17,7 @@ public class Message {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CONVERSE_ID")
     private Conversation conversation;
-    @ManyToOne(fetch = FetchType.EAGER,
+    @ManyToOne(fetch = FetchType.LAZY,
     targetEntity = User.class)
     private User sender;
     private String content;
