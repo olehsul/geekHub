@@ -49,6 +49,17 @@ function connectToConversations() {
             let conversationsArray = JSON.parse(answer.body);
             console.log({conversationsArray});
 
+            let $conversationContainer = $("#conversation-container");
+            $conversationContainer.empty();
+
+            for (const conversationsArrayElement of conversationsArray) {
+                console.log({conversationsArrayElement});
+                let div = $('<div/>').addClass("list-group-item list-group-item-action row px-0 mx-0 rounded-0");
+                let p = $('<p/>', {text: conversationsArrayElement.theLastMessage.sender.firstName,}).addClass("mx-2");
+
+                div.append(p);
+                $conversationContainer.append(div);
+            }
 
             // let msgArray = JSON.parse(answer.body);
             // console.log(msgArray);

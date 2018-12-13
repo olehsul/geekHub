@@ -1,5 +1,6 @@
 package com.owu.geekhub.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ public class Conversation {
     @Column(name="conversation_id", unique = true, nullable = false)
     private Long id;
 
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_conversation",
             joinColumns={@JoinColumn(name="conversation_id")},
