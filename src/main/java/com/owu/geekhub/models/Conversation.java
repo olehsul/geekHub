@@ -2,6 +2,7 @@ package com.owu.geekhub.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import org.apache.commons.lang3.builder.ToStringExclude;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -22,8 +23,16 @@ public class Conversation {
             inverseJoinColumns={@JoinColumn(name="user_id")})
     private List<User> users = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="conversation", cascade = CascadeType.ALL)
     private List<Message> messages;
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     private Message theLastMessage;
+
+    @Override
+    public String toString() {
+        return "Conversation{" +
+                "id=" + id +
+                '}';
+    }
 }

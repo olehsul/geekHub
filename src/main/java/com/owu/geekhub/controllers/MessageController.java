@@ -72,7 +72,7 @@ public class MessageController {
         User user = userDao.findById(userId).get();
         System.out.println(user);
 
-        return user.getConversations();
+        return   user.getConversations();
     }
 
     @PostMapping("/createConversationOrMessage")
