@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
           integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
     <link rel="stylesheet" th:href="@{/css/style.css}" href="../../static/css/style.css" type="text/css">
-    <link rel="stylesheet" th:href="@{/css/messages.css}" href="../../static/css/messages.css" type="text/css">
+    <!--<link rel="stylesheet" th:href="@{/css/messages.css}" href="../../static/css/messages.css" type="text/css">-->
 </head>
 <body>
 <nav class="navbar navbar-expand-md navbar-dark bg-dark rounded-0" onresize="navbarOnResizeFunc(event)">
@@ -134,9 +134,10 @@
             <input type="hidden" th:value="${loggedUser.id}" id="logged-user-id">
             <div th:if="${!areFriends}">
                 <div th:if="${userPage.id} != ${loggedUser.id}">
-                    <a class="btn btn-primary" id="btn-send-friend-request">
-                        <p>Send friend request</p>
-                    </a>
+                    <button class="btn btn-secondary btn-sm col-md-2"
+                            th:onclick="'friendRequest(\'' + ${userPage.id} + '\');'" th:value="${userPage.id}">
+                        friendship request
+                    </button>
                 </div>
             </div>
         </div>
@@ -156,5 +157,5 @@
 </html>
 <script src="/js/userSearch.js"></script>
 <script src="/js/friends.js"></script>
-<script src="/js/ws-messages.js"></script>
+<!--<script src="/js/ws-messages.js"></script>-->
 <script src="/js/messages.js"></script>

@@ -1,6 +1,8 @@
 package com.owu.geekhub.controllers;
 
+import com.owu.geekhub.dao.MessageDAO;
 import com.owu.geekhub.dao.UserDao;
+import com.owu.geekhub.models.Message;
 import com.owu.geekhub.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -9,10 +11,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.sql.Date;
 import java.util.List;
 
 @Controller
 public class UserFriendsController {
+    @Autowired
+    private MessageDAO messageDAO;
 
     @Autowired
     private UserDao userDao;

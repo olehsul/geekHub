@@ -46,6 +46,7 @@ public class MessageServiceImpl implements MessageService {
                 }
             }
         }
+
         User user = userDao.findById(userId).get();
         User friend = userDao.findById(friendId).get();
         if (!conversationExists) {

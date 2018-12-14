@@ -1,7 +1,10 @@
 package com.owu.geekhub.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,7 +23,6 @@ import java.util.Objects;
 public class User implements UserDetails {
     @Id
     private Long id;
-    // todo: fix username & email
     @Column(unique = true)
     private String username;
     private String password;
@@ -43,13 +45,14 @@ public class User implements UserDetails {
     private boolean credentialsNonExpired;
     private boolean accountNonLocked;
 
-
+    @JsonIgnore
     @ManyToMany
     @JoinTable(name="user_friend",
             joinColumns={@JoinColumn(name="user_id")},
             inverseJoinColumns={@JoinColumn(name="friend_id")})
     private List<User> friends = new ArrayList<>();
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(name="user_friend",
             joinColumns={@JoinColumn(name="friend_id")},
@@ -69,7 +72,8 @@ public class User implements UserDetails {
             inverseJoinColumns={@JoinColumn(name="user_id")})
     private List<User> incomingFriendShipRequests = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_conversation",
             joinColumns={@JoinColumn(name="user_id")},
             inverseJoinColumns={@JoinColumn(name="conversation_id")})

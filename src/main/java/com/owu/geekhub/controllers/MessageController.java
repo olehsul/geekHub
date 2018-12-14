@@ -71,14 +71,8 @@ public class MessageController {
         System.out.println("INSIDE CONVERSATION MESSAGE MAPPING");
         User user = userDao.findById(userId).get();
         System.out.println(user);
-        List<Conversation> collected = null;
-        List<UserConversation> found = userConversationDao.findAllByUser_id(userId);
 
-//        List<Conversation> collected = user.getConversations().stream().sorted(Comparator.comparing(o -> o.getTheLastMessage().getCreateDate())).collect(Collectors.toList());
-        for (Conversation conversation : collected) {
-            System.out.println(conversation);
-        }
-        return collected;
+        return   user.getConversations();
     }
 
     @PostMapping("/createConversationOrMessage")
@@ -97,4 +91,5 @@ public class MessageController {
 //        System.out.println("Does conv exists " + conversationDao.existsDistinctByUsers(users));
         return "redirect:/friends";
     }
+
 }
