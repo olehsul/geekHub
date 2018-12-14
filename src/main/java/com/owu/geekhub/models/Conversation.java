@@ -26,7 +26,7 @@ public class Conversation {
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="conversation", cascade = CascadeType.ALL)
     private List<Message> messages;
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     private Message theLastMessage;
 
     @Override

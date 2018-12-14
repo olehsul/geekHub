@@ -20,8 +20,7 @@ public class Message {
     @ManyToOne(fetch = FetchType.LAZY)
     @ToStringExclude
     private Conversation conversation;
-    @JsonIgnore
-    @OneToOne(fetch = FetchType.LAZY,
+    @OneToOne(fetch = FetchType.EAGER,
     targetEntity = User.class)
     private User sender;
     private String content;

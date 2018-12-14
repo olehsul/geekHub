@@ -134,9 +134,10 @@
             <input type="hidden" th:value="${loggedUser.id}" id="logged-user-id">
             <div th:if="${!areFriends}">
                 <div th:if="${userPage.id} != ${loggedUser.id}">
-                    <a class="btn btn-primary" id="btn-send-friend-request">
-                        <p>Send friend request</p>
-                    </a>
+                    <button class="btn btn-secondary btn-sm col-md-2"
+                            th:onclick="'friendRequest(\'' + ${userPage.id} + '\');'" th:value="${userPage.id}">
+                        friendship request
+                    </button>
                 </div>
             </div>
         </div>
