@@ -78,7 +78,14 @@ public class MessageController {
     @MessageMapping("/messages-for-conversation-id{conversationId}")
     @SendTo("/topic/messages-list-for-conversation-id{conversationId}")
     public List<Message> getMessages(@DestinationVariable Long conversationId) {
-        return messageDAO.findAllByConversation_Id(conversationId);
+        System.out.println("INSIDE GET-MESSAGES______________________________________");
+
+        List<Message> list = messageDAO.findAllByConversation_Id(conversationId);
+        for (Message message : list) {
+            System.out.println(message);
+        }
+
+        return list;
     }
 
     @PostMapping("/createConversationOrMessage")

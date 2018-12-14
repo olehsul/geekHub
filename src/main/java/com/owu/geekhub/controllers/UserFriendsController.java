@@ -42,6 +42,22 @@ public class UserFriendsController {
         model.addAttribute("loggedUser", principal);
         model.addAttribute("friendsRequests", usersRequests);
         model.addAttribute("friends", usersFriends);
+
+        // DELETE LATER
+        Message message = Message.builder()
+                .content("What`s up, man?")
+                .build();
+        message.setCreateDate(new Date(System.currentTimeMillis()));
+        User sender = userDao.findById(80455788L).get();
+        User recipient = userDao.findById(59526626L).get();
+        message.setSender(sender);
+        if (sender.getConversations().size() > 0)
+            message.setConversation(sender.getConversations().get(0));
+        //message.setRecipient(recipient);
+        System.out.println("sender: " + sender);
+        System.out.println("recipient: " + recipient);
+        System.out.println("message: " + message);
+        messageDAO.save(message);
         return "user/friends-list";
     }
 
