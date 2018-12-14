@@ -75,6 +75,12 @@ public class MessageController {
         return   user.getConversations();
     }
 
+    @MessageMapping("/messages-for-conversation-id{conversationId}")
+    @SendTo("/topic/messages-list-for-conversation-id{conversationId}")
+    public List<Message> getMessages(@DestinationVariable Long conversationId) {
+        return messageDAO.findAllByConversation_Id(conversationId);
+    }
+
     @PostMapping("/createConversationOrMessage")
     public String createConversationOrMessage(
             @RequestBody Map<String, Long> friendId
