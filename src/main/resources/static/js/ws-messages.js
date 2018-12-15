@@ -26,6 +26,7 @@ function wsInit() {
 
 
 }
+
 function sendMessage(msg) {
     stompClient.send('/message/sender-id' + loggedUserId + '/receiver-id' + recipientId, {}, JSON.stringify({
         content: msg,
@@ -62,13 +63,21 @@ function loadConversations(answer) {
         console.log({conversationsArrayElement});
         let div = $('<div/>').addClass("list-group-item list-group-item-action row px-0 mx-0 rounded-0");
         // div.attr("id","conversation-" + conversationsArrayElement.id);
-        let p = $('<p/>', {text: conversationsArrayElement.theLastMessage.sender.firstName,}).addClass("mx-2");
+        let p = $('<p/>', {text: conversationsArrayElement.theLastMessage.content}).addClass("mx-2 px-2 py-0");
+        p.prepend('<b>' + conversationsArrayElement.theLastMessage.sender.firstName + " " + conversationsArrayElement.theLastMessage.sender.lastName + ": " + '</b><br />');
 
         div.append(p);
         $conversationContainer.append(div);
 
         console.log({div});
         div.on("click", function () {
+            for (let user of conversationsArrayElement.users) {
+                if (user.id != loggedUserId) {
+                    $("#messages-header").text(user.firstName + ' ' + user.lastName);
+                    break;
+                }
+            }
+
             let socket = new SockJS("/message-web-socket");
             let stompClientForMsg = Stomp.over(socket);
             $("#conversation-container .active").removeClass("active");
