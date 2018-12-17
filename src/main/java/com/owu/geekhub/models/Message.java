@@ -25,7 +25,7 @@ public class Message {
     private User sender;
     private String content;
     private Date createDate;
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "parent_message_id", referencedColumnName = "id")
     private Message parentMessage;
     

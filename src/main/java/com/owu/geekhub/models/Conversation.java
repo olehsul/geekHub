@@ -2,7 +2,6 @@ package com.owu.geekhub.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import org.apache.commons.lang3.builder.ToStringExclude;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -16,8 +15,8 @@ public class Conversation {
     @Column(name="conversation_id", unique = true, nullable = false)
     private Long id;
 
-    @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY)
+//    @JsonIgnore
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_conversation",
             joinColumns={@JoinColumn(name="conversation_id")},
             inverseJoinColumns={@JoinColumn(name="user_id")})
