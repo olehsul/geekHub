@@ -57,13 +57,13 @@ public class User implements UserDetails {
     private List<User> friendOf = new ArrayList<>();
 
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="friendship_requests",
             joinColumns={@JoinColumn(name="user_id")},
             inverseJoinColumns={@JoinColumn(name="friend_id")})
     private List<User> outGoingFriendShipRequests = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="friendship_requests",
             joinColumns={@JoinColumn(name="friend_id")},
             inverseJoinColumns={@JoinColumn(name="user_id")})
@@ -99,6 +99,7 @@ public class User implements UserDetails {
         return authorities;
     }
 }
+
 //    INSERT INTO user(id, account_non_expired,
 //                     account_non_locked, activated,
 //                     activation_key, active, birth_date,

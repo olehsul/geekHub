@@ -10,8 +10,7 @@ $("#send-message-btn").click(function () {
     let msg = input.val();
     input.val('');
 
-    console.log({msg});
-
+    console.log("sending message: " + {msg});
     sendMessage(msg);
 });
 
@@ -26,27 +25,24 @@ function sendMessage(msg) {
     ));
 }
 
-$("#send-btn").click(function () {
-    let msg = $("#msg").val();
-
-    console.log('sending message: ', msg);
-    sendSimpleMessage(msg);
-});
-
-$("#nav-send-btn").click(function () {
-    let msg = $("#msg-nav").val();
-
-    console.log('sending message: ', msg);
-    sendSimpleMessage(msg);
-});
+// $("#send-btn").click(function () {
+//     let msg = $("#msg").val();
+//
+//     console.log('sending message: ', msg);
+//     sendSimpleMessage(msg);
+// });
+//
+// $("#nav-send-btn").click(function () {
+//     let msg = $("#msg-nav").val();
+//
+//     console.log('sending message: ', {msg});
+//     sendSimpleMessage(msg);
+// });
 
 function wsInit() {
     let socket = new SockJS("/conversation-web-socket");
     stompClient = Stomp.over(socket);
     connectToConversations();
-    // loadConversations();
-
-
 }
 
 function sendSimpleMessage(msg) {
@@ -117,6 +113,9 @@ function displayConversation(conversation, isNew) {
     } else {
         $("#conversation-container").append(div);
     }
+
+    if (conversation.id == selectedConversationId)
+        div.addClass("active");
 
     console.log({div});
     div.on("click", function () {
