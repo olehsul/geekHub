@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.authentication.configurers
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -40,20 +41,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/authentication/**", "/auth", "/passwordRecovery", "/setNewPassword", "/emailRecovery", "/registerNewUser", "/verification-request/**", "/verify/**", "/css/**", "/js/**", "/api/**").permitAll()
                 .anyRequest().authenticated()
                 .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/user/**").hasRole("USER")
                 .and()
-//                .httpBasic()
-                .formLogin()
-                .loginPage("/login")
-                .successForwardUrl("/success-login")//handle with post mapping in controller
-                .failureUrl("/login?error").permitAll()
-                .permitAll()
+                .httpBasic()
+//                .formLogin()
+//                .loginPage("/login")
+//                .successForwardUrl("/success-login")//handle with post mapping in controller
+//                .failureUrl("/login?error").permitAll()
+//                .permitAll()
+//                .and()
+//                .logout()
+//                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+//                .logoutSuccessUrl("/login")
+//                .permitAll()
                 .and()
-                .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login")
-                .permitAll()
-                .and()
-                .csrf().disable();
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//                .and()
+//                .csrf().disable()
+                ;
     }
 
     @Bean
