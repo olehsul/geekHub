@@ -1,10 +1,8 @@
 package com.owu.geekhub.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,7 +13,6 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Data
@@ -60,13 +57,13 @@ public class User implements UserDetails {
     private List<User> friendOf = new ArrayList<>();
 
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="friendship_requests",
             joinColumns={@JoinColumn(name="user_id")},
             inverseJoinColumns={@JoinColumn(name="friend_id")})
     private List<User> outGoingFriendShipRequests = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="friendship_requests",
             joinColumns={@JoinColumn(name="friend_id")},
             inverseJoinColumns={@JoinColumn(name="user_id")})
@@ -102,6 +99,7 @@ public class User implements UserDetails {
         return authorities;
     }
 }
+
 //    INSERT INTO user(id, account_non_expired,
 //                     account_non_locked, activated,
 //                     activation_key, active, birth_date,

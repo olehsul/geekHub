@@ -29,7 +29,7 @@ function createConversationOrMessage(id) {
         success: function (response) {
             console.log("succeed request!");
             console.log(response);
-            window.location.replace("http://stackoverflow.com");
+            window.location.replace("/messages");
         },
         error: function (err) {
 

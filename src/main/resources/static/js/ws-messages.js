@@ -1,33 +1,51 @@
 let stompClient;
 let loggedUserId = $("#logged-user-id").val();
-let recipientId = $("#recipient-id").val();
+let recipientId;
+let selectedConversationId;
 
 wsInit();
 
-$("#send-btn").click(function () {
-    let msg = $("#msg").val();
+$("#send-message-btn").click(function () {
+    let input = $("#message-input");
+    let msg = input.val();
+    input.val('');
 
-    console.log('sending message: ', msg);
+    console.log("sending message: " + {msg});
     sendMessage(msg);
 });
 
-$("#nav-send-btn").click(function () {
-    let msg = $("#msg-nav").val();
+function sendMessage(msg) {
+    stompClient.send('/message/private-message', {}, JSON.stringify(
+        {
+            content: msg,
+            senderId: loggedUserId,
+            recipientId: recipientId,
+            conversationId: selectedConversationId
+        }
+    ));
+}
 
-    console.log('sending message: ', msg);
-    sendMessage(msg);
-});
+// $("#send-btn").click(function () {
+//     let msg = $("#msg").val();
+//
+//     console.log('sending message: ', msg);
+//     sendSimpleMessage(msg);
+// });
+//
+// $("#nav-send-btn").click(function () {
+//     let msg = $("#msg-nav").val();
+//
+//     console.log('sending message: ', {msg});
+//     sendSimpleMessage(msg);
+// });
 
 function wsInit() {
-    let socket = new SockJS("/message-web-socket");
+    let socket = new SockJS("/conversation-web-socket");
     stompClient = Stomp.over(socket);
     connectToConversations();
-    setTimeout(loadConversations, 3000);
-    // loadConversations();
-
-
 }
-function sendMessage(msg) {
+
+function sendSimpleMessage(msg) {
     stompClient.send('/message/sender-id' + loggedUserId + '/receiver-id' + recipientId, {}, JSON.stringify({
         content: msg,
         senderId: loggedUserId
@@ -35,53 +53,136 @@ function sendMessage(msg) {
     console.log("message gone");
 }
 
-function loadConversations() {
-    console.log("LOADING MESAGES...");
-    stompClient.send('/conversation/conversation-for-id' + loggedUserId), {}, JSON.stringify({});
-}
-
 function connectToConversations() {
     stompClient.connect({}, function () {
         console.log("Connected successfully!");
         // following the channel
         stompClient.subscribe('/topic/conversations-list-for-id' + loggedUserId, function (answer) {
-            console.log("INSIDE SUBSCRIBE FUNCTION");
-            let conversationsArray = JSON.parse(answer.body);
-            console.log({conversationsArray});
-
-            let $conversationContainer = $("#conversation-container");
-            $conversationContainer.empty();
-
-            for (const conversationsArrayElement of conversationsArray) {
-                console.log({conversationsArrayElement});
-                let div = $('<div/>').addClass("list-group-item list-group-item-action row px-0 mx-0 rounded-0");
-                let p = $('<p/>', {text: conversationsArrayElement.theLastMessage.sender.firstName,}).addClass("mx-2");
-
-                div.append(p);
-                $conversationContainer.append(div);
-            }
-
-            // let msgArray = JSON.parse(answer.body);
-            // console.log(msgArray);
-            // let msgNavBlock = $("#nav-msg-block");
-            // let $msgBlock = $("#msg-block");
-            // msgNavBlock.empty();
-            // $msgBlock.empty();
-            // for (let msgObj of msgArray) {
-            //     // console.log("MESSAGE CAME:", msgObj);
-            //     let p = $('<p/>', {text: msgObj.content,}).addClass("alert alert-primary");
-            //     p.prepend($('<b/>', {text: msgObj.sender.firstName + ": "}));
-            //     if (msgObj.sender.id === loggedUserId || (msgObj.sender.id === recipientId && $("#send-btn").text() === 'Close')) {
-            //         $msgBlock.append(p);
-            //     } else {
-            //         msgNavBlock.append(p);
-            //     }
-            // }
-            // ;
+            loadConversations(answer);
+        });
+        conversationRequest();
+        stompClient.subscribe('/topic/conversation-for-id' + loggedUserId, function (answer) {
+            updateConversation(answer);
         });
     });
 }
 
+function loadConversations(answer) {
+    console.log("INSIDE LOAD CONVERSATIONS FUNCTION");
+    let conversationsArray = JSON.parse(answer.body);
+    console.log({conversationsArray});
+
+    $("#conversation-container").empty();
+
+    for (const conversationsArrayElement of conversationsArray) {
+        displayConversation(conversationsArrayElement, false);
+    }
+
+    // let msgArray = JSON.parse(answer.body);
+    // console.log(msgArray);
+    // let msgNavBlock = $("#nav-msg-block");
+    // let $msgBlock = $("#msg-block");
+    // msgNavBlock.empty();
+    // $msgBlock.empty();
+    // for (let msgObj of msgArray) {
+    //     // console.log("MESSAGE CAME:", msgObj);
+    //     let p = $('<p/>', {text: msgObj.content,}).addClass("alert alert-primary");
+    //     p.prepend($('<b/>', {text: msgObj.sender.firstName + ": "}));
+    //     if (msgObj.sender.id === loggedUserId || (msgObj.sender.id === recipientId && $("#send-btn").text() === 'Close')) {
+    //         $msgBlock.append(p);
+    //     } else {
+    //         msgNavBlock.append(p);
+    //     }
+    // }
+    // ;
+}
+
+function displayConversation(conversation, isNew) {
+    console.log({conversationsArrayElement: conversation});
+    let div = $('<div/>').addClass("list-group-item list-group-item-action row px-0 mx-0 rounded-0");
+    div.attr("id", "conversation-" + conversation.id);
+
+    let friend = conversation.users[0].id != loggedUserId ? conversation.users[0] : conversation.users[1];
+
+    let p = $('<p/>', {text: conversation.theLastMessage != null ? conversation.theLastMessage.content : ''}).addClass("mx-2 px-2 py-0");
+    p.prepend('<b>' + friend.firstName + " " + friend.lastName + ": " + '</b><br />');
+
+    div.append(p);
+    if (isNew) {
+        $("#conversation-container").prepend(div);
+    } else {
+        $("#conversation-container").append(div);
+    }
+
+    if (conversation.id == selectedConversationId)
+        div.addClass("active");
+
+    console.log({div});
+    div.on("click", function () {
+        $("#messages-header").html('<a href="/id' + friend.id + '">' + friend.firstName + ' ' + friend.lastName + '</a>');
+
+        let socket = new SockJS("/message-web-socket");
+        let stompClientForMsg = Stomp.over(socket);
+        $("#conversation-container .active").removeClass("active");
+        div.addClass("active");
+
+        selectedConversationId = conversation.id;
+
+        recipientId = friend.id;
+
+        stompClientForMsg.connect({}, function () {
+            console.log("Connected to: MessageWebSocket");
+            stompClientForMsg.subscribe('/topic/messages-list-for-conversation-id' + conversation.id, function (answer) {
+                if (selectedConversationId == conversation.id)
+                    loadMessages(answer);
+            });
+            messagesRequest(stompClientForMsg, conversation.id);
+        }, function (error) {
+            console.log(error);
+        });
+    });
+
+}
+
+function updateConversation(answer) {
+    let newConversation = JSON.parse(answer.body);
+
+    if (selectedConversationId != newConversation.id) {
+        $("#conversation-" + newConversation.id).remove();
+        displayConversation(newConversation, true);
+    }
+}
+
+function loadMessages(answer) {
+    console.log("INSIDE MESSAGES FUNCTION");
+    console.log({answer});
+
+    let messagesArray = JSON.parse(answer.body);
+    let msgContainer = $("#messages-container");
+    msgContainer.empty();
+
+    for (const message of messagesArray) {
+        let p = $('<p />', {text: message.content});
+        console.log({message});
+        p.addClass("alert");
+        if (message.sender.id == loggedUserId) {
+            p.addClass("alert-primary text-right rounded-left ml-4");
+        } else {
+            p.addClass("alert-secondary text-left rounded-right mr-4");
+        }
+        msgContainer.append(p);
+    }
+}
+
+function conversationRequest() {
+    console.log("LOADING CONVERSATIONS...");
+    stompClient.send('/conversation/conversations-request-for-id' + loggedUserId), {}, JSON.stringify({});
+}
+
+function messagesRequest(stompClientForMsg, conversationId) {
+    console.log("LOADING MESSAGES...");
+    stompClientForMsg.send('/message/messages-for-conversation-id' + conversationId), {}, JSON.stringify({});
+}
 
 function wsDisconnect() {
     stompClient.disconnect();
