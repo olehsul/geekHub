@@ -28,6 +28,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 //                () -> new UsernameNotFoundException("User Not Found with -> username or email : " + username))
                 ;
 
-        return UserPrinciple.build(user);
+        return user;
     }
 }

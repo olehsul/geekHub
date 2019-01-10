@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Entity
 @Data
 @Builder
-public class User{
+public class User implements UserDetails {
     @Id
     private Long id;
     @Column(unique = true)
@@ -33,11 +33,12 @@ public class User{
     private int activationKey;
     @Enumerated(EnumType.STRING)
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
+//    @ManyToMany(fetch = FetchType.LAZY)
+//    @JoinTable(name = "user_roles",
+//            joinColumns = @JoinColumn(name = "user_id"),
+//            inverseJoinColumns = @JoinColumn(name = "role_id"))
+//    private Set<Role> roles = new HashSet<>();
+    private Role role;
 
     private boolean active;
     private boolean activated;
@@ -89,6 +90,19 @@ public class User{
                 ", lastName='" + lastName + '\'' +
                 ", firstName='" + firstName + '\'' +
                 '}';
+    }
+
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(role.name()));
+        return authorities;
     }
 
 
