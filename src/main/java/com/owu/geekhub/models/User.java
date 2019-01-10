@@ -10,14 +10,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 @Data
 @Builder
-public class User implements UserDetails {
+public class User{
     @Id
     private Long id;
     @Column(unique = true)
@@ -33,7 +32,13 @@ public class User implements UserDetails {
     private Date birthDate;
     private int activationKey;
     @Enumerated(EnumType.STRING)
-    private Role role;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
+
     private boolean active;
     private boolean activated;
 
@@ -57,13 +62,13 @@ public class User implements UserDetails {
     private List<User> friendOf = new ArrayList<>();
 
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="friendship_requests",
             joinColumns={@JoinColumn(name="user_id")},
             inverseJoinColumns={@JoinColumn(name="friend_id")})
     private List<User> outGoingFriendShipRequests = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="friendship_requests",
             joinColumns={@JoinColumn(name="friend_id")},
             inverseJoinColumns={@JoinColumn(name="user_id")})
@@ -87,18 +92,14 @@ public class User implements UserDetails {
     }
 
 
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(role.name()));
-        return authorities;
-    }
+//    @Override
+//    public Collection<? extends GrantedAuthority> getAuthorities() {
+//        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+//        authorities.add(new SimpleGrantedAuthority(role.name()));
+//        return authorities;
+//    }
 }
+
 //    INSERT INTO user(id, account_non_expired,
 //                     account_non_locked, activated,
 //                     activation_key, active, birth_date,

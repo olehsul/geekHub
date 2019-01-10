@@ -28,5 +28,4 @@ public class Message {
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "parent_message_id", referencedColumnName = "id")
     private Message parentMessage;
-    
 }
