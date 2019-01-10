@@ -58,6 +58,7 @@ function searchUser() {
             // let users = [];
             $(".app").remove();
             let foundUsers = response;
+            console.log(foundUsers);
             let it = 0;
             $.each(foundUsers, function (i, f) {
                 it = i + 1;
