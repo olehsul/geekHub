@@ -2,6 +2,7 @@ package com.owu.geekhub.controllers;
 
 import com.owu.geekhub.dao.UserDao;
 import com.owu.geekhub.models.User;
+import com.owu.geekhub.security.jwt.JwtProvider;
 import com.owu.geekhub.service.MailService;
 import com.owu.geekhub.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,11 +32,13 @@ public class AuthenticationController {
     @Autowired
     private UserDao userDao;
 
+
     @Autowired
     PasswordEncoder passwordEncoder;
 
     @Autowired
     private MailService mailService;
+
 
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     @PostMapping("/registerNewUser")

@@ -1,4 +1,4 @@
-package com.owu.geekhub.jwtmessage.request;
+package com.owu.geekhub.authMessage.request;
 
 import java.util.Set;
 
@@ -8,7 +8,6 @@ public class SignUpForm {
     @NotBlank
     @Size(min = 3, max = 50)
     private String firstname;
-
     @NotBlank
     @Size(min = 3, max = 50)
     private String lastname;
@@ -52,4 +51,5 @@ public class SignUpForm {
     public void setPassword(String password) {
         this.password = password;
     }
+
 }

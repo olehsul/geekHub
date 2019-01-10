@@ -3,7 +3,6 @@ package com.owu.geekhub.service.impl;
 import com.owu.geekhub.dao.UserDao;
 import com.owu.geekhub.models.Role;
 import com.owu.geekhub.models.User;
-import com.owu.geekhub.models.UserPrinciple;
 import com.owu.geekhub.service.UserService;
 import com.owu.geekhub.service.generators.RandomUserIdentity;
 import com.owu.geekhub.service.validation.RegistrationValidator;
@@ -13,7 +12,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -40,15 +38,9 @@ public class UserServiceImpl implements UserService {
     private RandomUserIdentity randomUserIdentity;
 
     @Override
-    @Transactional
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
-        User user = userDao.findByUsername(username)
-//                .orElseThrow(
-//                () -> new UsernameNotFoundException("User Not Found with -> username or email : " + username))
-                ;
-
-        return UserPrinciple.build(user);
+    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+        User user = userDao.findByUsername(s);
+        return user;
     }
 
     private void encodePassword(User user){
@@ -76,6 +68,7 @@ public class UserServiceImpl implements UserService {
         System.out.println(user);
 
         user.setEnabled(true);
+        user.setRole(Role.ROLE_USER);
         user.setAccountNonExpired(true);
         user.setCredentialsNonExpired(true);
         user.setAccountNonLocked(true);
