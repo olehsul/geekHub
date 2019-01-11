@@ -1,3 +1,61 @@
+body {
+    padding: 50px 0;
+}
+body > *{
+    padding: 0;
+}
+
+#navbar-main {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding-top: 0;
+    height: 50px;
+    /*height: 8vh;*/
+    width: 100%;
+}
+
+#content-main {
+    /*margin-top: 50px;*/
+    padding: 0;
+    height: 100vh;
+
+    /*padding-bottom: 0;*/
+    /*margin-bottom: 0;*/
+}
+
+#users-msg-block {
+
+}
+
+#users-msg-block .list-group-item {
+    /*padding: 0;*/
+    margin: 0;
+}
+
+#messaging-block {
+    padding: 0;
+    margin: 0;
+}
+
+#messaging-block * {
+}
+
+#messaging-block p {
+    /*padding: 0;*/
+    /*margin: 0;*/
+
+}
 #msg-main-block {
     display: none;
+}
+
+#send-msg-block {
+    position: absolute;
+    padding: 0;
+    width: 80vh;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    height: 50px;
 }

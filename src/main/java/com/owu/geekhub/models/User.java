@@ -1,5 +1,6 @@
 package com.owu.geekhub.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -9,10 +10,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 @Data
@@ -20,7 +19,6 @@ import java.util.Objects;
 public class User implements UserDetails {
     @Id
     private Long id;
-    // todo: fix username & email
     @Column(unique = true)
     private String username;
     private String password;
@@ -34,7 +32,14 @@ public class User implements UserDetails {
     private Date birthDate;
     private int activationKey;
     @Enumerated(EnumType.STRING)
+
+//    @ManyToMany(fetch = FetchType.LAZY)
+//    @JoinTable(name = "user_roles",
+//            joinColumns = @JoinColumn(name = "user_id"),
+//            inverseJoinColumns = @JoinColumn(name = "role_id"))
+//    private Set<Role> roles = new HashSet<>();
     private Role role;
+
     private boolean active;
     private boolean activated;
 
@@ -43,13 +48,14 @@ public class User implements UserDetails {
     private boolean credentialsNonExpired;
     private boolean accountNonLocked;
 
-
+    @JsonIgnore
     @ManyToMany
     @JoinTable(name="user_friend",
             joinColumns={@JoinColumn(name="user_id")},
             inverseJoinColumns={@JoinColumn(name="friend_id")})
     private List<User> friends = new ArrayList<>();
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(name="user_friend",
             joinColumns={@JoinColumn(name="friend_id")},
@@ -57,19 +63,20 @@ public class User implements UserDetails {
     private List<User> friendOf = new ArrayList<>();
 
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="friendship_requests",
             joinColumns={@JoinColumn(name="user_id")},
             inverseJoinColumns={@JoinColumn(name="friend_id")})
     private List<User> outGoingFriendShipRequests = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="friendship_requests",
             joinColumns={@JoinColumn(name="friend_id")},
             inverseJoinColumns={@JoinColumn(name="user_id")})
     private List<User> incomingFriendShipRequests = new ArrayList<>();
 
-    @ManyToMany
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_conversation",
             joinColumns={@JoinColumn(name="user_id")},
             inverseJoinColumns={@JoinColumn(name="conversation_id")})
@@ -97,7 +104,16 @@ public class User implements UserDetails {
         authorities.add(new SimpleGrantedAuthority(role.name()));
         return authorities;
     }
+
+
+//    @Override
+//    public Collection<? extends GrantedAuthority> getAuthorities() {
+//        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+//        authorities.add(new SimpleGrantedAuthority(role.name()));
+//        return authorities;
+//    }
 }
+
 //    INSERT INTO user(id, account_non_expired,
 //                     account_non_locked, activated,
 //                     activation_key, active, birth_date,

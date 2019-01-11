@@ -23,7 +23,6 @@ public class UserRestController {
 
     @PostMapping("/findUser")
     public List<UserSearchModel> findUser(
-
             @RequestBody Map<String, String> fullName
     ) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

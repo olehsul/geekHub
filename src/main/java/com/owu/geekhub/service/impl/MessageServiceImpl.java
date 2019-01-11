@@ -12,6 +12,7 @@ import com.owu.geekhub.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -46,13 +47,15 @@ public class MessageServiceImpl implements MessageService {
                 }
             }
         }
-        User user = userDao.findById(userId).get();
-        User friend = userDao.findById(friendId).get();
+
         if (!conversationExists) {
+            User user = userDao.findById(userId).get();
+            User friend = userDao.findById(friendId).get();
             Conversation conversation = new Conversation();
-            conversationDao.save(conversation);
+            conversation.setUsers(new ArrayList<>());
             conversation.getUsers().add(user);
             conversation.getUsers().add(friend);
+            conversation.setMessages(new ArrayList<>());
             conversationDao.save(conversation);
         }
     }

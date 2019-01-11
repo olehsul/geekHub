@@ -1,5 +1,6 @@
 package com.owu.geekhub.dao;
 
+import com.owu.geekhub.models.Conversation;
 import com.owu.geekhub.models.User;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,5 +17,5 @@ public interface UserDao extends JpaRepository<User, Long> {
     boolean existsDistinctByUsername(String username);
     boolean existsDistinctById(Long id);
     List<User> findAllByFirstNameContainsAndLastNameContains(String name, String surname);
-    
+
 }
