@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @CrossOrigin(origins = {"http://localhost:4200"})
 @RestController
 public class ApiUserRestController {
@@ -31,4 +33,10 @@ public class ApiUserRestController {
         return user;
     }
 
+    @GetMapping("/api/user-friends")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('PM')")
+    public List<User> getFriendsByUsername(@RequestParam String username) {
+        System.out.println("INSIDE GET FRIENDS______________________________");
+        return userDao.findByUsername(username).getFriends();
+    }
 }
