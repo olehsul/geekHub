@@ -2,7 +2,6 @@ package com.owu.geekhub.service.impl;
 
 import com.owu.geekhub.dao.UserDao;
 import com.owu.geekhub.models.User;
-import com.owu.geekhub.models.UserPrinciple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -2,44 +2,47 @@ package com.owu.geekhub.controllers;
 
 import com.owu.geekhub.service.UserFriendService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.Map;
 
 @RestController
-public class FriendsRestController{
+@CrossOrigin(origins = {"http://localhost:4200"})
+public class FriendsRestController {
 
     @Autowired
     private UserFriendService userFriendService;
 
-
-    @PostMapping("/friendRequest")
-    public void friendRequest(
-            @RequestBody Map<String, Long> friendId
+    @PostMapping("/friend-request")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('PM')")
+    public boolean friendRequest(
+            @RequestParam Long friendId
     ) {
-        System.out.println("INSIDE FRIEND REQUEST POST MAPPING");
-        System.out.println(friendId);
-        Long id = friendId.get("friendId");
-        userFriendService.friendRequest(id);
+        System.out.println("Sending friend request to user@id:" + friendId);
+        try {
+            userFriendService.sendFriendRequest(friendId);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 
-
-    @PostMapping("/acceptFriendRequest")
+    @PostMapping("/accept-friend-request")
     public void acceptFriendRequest(
-            @RequestBody Map<String, Long> friendId
+            @RequestParam Long friendId
     ) {
-        System.out.println(friendId);
-        Long id = friendId.get("friendId");
-        userFriendService.acceptFriendRequest(id);
+        System.out.println("Accepting request from user@id:" + friendId + "...");
+        userFriendService.acceptFriendRequest(friendId);
     }
 
-    @PostMapping("/deleteFriend")
+    @PostMapping("/delete-friend")
     public void deleteFriend(
-            @RequestBody Map<String, Long> friendId
-    ){
-        System.out.println("delete friend " + friendId);
-        Long id = friendId.get("friendId");
-        userFriendService.deleteFriend(id);
+            @RequestParam Long friendId
+    ) {
+        System.out.println("deleting user@id:" + friendId + "friend list");
+        userFriendService.deleteFriend(friendId);
     }
-
 }

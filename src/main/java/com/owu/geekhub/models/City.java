@@ -14,5 +14,4 @@ public class City {
 
     @ManyToOne
     private Country country;
-    
 }

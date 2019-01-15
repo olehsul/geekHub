@@ -17,7 +17,6 @@ public class ApiUserRestController {
     @GetMapping("/api/user/{userId}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('PM')")
     public User getUserById(@PathVariable Long userId) {
-        System.out.println("INSIDE GETUSERBYID");
         User user = userDao.findById(userId).get();
         System.out.println(user);
         return user;
@@ -26,8 +25,6 @@ public class ApiUserRestController {
     @GetMapping("/api/get-user-by-username")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('PM')")
     public User getUserByUsername(@RequestParam String username) {
-        System.out.println("INSIDE GETUSERBYUSERNAME");
-        System.out.println("USERNAME: " + username);
         User user = userDao.findByUsername(username);
         System.out.println(user);
         return user;
@@ -36,7 +33,6 @@ public class ApiUserRestController {
     @GetMapping("/api/user-friends")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('PM')")
     public List<User> getFriendsByUsername(@RequestParam String username) {
-        System.out.println("INSIDE GET FRIENDS______________________________");
         return userDao.findByUsername(username).getFriends();
     }
 }
