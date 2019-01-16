@@ -1,9 +1,13 @@
 package com.owu.geekhub.jwtmessage.request;
 
+import com.owu.geekhub.models.Gender;
+import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Set;
 
 import javax.validation.constraints.*;
-
+@Data
 public class SignUpForm {
     @NotBlank
     @Size(min = 3, max = 50)
@@ -20,6 +24,27 @@ public class SignUpForm {
     @NotBlank
     @Size(min = 6, max = 40)
     private String password;
+
+    private Gender gender;
+
+//    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    private String date;
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
 
     public String getFirstname() {
         return firstname;
