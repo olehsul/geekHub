@@ -35,4 +35,10 @@ public class ApiUserRestController {
     public List<User> getFriendsByUsername(@RequestParam String username) {
         return userDao.findByUsername(username).getFriends();
     }
+
+    @GetMapping("/api/users")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('PM')")
+    public List<User> getAllUsers() {
+        return userDao.findAll();
+    }
 }

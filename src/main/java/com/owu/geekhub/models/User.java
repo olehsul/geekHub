@@ -41,6 +41,7 @@ public class User implements UserDetails {
 //            joinColumns = @JoinColumn(name = "user_id"),
 //            inverseJoinColumns = @JoinColumn(name = "role_id"))
 //    private Set<Role> roles = new HashSet<>();
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -67,23 +68,12 @@ public class User implements UserDetails {
     private List<User> friendOf = new ArrayList<>();
 
 
-//    @ManyToMany(fetch = FetchType.LAZY)
-//    @JoinTable(name="friendship_requests",
-//            joinColumns={@JoinColumn(name="user_id")},
-//            inverseJoinColumns={@JoinColumn(name="friend_id")})
-//    private List<User> outGoingFriendShipRequests = new ArrayList<>();
-//
-//    @ManyToMany(fetch = FetchType.LAZY)
-//    @JoinTable(name="friendship_requests",
-//            joinColumns={@JoinColumn(name="friend_id")},
-//            inverseJoinColumns={@JoinColumn(name="user_id")})
-//    private List<User> incomingFriendShipRequests = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="receiver")
-    private List<FriendshipRequest> incomingRequests = new ArrayList<>();
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="sender")
-    private List<FriendshipRequest> outgoingRequests = new ArrayList<>();
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy="receiver")
+//    private List<FriendshipRequest> incomingRequests = new ArrayList<>();
+//    @JsonIgnore
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy="sender")
+//    private List<FriendshipRequest> outgoingRequests = new ArrayList<>();
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
@@ -115,14 +105,6 @@ public class User implements UserDetails {
         return authorities;
     }
 
-
-
-//    @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-//        authorities.add(new SimpleGrantedAuthority(role.name()));
-//        return authorities;
-//    }
 }
 
 //    INSERT INTO user(id, account_non_expired,

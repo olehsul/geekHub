@@ -61,7 +61,7 @@ public class UserFriendServiceImpl implements UserFriendService {
         FriendshipRequest request = null;
         List<FriendshipRequest> userIncomingRequests = friendshipRequestDAO.findAllByReceiver_Id(user.getId());
         for (FriendshipRequest userRequest : userIncomingRequests) {
-            if (userRequest.getReceiver().getId().equals(senderId))
+            if (userRequest.getSender().getId().equals(senderId))
                 request = userRequest;
         }
 
@@ -71,8 +71,15 @@ public class UserFriendServiceImpl implements UserFriendService {
                 // TODO: throw exception
                 return;
         }
-
-        friendshipRequestDAO.deleteById(request.getId());
+        if (request != null) {
+            user.getFriends().add(request.getSender());
+            request.getSender().getFriends().add(user);
+            userDao.save(user);
+            userDao.save(request.getSender());
+            friendshipRequestDAO.deleteById(request.getId());
+        } else {
+            System.out.println("Request not found!");
+        }
     }
 
     @Override
@@ -93,13 +100,11 @@ public class UserFriendServiceImpl implements UserFriendService {
     public List<FriendshipRequest> getIncomingFriendRequests() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
-        List<FriendshipRequest> userRequests = user.getIncomingRequests();
-        System.out.println(userRequests.size());
+        List<FriendshipRequest> userRequests = friendshipRequestDAO.findAllByReceiver_Id(user.getId());
         List<FriendshipRequest> requests = userRequests
                 .stream()
                 .filter(friendshipRequest -> friendshipRequest.getStatus().equals(FriendshipStatus.PENDING))
                 .collect(Collectors.toList());
-        System.out.println(requests.size());
         return requests;
     }
 }
