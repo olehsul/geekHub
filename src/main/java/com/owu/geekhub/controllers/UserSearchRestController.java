@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-public class UserRestController {
+public class UserSearchRestController {
 
     @Autowired
     private UserDao userDao;
