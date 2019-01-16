@@ -2,7 +2,6 @@ package com.owu.geekhub.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-
 import javax.persistence.*;
 
 @Entity
@@ -13,9 +12,9 @@ public class FriendshipRequest {
     private Long id;
     @Enumerated(EnumType.STRING)
     private FriendshipStatus status;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private User sender;
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private User receiver;
-
 }

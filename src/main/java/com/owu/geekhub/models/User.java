@@ -79,9 +79,11 @@ public class User implements UserDetails {
 //            inverseJoinColumns={@JoinColumn(name="user_id")})
 //    private List<User> incomingFriendShipRequests = new ArrayList<>();
 
-    @ToStringExclude
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<FriendshipRequest> requests = new ArrayList<>();
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="receiver")
+    private List<FriendshipRequest> incomingRequests = new ArrayList<>();
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="sender")
+    private List<FriendshipRequest> outgoingRequests = new ArrayList<>();
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)

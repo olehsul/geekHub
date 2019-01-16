@@ -12,7 +12,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserFriendServiceImpl implements UserFriendService {
@@ -55,7 +57,6 @@ public class UserFriendServiceImpl implements UserFriendService {
     public void acceptFriendRequest(Long senderId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
-        User friend = userDao.findById(senderId).get();
 
         FriendshipRequest request = null;
         List<FriendshipRequest> userIncomingRequests = friendshipRequestDAO.findAllByReceiver_Id(user.getId());
@@ -77,9 +78,8 @@ public class UserFriendServiceImpl implements UserFriendService {
     @Override
     public void deleteFriend(Long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User principal = (User) authentication.getPrincipal();
+        User user = (User) authentication.getPrincipal();
         User friend = userDao.findById(id).get();
-        User user = userDao.findById(principal.getId()).get();
 
         List<User> friends = user.getFriends();
         List<User> friendOf = user.getFriendOf();
@@ -87,5 +87,19 @@ public class UserFriendServiceImpl implements UserFriendService {
         friends.removeIf(nextUser -> nextUser.getId().equals(friend.getId()));
         friendOf.removeIf(nextUser -> nextUser.getId().equals(friend.getId()));
         userService.update(user);
+    }
+
+    @Override
+    public List<FriendshipRequest> getIncomingFriendRequests() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+        List<FriendshipRequest> userRequests = user.getIncomingRequests();
+        System.out.println(userRequests.size());
+        List<FriendshipRequest> requests = userRequests
+                .stream()
+                .filter(friendshipRequest -> friendshipRequest.getStatus().equals(FriendshipStatus.PENDING))
+                .collect(Collectors.toList());
+        System.out.println(requests.size());
+        return requests;
     }
 }
