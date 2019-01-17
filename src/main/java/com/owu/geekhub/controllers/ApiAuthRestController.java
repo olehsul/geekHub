@@ -8,6 +8,7 @@ import com.owu.geekhub.jwtmessage.response.ResponseMessage;
 import com.owu.geekhub.models.Role;
 import com.owu.geekhub.models.User;
 import com.owu.geekhub.security.jwt.JwtProvider;
+import com.owu.geekhub.service.MailService;
 import com.owu.geekhub.service.generators.RandomUserIdentity;
 import com.owu.geekhub.service.validation.RegistrationValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -38,9 +40,6 @@ public class ApiAuthRestController {
     @Autowired
     private UserDao userDao;
 
-//    @Autowired
-//    RoleRepository roleRepository;
-
     @Autowired
     PasswordEncoder encoder;
 
@@ -52,6 +51,10 @@ public class ApiAuthRestController {
 
     @Autowired
     private RegistrationValidator registrationValidator;
+
+    @Autowired
+    private MailService mailService;
+
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginForm loginRequest) {
@@ -69,7 +72,6 @@ public class ApiAuthRestController {
             e.printStackTrace();
         }
 
-
         System.out.println("INSIDE SIGNIN 2");
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -81,18 +83,15 @@ public class ApiAuthRestController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpForm signUpRequest) throws ParseException {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpForm signUpRequest) throws ParseException, MessagingException {
 
 
         System.out.println("inside signUp");
         System.out.println(signUpRequest);
-
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
         Date currentDate = java.sql.Date.valueOf(java.time.LocalDate.now());
-        registrationValidator.isDateValid(signUpRequest.getDate());
-
         java.util.Date date = dateFormat.parse(signUpRequest.getDate());
+        java.sql.Date birthDate = new java.sql.Date(date.getTime());
 
         if ((!registrationValidator.isDateValid(signUpRequest.getDate()))|| (date.after(currentDate))) {
             return new ResponseEntity<>(new ResponseMessage("Fail -> Date is invalid!"),
@@ -108,8 +107,6 @@ public class ApiAuthRestController {
             return new ResponseEntity<>(new ResponseMessage("Fail -> Email is already in use!"),
                     HttpStatus.BAD_REQUEST);
         }
-
-        java.sql.Date birthDate = new java.sql.Date(date.getTime());
 
         User user = User.builder()
                 .firstName(signUpRequest.getFirstname())
@@ -149,10 +146,18 @@ public class ApiAuthRestController {
         user.setEnabled(true);
         user.setAccountNonExpired(true);
         user.setAccountNonLocked(true);
-
         user.setRole(Role.ROLE_USER);
         userDao.save(user);
-
+        mailService.sendActivationKey(user.getUsername());
         return new ResponseEntity<>(new ResponseMessage("User registered successfully!"), HttpStatus.OK);
+    }
+
+    @PostMapping("/get-verification-code")
+    public ResponseEntity<?> getVerificationCode(@RequestParam("username") String username,
+                                    @RequestParam("code") Integer code){
+        System.out.println("inside get ver code--------------");
+        System.out.println("==================" + username + " --- " + code);
+        return new ResponseEntity<>(new ResponseMessage("Inside send code!!!"),
+                HttpStatus.BAD_REQUEST);
     }
 }

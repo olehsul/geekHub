@@ -1,8 +1,11 @@
 package com.owu.geekhub.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.builder.ToStringExclude;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,11 +14,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.sql.Date;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Entity
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User implements UserDetails {
     @Id
     private Long id;
@@ -31,13 +35,14 @@ public class User implements UserDetails {
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date birthDate;
     private int activationKey;
-    @Enumerated(EnumType.STRING)
 
 //    @ManyToMany(fetch = FetchType.LAZY)
 //    @JoinTable(name = "user_roles",
 //            joinColumns = @JoinColumn(name = "user_id"),
 //            inverseJoinColumns = @JoinColumn(name = "role_id"))
 //    private Set<Role> roles = new HashSet<>();
+
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     private boolean active;
@@ -63,17 +68,12 @@ public class User implements UserDetails {
     private List<User> friendOf = new ArrayList<>();
 
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name="friendship_requests",
-            joinColumns={@JoinColumn(name="user_id")},
-            inverseJoinColumns={@JoinColumn(name="friend_id"), })
-    private List<User> outGoingFriendShipRequests = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name="friendship_requests",
-            joinColumns={@JoinColumn(name="friend_id")},
-            inverseJoinColumns={@JoinColumn(name="user_id")})
-    private List<User> incomingFriendShipRequests = new ArrayList<>();
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy="receiver")
+//    private List<FriendshipRequest> incomingRequests = new ArrayList<>();
+//    @JsonIgnore
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy="sender")
+//    private List<FriendshipRequest> outgoingRequests = new ArrayList<>();
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
@@ -105,13 +105,6 @@ public class User implements UserDetails {
         return authorities;
     }
 
-
-//    @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-//        authorities.add(new SimpleGrantedAuthority(role.name()));
-//        return authorities;
-//    }
 }
 
 //    INSERT INTO user(id, account_non_expired,
