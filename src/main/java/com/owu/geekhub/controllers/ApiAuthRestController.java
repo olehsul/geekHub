@@ -29,6 +29,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -93,7 +94,7 @@ public class ApiAuthRestController {
         java.util.Date date = dateFormat.parse(signUpRequest.getDate());
         java.sql.Date birthDate = new java.sql.Date(date.getTime());
 
-        if ((!registrationValidator.isDateValid(signUpRequest.getDate()))|| (date.after(currentDate))) {
+        if ((!registrationValidator.isDateValid(signUpRequest.getDate())) || (date.after(currentDate))) {
             return new ResponseEntity<>(new ResponseMessage("Fail -> Date is invalid!"),
                     HttpStatus.BAD_REQUEST);
         }
@@ -153,11 +154,18 @@ public class ApiAuthRestController {
     }
 
     @PostMapping("/get-verification-code")
-    public ResponseEntity<?> getVerificationCode(@RequestParam("username") String username,
-                                    @RequestParam("code") Integer code){
-        System.out.println("inside get ver code--------------");
-        System.out.println("==================" + username + " --- " + code);
-        return new ResponseEntity<>(new ResponseMessage("Inside send code!!!"),
+    public ResponseEntity<?> getVerificationCode(@RequestBody Map<String, String> params) {
+
+        User user = userDao.findByUsername(params.get("username"));
+        int code = Integer.parseInt(params.get("code"));
+        if (user.getActivationKey() == code) {
+            System.out.println("Code equals!!!!");
+            user.setActivated(true);
+            userDao.save(user);
+            return new ResponseEntity<>(new ResponseMessage("Code matches"),
+                    HttpStatus.OK);
+        }
+        return new ResponseEntity<>(new ResponseMessage("Code does not matches"),
                 HttpStatus.BAD_REQUEST);
     }
 }
