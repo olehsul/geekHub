@@ -55,7 +55,6 @@ public class UserController {
                 .firstName("ADMIN")
                 .lastName("ACCOUNT")
                 .gender(Gender.MALE)
-                .role(Role.ROLE_ADMIN)
                 .build();
         model.addAttribute("user", user);
         return "user/home";
