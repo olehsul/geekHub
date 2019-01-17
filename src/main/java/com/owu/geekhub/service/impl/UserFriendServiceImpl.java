@@ -12,7 +12,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,9 +27,42 @@ public class UserFriendServiceImpl implements UserFriendService {
     private UserDao userDao;
 
     @Override
+    public List<User> getFriendsList() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+        System.out.println(user);
+        System.out.println(user.getFriends());
+        return user.getFriends();
+    }
+
+    @Override
     public void sendFriendRequest(Long receiverId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
+
+        List<User> userFriends = user.getFriends();
+        for (User userFriend : userFriends) {
+            if (userFriend.getId().equals(receiverId))
+                // TODO: throw exception
+                return;
+        }
+
+        List<FriendshipRequest> userRequests = friendshipRequestDAO.findAllBySender_Id(user.getId());
+        for (FriendshipRequest userRequest : userRequests) {
+            if (userRequest.getReceiver().getId().equals(receiverId)) {
+                return;
+            }
+        }
+
+        FriendshipRequest request = new FriendshipRequest();
+        request.setReceiver(userDao.findById(receiverId).get());
+        request.setSender(user);
+        request.setStatus(FriendshipStatus.PENDING);
+        friendshipRequestDAO.save(request);
+    }
+
+    public void sendFriendRequest(Long receiverId, Long senderId) {
+        User user = userDao.findById(senderId).get();
 
         List<User> userFriends = user.getFriends();
         for (User userFriend : userFriends) {
@@ -83,6 +115,33 @@ public class UserFriendServiceImpl implements UserFriendService {
     }
 
     @Override
+    public void cancelFriendRequest(Long receiverId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+
+        FriendshipRequest request = null;
+        List<FriendshipRequest> requests = friendshipRequestDAO.findAllBySender_Id(user.getId());
+        System.out.println(requests.size());
+        for (FriendshipRequest userRequest : requests) {
+            System.out.println(userRequest);
+            if (userRequest.getReceiver().getId().equals(receiverId))
+                request = userRequest;
+        }
+
+        List<User> userFriends = user.getFriends();
+        for (User userFriend : userFriends) {
+            if (userFriend.getId().equals(receiverId))
+                // TODO: throw exception
+                return;
+        }
+        if (request != null) {
+            friendshipRequestDAO.deleteById(request.getId());
+        } else {
+            System.out.println("Request not found!");
+        }
+    }
+
+    @Override
     public void deleteFriend(Long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
@@ -93,7 +152,10 @@ public class UserFriendServiceImpl implements UserFriendService {
 
         friends.removeIf(nextUser -> nextUser.getId().equals(friend.getId()));
         friendOf.removeIf(nextUser -> nextUser.getId().equals(friend.getId()));
+
         userService.update(user);
+        sendFriendRequest(user.getId(), friend.getId());
+        // TODO: fix async actions (remove, accept, cancel)
     }
 
     @Override
@@ -101,10 +163,20 @@ public class UserFriendServiceImpl implements UserFriendService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
         List<FriendshipRequest> userRequests = friendshipRequestDAO.findAllByReceiver_Id(user.getId());
-        List<FriendshipRequest> requests = userRequests
+        return userRequests
                 .stream()
                 .filter(friendshipRequest -> friendshipRequest.getStatus().equals(FriendshipStatus.PENDING))
                 .collect(Collectors.toList());
-        return requests;
+    }
+
+    @Override
+    public List<FriendshipRequest> getOutgoingFriendRequests() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+        List<FriendshipRequest> userRequests = friendshipRequestDAO.findAllBySender_Id(user.getId());
+        return userRequests
+                .stream()
+                .filter(friendshipRequest -> friendshipRequest.getStatus().equals(FriendshipStatus.PENDING))
+                .collect(Collectors.toList());
     }
 }
