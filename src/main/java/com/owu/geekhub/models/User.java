@@ -54,19 +54,18 @@ public class User implements UserDetails {
     private boolean accountNonLocked;
 
     @JsonIgnore
-    @ManyToMany
-    @JoinTable(name="user_friend",
-            joinColumns={@JoinColumn(name="user_id")},
-            inverseJoinColumns={@JoinColumn(name="friend_id")})
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_friend",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "friend_id")})
     private List<User> friends = new ArrayList<>();
 
     @JsonIgnore
-    @ManyToMany
-    @JoinTable(name="user_friend",
-            joinColumns={@JoinColumn(name="friend_id")},
-            inverseJoinColumns={@JoinColumn(name="user_id")})
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_friend",
+            joinColumns = {@JoinColumn(name = "friend_id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id")})
     private List<User> friendOf = new ArrayList<>();
-
 
 
 //    @OneToMany(fetch = FetchType.LAZY, mappedBy="receiver")
@@ -78,8 +77,8 @@ public class User implements UserDetails {
     @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_conversation",
-            joinColumns={@JoinColumn(name="user_id")},
-            inverseJoinColumns={@JoinColumn(name="conversation_id")})
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "conversation_id")})
     List<Conversation> conversations = new ArrayList<>();
 
     @Override
