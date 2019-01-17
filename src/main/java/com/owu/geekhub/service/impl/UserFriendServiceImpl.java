@@ -155,6 +155,7 @@ public class UserFriendServiceImpl implements UserFriendService {
 
         userService.update(user);
         sendFriendRequest(user.getId(), friend.getId());
+
         // TODO: fix async actions (remove, accept, cancel)
     }
 
