@@ -27,60 +27,48 @@ public class UserFriendServiceImpl implements UserFriendService {
     private UserDao userDao;
 
     @Override
-    public List<User> getFriendsList() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
-        System.out.println(user);
-        System.out.println(user.getFriends());
-        return user.getFriends();
-    }
-
-    @Override
     public void sendFriendRequest(Long receiverId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
+        User sender = (User) authentication.getPrincipal();
 
-        List<User> userFriends = user.getFriends();
-        for (User userFriend : userFriends) {
-            if (userFriend.getId().equals(receiverId))
-                // TODO: throw exception
-                return;
+        if (checkIfFriends(sender.getId(), receiverId)) {
+            System.out.println("Can not send request, because user is already a friend.");
+            return;
         }
-
-        List<FriendshipRequest> userRequests = friendshipRequestDAO.findAllBySender_Id(user.getId());
-        for (FriendshipRequest userRequest : userRequests) {
-            if (userRequest.getReceiver().getId().equals(receiverId)) {
-                return;
-            }
+        if (checkIfHasRequest(sender.getId(), receiverId)) {
+            System.out.println("Can not send request, because request was already sent.");
+            return;
+        }
+        if (checkIfHasRequest(sender.getId(), receiverId)) {
+            System.out.println("Can not send request, because request was already sent by receiver.");
+            return;
         }
 
         FriendshipRequest request = new FriendshipRequest();
         request.setReceiver(userDao.findById(receiverId).get());
-        request.setSender(user);
+        request.setSender(sender);
         request.setStatus(FriendshipStatus.PENDING);
         friendshipRequestDAO.save(request);
     }
 
     public void sendFriendRequest(Long receiverId, Long senderId) {
-        User user = userDao.findById(senderId).get();
-
-        List<User> userFriends = user.getFriends();
-        for (User userFriend : userFriends) {
-            if (userFriend.getId().equals(receiverId))
-                // TODO: throw exception
-                return;
+        if (checkIfFriends(senderId, receiverId)) {
+            System.out.println("Can not send request, because user is already a friend.");
+            // TODO: throw exception
+            return;
         }
-
-        List<FriendshipRequest> userRequests = friendshipRequestDAO.findAllBySender_Id(user.getId());
-        for (FriendshipRequest userRequest : userRequests) {
-            if (userRequest.getReceiver().getId().equals(receiverId)) {
-                return;
-            }
+        if (checkIfHasRequest(senderId, receiverId)) {
+            System.out.println("Can not send request, because request was already sent.");
+            return;
+        }
+        if (checkIfHasRequest(senderId, receiverId)) {
+            System.out.println("Can not send request, because request was already sent by receiver.");
+            return;
         }
 
         FriendshipRequest request = new FriendshipRequest();
         request.setReceiver(userDao.findById(receiverId).get());
-        request.setSender(user);
+        request.setSender(userDao.findById(senderId).get());
         request.setStatus(FriendshipStatus.PENDING);
         friendshipRequestDAO.save(request);
     }
@@ -88,57 +76,48 @@ public class UserFriendServiceImpl implements UserFriendService {
     @Override
     public void acceptFriendRequest(Long senderId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
+        User receiver = (User) authentication.getPrincipal();
 
-        FriendshipRequest request = null;
-        List<FriendshipRequest> userIncomingRequests = friendshipRequestDAO.findAllByReceiver_Id(user.getId());
-        for (FriendshipRequest userRequest : userIncomingRequests) {
-            if (userRequest.getSender().getId().equals(senderId))
-                request = userRequest;
+        if (checkIfFriends(senderId, receiver.getId())) {
+            System.out.println("Can not accept request, because user is already a friend.");
+            return;
         }
 
-        List<User> userFriends = user.getFriends();
-        for (User userFriend : userFriends) {
-            if (userFriend.getId().equals(senderId))
-                // TODO: throw exception
-                return;
-        }
+        FriendshipRequest request = findFriendshipRequest(senderId, receiver.getId());
+
         if (request != null) {
-            user.getFriends().add(request.getSender());
-            request.getSender().getFriends().add(user);
-            userDao.save(user);
+            receiver.getFriends().add(request.getSender());
+            request.getSender().getFriends().add(receiver);
+            userDao.save(receiver);
             userDao.save(request.getSender());
             friendshipRequestDAO.deleteById(request.getId());
-        } else {
-            System.out.println("Request not found!");
         }
     }
 
     @Override
     public void cancelFriendRequest(Long receiverId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
+        User sender = (User) authentication.getPrincipal();
 
-        FriendshipRequest request = null;
-        List<FriendshipRequest> requests = friendshipRequestDAO.findAllBySender_Id(user.getId());
-        System.out.println(requests.size());
-        for (FriendshipRequest userRequest : requests) {
-            System.out.println(userRequest);
-            if (userRequest.getReceiver().getId().equals(receiverId))
-                request = userRequest;
+        if (checkIfFriends(sender.getId(), receiverId)) {
+            System.out.println("Can not cancel request because user is already a friend");
+            return;
         }
 
-        List<User> userFriends = user.getFriends();
-        for (User userFriend : userFriends) {
-            if (userFriend.getId().equals(receiverId))
-                // TODO: throw exception
-                return;
-        }
+        FriendshipRequest request = findFriendshipRequest(sender.getId(), receiverId);
+
         if (request != null) {
             friendshipRequestDAO.deleteById(request.getId());
-        } else {
-            System.out.println("Request not found!");
         }
+    }
+
+    @Override
+    public List<User> getFriendsList() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+        System.out.println(user);
+        System.out.println(user.getFriends());
+        return user.getFriends();
     }
 
     @Override
@@ -162,9 +141,8 @@ public class UserFriendServiceImpl implements UserFriendService {
     @Override
     public List<FriendshipRequest> getIncomingFriendRequests() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
-        List<FriendshipRequest> userRequests = friendshipRequestDAO.findAllByReceiver_Id(user.getId());
-        return userRequests
+        User principal = (User) authentication.getPrincipal();
+        return friendshipRequestDAO.findAllByReceiver_Id(principal.getId())
                 .stream()
                 .filter(friendshipRequest -> friendshipRequest.getStatus().equals(FriendshipStatus.PENDING))
                 .collect(Collectors.toList());
@@ -173,11 +151,44 @@ public class UserFriendServiceImpl implements UserFriendService {
     @Override
     public List<FriendshipRequest> getOutgoingFriendRequests() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
-        List<FriendshipRequest> userRequests = friendshipRequestDAO.findAllBySender_Id(user.getId());
-        return userRequests
+        User principal = (User) authentication.getPrincipal();
+        return friendshipRequestDAO.findAllBySender_Id(principal.getId())
                 .stream()
                 .filter(friendshipRequest -> friendshipRequest.getStatus().equals(FriendshipStatus.PENDING))
                 .collect(Collectors.toList());
+    }
+
+
+    private boolean checkIfFriends(Long senderId, Long receiverId) {
+        List<User> userFriends = userDao.findById(senderId).get().getFriends();
+
+        for (User userFriend : userFriends) {
+            if (userFriend.getId().equals(receiverId))
+                // TODO: throw exception
+                return true;
+        }
+        return false;
+    }
+
+    private boolean checkIfHasRequest(Long senderId, Long receiverId) {
+        for (FriendshipRequest userRequest : friendshipRequestDAO.findAllBySender_Id(senderId)) {
+            if (userRequest.getReceiver().getId().equals(receiverId)) {
+                // TODO: throw exception
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private FriendshipRequest findFriendshipRequest(Long senderId, Long receiverId) {
+        List<FriendshipRequest> userIncomingRequests = friendshipRequestDAO.findAllByReceiver_Id(receiverId);
+        for (FriendshipRequest userRequest : userIncomingRequests) {
+            if (userRequest.getSender().getId().equals(senderId))
+                return userRequest;
+        }
+
+        System.out.println("Request was not found!");
+        // TODO: throw exception
+        return null;
     }
 }
