@@ -168,4 +168,17 @@ public class ApiAuthRestController {
         return new ResponseEntity<>(new ResponseMessage("Code does not matches"),
                 HttpStatus.BAD_REQUEST);
     }
+    @PostMapping("/get-password-reset-code")
+    public ResponseEntity<?> getPasswordResetCode(@RequestBody Map<String, String> params) throws MessagingException {
+        System.out.println("inside pass reset");
+        User user = userDao.findByUsername(params.get("username"));
+        if (user == null){
+            return new ResponseEntity<>(new ResponseMessage("user not found"),
+                    HttpStatus.OK);
+        }
+        mailService.sendActivationKey(user.getUsername());
+
+        return new ResponseEntity<>(new ResponseMessage("Code sent"),
+                HttpStatus.OK);
+    }
 }
