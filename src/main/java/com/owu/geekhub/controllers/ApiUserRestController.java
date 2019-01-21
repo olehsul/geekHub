@@ -2,6 +2,7 @@ package com.owu.geekhub.controllers;
 
 import com.owu.geekhub.dao.UserDao;
 import com.owu.geekhub.models.User;
+import com.owu.geekhub.service.UserFriendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,8 @@ import java.util.List;
 public class ApiUserRestController {
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private UserFriendService userFriendService;
 
     @GetMapping("/api/user/{userId}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('PM')")
@@ -31,13 +34,17 @@ public class ApiUserRestController {
     }
 
     @GetMapping("/api/user-friends")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('PM')")
     public List<User> getFriendsByUsername(@RequestParam String username) {
         return userDao.findByUsername(username).getFriends();
     }
 
+    @GetMapping("/api/friends")
+    public List<User> getFriendsList() {
+        System.out.println("getting friends list");
+        return userFriendService.getFriendsList();
+    }
+
     @GetMapping("/api/users")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('PM')")
     public List<User> getAllUsers() {
         return userDao.findAll();
     }
