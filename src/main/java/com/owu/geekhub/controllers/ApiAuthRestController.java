@@ -171,14 +171,32 @@ public class ApiAuthRestController {
     @PostMapping("/get-password-reset-code")
     public ResponseEntity<?> getPasswordResetCode(@RequestBody Map<String, String> params) throws MessagingException {
         System.out.println("inside pass reset");
-        User user = userDao.findByUsername(params.get("username"));
-        if (user == null){
-            return new ResponseEntity<>(new ResponseMessage("user not found"),
-                    HttpStatus.OK);
-        }
-        mailService.sendActivationKey(user.getUsername());
-
+        System.out.println("Code sent");
         return new ResponseEntity<>(new ResponseMessage("Code sent"),
+                HttpStatus.OK);
+//        User user = userDao.findByUsername(params.get("username"));
+//        if (user == null){
+//            return new ResponseEntity<>(new ResponseMessage("user not found"),
+//                    HttpStatus.OK);
+//        }
+//        mailService.sendRecoveryCode(params.get("username"));
+//        System.out.println("Code sent");
+//        return new ResponseEntity<>(new ResponseMessage("Code sent"),
+//                HttpStatus.OK);
+
+    }
+    @PostMapping("/set-new-password")
+    public ResponseEntity<?> setNewPassword(@RequestBody Map<String, String> params){
+        System.out.println(params.get("code"));
+        System.out.println(params.get("newPassword"));
+        System.out.println(params.get("username"));
+        User user = userDao.findByUsername(params.get("username"));
+        if (user.getActivationKey() == Integer.parseInt(params.get("code"))){
+            String password = encoder.encode(params.get("newPassword"));
+            user.setPassword(password);
+            userDao.save(user);
+        }
+        return new ResponseEntity<>(new ResponseMessage("New password was set"),
                 HttpStatus.OK);
     }
 }
