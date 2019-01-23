@@ -5,6 +5,8 @@ import com.owu.geekhub.models.User;
 import com.owu.geekhub.service.UserFriendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,8 +19,13 @@ public class ApiUserRestController {
     @Autowired
     private UserFriendService userFriendService;
 
+    @GetMapping("/api/auth-user/")
+    public User getUser(@PathVariable Long userId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+         return (User) authentication.getPrincipal();
+    }
+
     @GetMapping("/api/user/{userId}")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('PM')")
     public User getUserById(@PathVariable Long userId) {
         User user = userDao.findById(userId).get();
         System.out.println(user);
@@ -26,7 +33,7 @@ public class ApiUserRestController {
     }
 
     @GetMapping("/api/get-user-by-username")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('PM')")
+//    @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('PM')")
     public User getUserByUsername(@RequestParam String username) {
         User user = userDao.findByUsername(username);
         System.out.println(user);

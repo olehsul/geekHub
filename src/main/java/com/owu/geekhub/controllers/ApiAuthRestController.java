@@ -46,15 +46,14 @@ public class ApiAuthRestController {
 
         System.out.println(loginRequest);
 
-
         Authentication authentication = null;
+
         try {
             authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
         } catch (AuthenticationException e) {
             e.printStackTrace();
         }
-
 
         System.out.println("INSIDE SIGNIN 2");
 

@@ -77,24 +77,6 @@ function loadConversations(answer) {
     for (const conversationsArrayElement of conversationsArray) {
         displayConversation(conversationsArrayElement, false);
     }
-
-    // let msgArray = JSON.parse(answer.body);
-    // console.log(msgArray);
-    // let msgNavBlock = $("#nav-msg-block");
-    // let $msgBlock = $("#msg-block");
-    // msgNavBlock.empty();
-    // $msgBlock.empty();
-    // for (let msgObj of msgArray) {
-    //     // console.log("MESSAGE CAME:", msgObj);
-    //     let p = $('<p/>', {text: msgObj.content,}).addClass("alert alert-primary");
-    //     p.prepend($('<b/>', {text: msgObj.sender.firstName + ": "}));
-    //     if (msgObj.sender.id === loggedUserId || (msgObj.sender.id === recipientId && $("#send-btn").text() === 'Close')) {
-    //         $msgBlock.append(p);
-    //     } else {
-    //         msgNavBlock.append(p);
-    //     }
-    // }
-    // ;
 }
 
 function displayConversation(conversation, isNew) {
@@ -114,7 +96,7 @@ function displayConversation(conversation, isNew) {
         $("#conversation-container").append(div);
     }
 
-    if (conversation.id == selectedConversationId)
+    if (conversation.id === selectedConversationId)
         div.addClass("active");
 
     console.log({div});
@@ -133,7 +115,7 @@ function displayConversation(conversation, isNew) {
         stompClientForMsg.connect({}, function () {
             console.log("Connected to: MessageWebSocket");
             stompClientForMsg.subscribe('/topic/messages-list-for-conversation-id' + conversation.id, function (answer) {
-                if (selectedConversationId == conversation.id)
+                if (selectedConversationId === conversation.id)
                     loadMessages(answer);
             });
             messagesRequest(stompClientForMsg, conversation.id);
