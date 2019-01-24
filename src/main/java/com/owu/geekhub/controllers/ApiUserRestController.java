@@ -4,7 +4,6 @@ import com.owu.geekhub.dao.UserDao;
 import com.owu.geekhub.models.User;
 import com.owu.geekhub.service.UserFriendService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;

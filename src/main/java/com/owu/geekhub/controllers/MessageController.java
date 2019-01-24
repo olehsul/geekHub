@@ -108,16 +108,19 @@ public class MessageController {
 
     }
 
-    @PostMapping("/createConversationOrMessage")
+    @CrossOrigin(origins = "http://localhost:4200")
+    @PostMapping("/goto-conversation")
+    @ResponseBody
     public String createConversationOrMessage(
-            @RequestBody Map<String, Long> friendId
+            @RequestParam Long friendId
     ) {
-        Long id = friendId.get("friendId");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User principal = (User) authentication.getPrincipal();
-        messageService.createConversationIfNotExists(principal.getId(), id);
+        Boolean check = userConversationDao.checkIfExists(principal.getId(), friendId) > 1;
+        System.out.println(check);
+        messageService.createConversationIfNotExists(principal.getId(), friendId);
 
-        return "redirect:/friends?interlocutorId=" + id;
+        return check.toString();
     }
 
 }
