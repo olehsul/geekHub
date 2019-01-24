@@ -87,11 +87,15 @@ public class MessageController {
     // mapping for sent message to show both users & update conversations list
     @MessageMapping("/private-message")
     public void privateMessage(IncomingMessage incomingMessage) {
+        System.out.println(incomingMessage);
         System.out.println("INSIDE SEND PRIVATE MSG_________________________________");
         Conversation conversation = conversationDao.findById(incomingMessage.getConversationId()).get();
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        User principal = (User) authentication.getPrincipal();
+        User principal = userDao.findById(incomingMessage.getSenderId()).get();
         Message message = Message.builder()
                 .content(incomingMessage.getContent())
-                .sender(userDao.findById(incomingMessage.getSenderId()).get())
+                .sender(principal)
                 .createDate(new Date(System.currentTimeMillis()))
                 .conversation(conversation)
                 .parentMessage(conversation.getTheLastMessage())
@@ -102,7 +106,7 @@ public class MessageController {
 
         conversationDao.save(conversation);
 
-        template.convertAndSend("/chat/conversation-for-id" + incomingMessage.getSenderId(), conversationDao.findById(incomingMessage.getConversationId()).get());
+        template.convertAndSend("/chat/conversation-for-id" + principal.getId(), conversationDao.findById(incomingMessage.getConversationId()).get());
         template.convertAndSend("/chat/conversation-for-id" + incomingMessage.getRecipientId(), conversationDao.findById(incomingMessage.getConversationId()).get());
         template.convertAndSend("/chat/messages-list-for-conversation-id" + incomingMessage.getConversationId(), messageDAO.findAllByConversation_Id(incomingMessage.getConversationId()));
 
@@ -111,16 +115,27 @@ public class MessageController {
     @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/goto-conversation")
     @ResponseBody
-    public String createConversationOrMessage(
+    public Conversation createConversationOrMessage(
             @RequestParam Long friendId
     ) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User principal = (User) authentication.getPrincipal();
-        Boolean check = userConversationDao.checkIfExists(principal.getId(), friendId) > 1;
-        System.out.println(check);
-        messageService.createConversationIfNotExists(principal.getId(), friendId);
+//        Boolean check = userConversationDao.checkIfExists(principal.getId(), friendId) > 1;
+//        System.out.println(check);
+        Conversation conversation = null;
+        try {
+            messageService.createConversationIfNotExists(principal.getId(), friendId);
+            List<UserConversation> friendConversations = userConversationDao.findAllByUser_id(friendId);
+            List<UserConversation> principalConversations = userConversationDao.findAllByUser_id(principal.getId());
+            for (UserConversation friendConversation : friendConversations)
+                for (UserConversation principalConversation : principalConversations)
+                    if (friendConversation.getId().equals(principalConversation.getConversation_id()))
+                        conversation = conversationDao.findById(principalConversation.getConversation_id()).get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return conversation;
 
-        return check.toString();
     }
 
 }
