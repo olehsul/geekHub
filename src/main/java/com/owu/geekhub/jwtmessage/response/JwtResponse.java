@@ -2,6 +2,7 @@ package com.owu.geekhub.jwtmessage.response;
 
 import java.util.Collection;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
 
 public class JwtResponse {
@@ -9,11 +10,27 @@ public class JwtResponse {
 	private String type = "Bearer";
 	private String username;
 	private Collection<? extends GrantedAuthority> authorities;
+	private HttpStatus httpStatus;
 
 	public JwtResponse(String accessToken, String username, Collection<? extends GrantedAuthority> authorities) {
 		this.token = accessToken;
 		this.username = username;
 		this.authorities = authorities;
+	}
+
+	public JwtResponse(String token, String username, Collection<? extends GrantedAuthority> authorities, HttpStatus httpStatus) {
+		this.token = token;
+		this.username = username;
+		this.authorities = authorities;
+		this.httpStatus = httpStatus;
+	}
+
+	public HttpStatus getHttpStatus() {
+		return httpStatus;
+	}
+
+	public void setHttpStatus(HttpStatus httpStatus) {
+		this.httpStatus = httpStatus;
 	}
 
 	public String getAccessToken() {

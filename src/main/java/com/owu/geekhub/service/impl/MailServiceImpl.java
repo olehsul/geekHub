@@ -35,7 +35,7 @@ public class MailServiceImpl implements MailService {
     @Autowired
     private UserService userService;
 
-     private void send(String email) throws MessagingException {
+    private void send(String email) throws MessagingException {
         User user = userDao.findByUsername(email);
 //        if (user.isActivated()) {
 //            System.out.println(" user " + user.getUsername() + " is already activated");
