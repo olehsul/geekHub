@@ -113,18 +113,13 @@ public class ApiAuthRestController {
         java.sql.Date birthDate = new java.sql.Date(date.getTime());
 
         if ((!registrationValidator.isDateValid(signUpRequest.getDate())) || (date.after(currentDate))) {
-            return new ResponseEntity<>(new ResponseMessage("Fail -> Date is invalid!"),
-                    HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ResponseMessage("Fail -> Date is invalid!", HttpStatus.BAD_REQUEST),
+                    HttpStatus.OK);
         }
 
         if (userDao.existsByUsername(signUpRequest.getUsername())) {
-            return new ResponseEntity<>(new ResponseMessage("Fail -> Username is already taken!"),
-                    HttpStatus.BAD_REQUEST);
-        }
-
-        if (userDao.existsByUsername(signUpRequest.getUsername())) {
-            return new ResponseEntity<>(new ResponseMessage("Fail -> Email is already in use!"),
-                    HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ResponseMessage("Fail -> Username is already taken!", HttpStatus.IM_USED),
+                    HttpStatus.OK);
         }
 
         User user = User.builder()
@@ -168,7 +163,7 @@ public class ApiAuthRestController {
         user.setRole(Role.ROLE_USER);
         userDao.save(user);
         mailService.sendActivationKey(user.getUsername());
-        return new ResponseEntity<>(new ResponseMessage("User registered successfully!"), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseMessage("User registered successfully!", HttpStatus.OK), HttpStatus.OK);
     }
 
     @PostMapping("/get-verification-code")
@@ -184,7 +179,7 @@ public class ApiAuthRestController {
                     HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new ResponseMessage("Code does not matches", HttpStatus.BAD_REQUEST),
-                    HttpStatus.BAD_REQUEST);
+                    HttpStatus.OK);
 
         }
     }
