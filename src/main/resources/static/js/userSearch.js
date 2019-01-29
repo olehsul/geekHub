@@ -28,7 +28,7 @@ function searchUser() {
     let userName;
     let surname;
     if (fullName.length == 1) {
-        userName = fullName[0]
+        userName = fullName[0];
         surname = "";
     } else if (fullName.length == 2) {
         userName = fullName[0];
