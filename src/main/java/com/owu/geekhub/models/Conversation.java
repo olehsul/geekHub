@@ -12,7 +12,7 @@ import java.util.List;
 public class Conversation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="conversation_id", unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     private Long id;
 
 //    @JsonIgnore
