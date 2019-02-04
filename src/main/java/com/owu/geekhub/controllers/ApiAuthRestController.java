@@ -5,11 +5,20 @@ import com.owu.geekhub.jwtmessage.request.LoginForm;
 import com.owu.geekhub.jwtmessage.request.SignUpForm;
 import com.owu.geekhub.jwtmessage.response.JwtResponse;
 import com.owu.geekhub.jwtmessage.response.ResponseMessage;
+import com.owu.geekhub.models.Role;
+import com.owu.geekhub.models.User;
+import com.owu.geekhub.models.http.PasswordResetResponse;
 import com.owu.geekhub.security.jwt.JwtProvider;
+import com.owu.geekhub.service.MailService;
+import com.owu.geekhub.service.generators.RandomUserIdentity;
+import com.owu.geekhub.service.validation.RegistrationValidator;
+import com.sun.net.httpserver.Authenticator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -18,7 +27,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
