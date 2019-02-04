@@ -1,11 +1,13 @@
 package com.owu.geekhub.models;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class IncomingMessage {
     private String content;
-    private Long senderId;
     private Long conversationId;
     private Long recipientId;
+    private Long senderId;
 }

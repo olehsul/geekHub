@@ -17,10 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
 import java.util.*;
@@ -40,29 +37,9 @@ public class MessageController {
     @Autowired
     private SimpMessagingTemplate template;
 
-    // mapping for url '/messages'
-    @GetMapping("/messages")
-    public String messages(@RequestParam Long interlocutorId, Model model) {
-        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (interlocutorId != null) {
-            List<UserConversation> userConversations = userConversationDao.findAllByUser_id(interlocutorId);
-            for (UserConversation userConversation : userConversations) {
-                Conversation conversation = conversationDao.findById(userConversation.getConversation_id()).get();
-                List<User> users = conversation.getUsers();
-
-                if (users.get(0).getId().equals(principal.getId()))
-                    model.addAttribute("interlocutor", users.get(1));
-                else if (users.get(1).getId().equals(principal.getId()))
-                    model.addAttribute("interlocutor", users.get(0));
-            }
-        }
-        model.addAttribute("loggedUser", principal);
-        return "user/messages";
-    }
-
     //test mapping for messaging system
     @MessageMapping("/sender-id{senderId}/receiver-id{recipientId}")
-    @SendTo({"/topic/msg-answer/id{recipientId}", "/topic/msg-answer/id{senderId}"})
+    @SendTo({"/chat/msg-answer/id{recipientId}", "/chat/msg-answer/id{senderId}"})
     public Set<Message> answer(IncomingMessage incomingMessage, @DestinationVariable Long senderId, @DestinationVariable Long recipientId) {
         System.out.println(incomingMessage);
         Message message = Message.builder()
@@ -78,31 +55,28 @@ public class MessageController {
         System.out.println("message: " + message);
         messageDAO.save(message);
 
-//        Set<Message> messages = messageDAO.findMessagesBySenderIdAndRecipientId(sender.getId(), recipient.getId());
-//        messages.addAll(messageDAO.findMessagesBySenderIdAndRecipientId(recipient.getId(), sender.getId()));
-
-//        LinkedHashSet<Message> collected = messages.stream()
-//                .sorted((o1, o2) -> (int) (o1.getId() - o2.getId()))
-//                .collect(Collectors.toCollection(LinkedHashSet::new));
-//        return new Date(System.currentTimeMillis()) + ": " + message.getContent();
         return null;
     }
 
     // mapping for request to load conversation lost for user
-    @MessageMapping("/conversations-request-for-id{userId}")
-    @SendTo("/topic/conversations-list-for-id{userId}")
-    public List<Conversation> getConversations(@DestinationVariable Long userId) {
-//        System.out.println("INSIDE CONVERSATION MESSAGE MAPPING");
-        User user = userDao.findById(userId).get();
+    @MessageMapping("/conversations-request-for-{username}")
+    @SendTo("/chat/conversations-list-for-{username}")
+    public List<Conversation> getConversations(@DestinationVariable String username) {
+        System.out.println("INSIDE CONVERSATION MESSAGE MAPPING");
+        User user = userDao.findByUsername(username);
         System.out.println(user);
-        return user.getConversations();
+
+        List<Conversation> conversations = user.getConversations();
+
+        System.out.println(conversations.size());
+        return conversations;
     }
 
     // mapping for request to load messages for selected conversation
     @MessageMapping("/messages-for-conversation-id{conversationId}")
-    @SendTo("/topic/messages-list-for-conversation-id{conversationId}")
+    @SendTo("/chat/messages-list-for-conversation-id{conversationId}")
     public List<Message> getMessages(@DestinationVariable Long conversationId) {
-//        System.out.println("INSIDE GET-MESSAGES______________________________________");
+        System.out.println("INSIDE GET-MESSAGES______________________________________");
         List<Message> list = messageDAO.findAllByConversation_Id(conversationId);
         for (Message message : list) {
             System.out.println(message);
@@ -113,11 +87,15 @@ public class MessageController {
     // mapping for sent message to show both users & update conversations list
     @MessageMapping("/private-message")
     public void privateMessage(IncomingMessage incomingMessage) {
-//        System.out.println("INSIDE SEND PRICATE MSG_________________________________");
+        System.out.println(incomingMessage);
+        System.out.println("INSIDE SEND PRIVATE MSG_________________________________");
         Conversation conversation = conversationDao.findById(incomingMessage.getConversationId()).get();
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        User principal = (User) authentication.getPrincipal();
+        User principal = userDao.findById(incomingMessage.getSenderId()).get();
         Message message = Message.builder()
                 .content(incomingMessage.getContent())
-                .sender(userDao.findById(incomingMessage.getSenderId()).get())
+                .sender(principal)
                 .createDate(new Date(System.currentTimeMillis()))
                 .conversation(conversation)
                 .parentMessage(conversation.getTheLastMessage())
@@ -128,34 +106,36 @@ public class MessageController {
 
         conversationDao.save(conversation);
 
-        template.convertAndSend("/topic/conversation-for-id" + incomingMessage.getSenderId(), conversationDao.findById(incomingMessage.getConversationId()).get());
-        template.convertAndSend("/topic/conversation-for-id" + incomingMessage.getRecipientId(), conversationDao.findById(incomingMessage.getConversationId()).get());
-        template.convertAndSend("/topic/messages-list-for-conversation-id" + incomingMessage.getConversationId(), messageDAO.findAllByConversation_Id(incomingMessage.getConversationId()));
-
-//        sendMsg("topic/conversation-for-id" + incomingMessage.getSenderId(), conversationDao.findById(incomingMessage.getConversationId()).get());
-//        sendMsg("topic/conversation-for-id" + incomingMessage.getRecipientId(), conversationDao.findById(incomingMessage.getConversationId()).get());
-//        sendMsg("topic/messages-list-for-conversation-id" + incomingMessage.getConversationId(), messageDAO.findAllByConversation_Id(incomingMessage.getConversationId()));
+        template.convertAndSend("/chat/conversation-for-id" + principal.getId(), conversationDao.findById(incomingMessage.getConversationId()).get());
+        template.convertAndSend("/chat/conversation-for-id" + incomingMessage.getRecipientId(), conversationDao.findById(incomingMessage.getConversationId()).get());
+        template.convertAndSend("/chat/messages-list-for-conversation-id" + incomingMessage.getConversationId(), messageDAO.findAllByConversation_Id(incomingMessage.getConversationId()));
 
     }
 
-      // custom sendTo method (doesnt work)
-//    @MessageMapping("/")
-//    @SendTo("/{url}")
-//    private Object sendMsg(@DestinationVariable("url") String url, Object data) {
-////        System.out.println("INSIDE SENDTO METHOD____________________________________________");
-//        return data;
-//    }
-
-    @PostMapping("/createConversationOrMessage")
-    public String createConversationOrMessage(
-            @RequestBody Map<String, Long> friendId
+    @CrossOrigin(origins = "http://localhost:4200")
+    @PostMapping("/goto-conversation")
+    @ResponseBody
+    public Conversation createConversationOrMessage(
+            @RequestParam Long friendId
     ) {
-        Long id = friendId.get("friendId");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User principal = (User) authentication.getPrincipal();
-        messageService.createConversationIfNotExists(principal.getId(), id);
+//        Boolean check = userConversationDao.checkIfExists(principal.getId(), friendId) > 1;
+//        System.out.println(check);
+        Conversation conversation = null;
+        try {
+            messageService.createConversationIfNotExists(principal.getId(), friendId);
+            List<UserConversation> friendConversations = userConversationDao.findAllByUser_id(friendId);
+            List<UserConversation> principalConversations = userConversationDao.findAllByUser_id(principal.getId());
+            for (UserConversation friendConversation : friendConversations)
+                for (UserConversation principalConversation : principalConversations)
+                    if (friendConversation.getId().equals(principalConversation.getConversation_id()))
+                        conversation = conversationDao.findById(principalConversation.getConversation_id()).get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return conversation;
 
-        return "redirect:/friends?interlocutorId=" + id;
     }
 
 }

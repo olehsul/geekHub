@@ -1,5 +1,6 @@
 package com.owu.geekhub.dao;
 
+import com.owu.geekhub.models.Conversation;
 import com.owu.geekhub.models.Message;
 import com.owu.geekhub.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
