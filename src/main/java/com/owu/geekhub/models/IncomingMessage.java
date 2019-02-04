@@ -8,6 +8,6 @@ import lombok.Data;
 public class IncomingMessage {
     private String content;
     private Long conversationId;
-    private Long recipientId;
-    private Long senderId;
+    private String recipientUsername;
+    private String senderUsername;
 }

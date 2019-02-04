@@ -1,6 +1,5 @@
 package com.owu.geekhub.controllers;
 
-import com.owu.geekhub.configs.WSConfig;
 import com.owu.geekhub.dao.ConversationDao;
 import com.owu.geekhub.dao.MessageDAO;
 import com.owu.geekhub.dao.UserConversationDao;
@@ -8,7 +7,6 @@ import com.owu.geekhub.dao.UserDao;
 import com.owu.geekhub.models.*;
 import com.owu.geekhub.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -16,10 +14,11 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
+import java.sql.Time;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 @Controller
@@ -37,30 +36,9 @@ public class MessageController {
     @Autowired
     private SimpMessagingTemplate template;
 
-    //test mapping for messaging system
-    @MessageMapping("/sender-id{senderId}/receiver-id{recipientId}")
-    @SendTo({"/chat/msg-answer/id{recipientId}", "/chat/msg-answer/id{senderId}"})
-    public Set<Message> answer(IncomingMessage incomingMessage, @DestinationVariable Long senderId, @DestinationVariable Long recipientId) {
-        System.out.println(incomingMessage);
-        Message message = Message.builder()
-                .content(incomingMessage.getContent())
-                .build();
-        message.setCreateDate(new Date(System.currentTimeMillis()));
-        User sender = userDao.findById(senderId).get();
-        User recipient = userDao.findById(recipientId).get();
-        message.setSender(sender);
-        //message.setRecipient(recipient);
-        System.out.println("sender: " + sender);
-        System.out.println("recipient: " + recipient);
-        System.out.println("message: " + message);
-        messageDAO.save(message);
-
-        return null;
-    }
-
     // mapping for request to load conversation lost for user
     @MessageMapping("/conversations-request-for-{username}")
-    @SendTo("/chat/conversations-list-for-{username}")
+    @SendTo("/chat/requested-conversations-for-{username}")
     public List<Conversation> getConversations(@DestinationVariable String username) {
         System.out.println("INSIDE CONVERSATION MESSAGE MAPPING");
         User user = userDao.findByUsername(username);
@@ -87,16 +65,22 @@ public class MessageController {
     // mapping for sent message to show both users & update conversations list
     @MessageMapping("/private-message")
     public void privateMessage(IncomingMessage incomingMessage) {
+        if (incomingMessage.getContent() == null) {
+            System.out.println("Can not send empty message!__________________");
+            return;
+        }
+
         System.out.println(incomingMessage);
         System.out.println("INSIDE SEND PRIVATE MSG_________________________________");
         Conversation conversation = conversationDao.findById(incomingMessage.getConversationId()).get();
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //        User principal = (User) authentication.getPrincipal();
-        User principal = userDao.findById(incomingMessage.getSenderId()).get();
+        User principal = userDao.findByUsername(incomingMessage.getSenderUsername());
         Message message = Message.builder()
                 .content(incomingMessage.getContent())
                 .sender(principal)
-                .createDate(new Date(System.currentTimeMillis()))
+                .date(ZonedDateTime.now())
+//                .time(new Time(System.currentTimeMillis()))
                 .conversation(conversation)
                 .parentMessage(conversation.getTheLastMessage())
                 .build();
@@ -106,8 +90,8 @@ public class MessageController {
 
         conversationDao.save(conversation);
 
-        template.convertAndSend("/chat/conversation-for-id" + principal.getId(), conversationDao.findById(incomingMessage.getConversationId()).get());
-        template.convertAndSend("/chat/conversation-for-id" + incomingMessage.getRecipientId(), conversationDao.findById(incomingMessage.getConversationId()).get());
+        template.convertAndSend("/chat/update-conversation-for-" + principal.getUsername(), conversationDao.findById(incomingMessage.getConversationId()).get());
+        template.convertAndSend("/chat/update-conversation-for-" + incomingMessage.getRecipientUsername(), conversationDao.findById(incomingMessage.getConversationId()).get());
         template.convertAndSend("/chat/messages-list-for-conversation-id" + incomingMessage.getConversationId(), messageDAO.findAllByConversation_Id(incomingMessage.getConversationId()));
 
     }
@@ -120,17 +104,18 @@ public class MessageController {
     ) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User principal = (User) authentication.getPrincipal();
-//        Boolean check = userConversationDao.checkIfExists(principal.getId(), friendId) > 1;
-//        System.out.println(check);
         Conversation conversation = null;
         try {
             messageService.createConversationIfNotExists(principal.getId(), friendId);
             List<UserConversation> friendConversations = userConversationDao.findAllByUser_id(friendId);
             List<UserConversation> principalConversations = userConversationDao.findAllByUser_id(principal.getId());
-            for (UserConversation friendConversation : friendConversations)
-                for (UserConversation principalConversation : principalConversations)
-                    if (friendConversation.getId().equals(principalConversation.getConversation_id()))
+            for (UserConversation friendConversation : friendConversations) {
+                for (UserConversation principalConversation : principalConversations) {
+                    if (friendConversation.getConversation_id().equals(principalConversation.getConversation_id())) {
                         conversation = conversationDao.findById(principalConversation.getConversation_id()).get();
+                    }
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

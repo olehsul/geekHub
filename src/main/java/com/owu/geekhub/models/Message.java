@@ -4,9 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringExclude;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.sql.Time;
+import java.time.ZonedDateTime;
+import java.util.Date;
 
 @Builder
 @Data
@@ -24,8 +27,12 @@ public class Message {
     targetEntity = User.class)
     private User sender;
     private String content;
-    private Date createDate;
+//    @Temporal(TemporalType.TIMESTAMP)
+//    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+    private ZonedDateTime date;
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "parent_message_id", referencedColumnName = "id")
     private Message parentMessage;
+
+
 }
