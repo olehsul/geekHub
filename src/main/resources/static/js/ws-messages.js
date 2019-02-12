@@ -118,7 +118,7 @@ function displayConversation(conversation, isNew) {
                 if (selectedConversationId === conversation.id)
                     loadMessages(answer);
             });
-            messagesRequest(stompClientForMsg, conversation.id);
+                messagesRequest(stompClientForMsg, conversation.id);
         }, function (error) {
             console.log(error);
         });

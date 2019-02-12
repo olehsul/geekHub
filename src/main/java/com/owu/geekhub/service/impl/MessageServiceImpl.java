@@ -46,6 +46,9 @@ public class MessageServiceImpl implements MessageService {
                     break;
                 }
             }
+
+            if (conversationExists)
+                break;
         }
 
         if (!conversationExists) {
