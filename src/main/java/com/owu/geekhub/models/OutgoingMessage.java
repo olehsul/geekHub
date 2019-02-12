@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class IncomingMessage {
+public class OutgoingMessage {
     private String content;
     private Long conversationId;
     private String recipientUsername;
