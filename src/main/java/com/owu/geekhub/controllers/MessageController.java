@@ -16,8 +16,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
-import java.sql.Time;
 import java.time.ZonedDateTime;
 import java.util.*;
 
@@ -64,20 +62,20 @@ public class MessageController {
 
     // mapping for sent message to show both users & update conversations list
     @MessageMapping("/private-message")
-    public void privateMessage(IncomingMessage incomingMessage) {
-        if (incomingMessage.getContent() == null) {
+    public void privateMessage(OutgoingMessage outgoingMessage) {
+        if (outgoingMessage.getContent() == null) {
             System.out.println("Can not send empty message!__________________");
             return;
         }
 
-        System.out.println(incomingMessage);
+        System.out.println(outgoingMessage);
         System.out.println("INSIDE SEND PRIVATE MSG_________________________________");
-        Conversation conversation = conversationDao.findById(incomingMessage.getConversationId()).get();
+        Conversation conversation = conversationDao.findById(outgoingMessage.getConversationId()).get();
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //        User principal = (User) authentication.getPrincipal();
-        User principal = userDao.findByUsername(incomingMessage.getSenderUsername());
+        User principal = userDao.findByUsername(outgoingMessage.getSenderUsername());
         Message message = Message.builder()
-                .content(incomingMessage.getContent())
+                .content(outgoingMessage.getContent())
                 .sender(principal)
                 .date(ZonedDateTime.now())
 //                .time(new Time(System.currentTimeMillis()))
@@ -90,9 +88,9 @@ public class MessageController {
 
         conversationDao.save(conversation);
 
-        template.convertAndSend("/chat/update-conversation-for-" + principal.getUsername(), conversationDao.findById(incomingMessage.getConversationId()).get());
-        template.convertAndSend("/chat/update-conversation-for-" + incomingMessage.getRecipientUsername(), conversationDao.findById(incomingMessage.getConversationId()).get());
-        template.convertAndSend("/chat/messages-list-for-conversation-id" + incomingMessage.getConversationId(), messageDAO.findAllByConversation_Id(incomingMessage.getConversationId()));
+        template.convertAndSend("/chat/update-conversation-for-" + principal.getUsername(), conversationDao.findById(outgoingMessage.getConversationId()).get());
+        template.convertAndSend("/chat/update-conversation-for-" + outgoingMessage.getRecipientUsername(), conversationDao.findById(outgoingMessage.getConversationId()).get());
+        template.convertAndSend("/chat/messages-list-for-conversation-id" + outgoingMessage.getConversationId(), messageDAO.findAllByConversation_Id(outgoingMessage.getConversationId()));
 
     }
 
