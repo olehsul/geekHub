@@ -1,19 +1,19 @@
 package com.owu.geekhub.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Builder;
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
 import org.apache.commons.lang3.builder.ToStringExclude;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.sql.Time;
 import java.time.ZonedDateTime;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @Data
 @Entity
+@AllArgsConstructor
 public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,15 +24,40 @@ public class Message {
     @ToStringExclude
     private Conversation conversation;
     @OneToOne(fetch = FetchType.EAGER,
-    targetEntity = User.class)
+            targetEntity = User.class)
     private User sender;
     private String content;
-//    @Temporal(TemporalType.TIMESTAMP)
+    //    @Temporal(TemporalType.TIMESTAMP)
 //    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private ZonedDateTime date;
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "parent_message_id", referencedColumnName = "id")
+    @OneToOne(fetch = FetchType.LAZY)
+    // TODO: make lazy loading for field
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Message parentMessage;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "message_not_seen_by_users",
+            joinColumns = {@JoinColumn(name = "message_id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id")}
+    )
+    @Singular
+    private List<User> notSeenByUsers = new ArrayList<>();
 
+    public Message(User sender, String content, ZonedDateTime date, List<User> notSeenByUsers) {
+        this.sender = sender;
+        this.content = content;
+        this.date = date;
+        this.notSeenByUsers = notSeenByUsers;
+    }
 
+    public Message(Conversation conversation, User sender, String content, ZonedDateTime date, List<User> notSeenByUsers) {
+        this.conversation = conversation;
+        this.sender = sender;
+        this.content = content;
+        this.date = date;
+        this.notSeenByUsers = notSeenByUsers;
+    }
+
+    public Message() {
+    }
 }

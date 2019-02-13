@@ -51,46 +51,51 @@ public class MessageController {
     // mapping for request to load messages for selected conversation
     @MessageMapping("/messages-for-conversation-id{conversationId}")
     @SendTo("/chat/messages-list-for-conversation-id{conversationId}")
-    public List<Message> getMessages(@DestinationVariable Long conversationId) {
-        System.out.println("INSIDE GET-MESSAGES______________________________________");
-        List<Message> list = messageDAO.findAllByConversation_Id(conversationId);
-        for (Message message : list) {
-            System.out.println(message);
-        }
-        return list;
+    public List<Message> getMessagesForConversation(@DestinationVariable Long conversationId) {
+        return messageDAO.findAllByConversation_Id(conversationId);
     }
+
+    // mapping for request to load messages for selected conversation
+//    @MessageMapping("/messages-for-conversation-id{conversationId}")
+//    @SendTo("/chat/private-messages-for-conversation-id{conversationId}")
+//    public List<Message> getNewMessageForConversation(@DestinationVariable Long conversationId) {
+//        return messageDAO.findAllByConversation_Id(conversationId);
+//    }
 
     // mapping for sent message to show both users & update conversations list
     @MessageMapping("/private-message")
     public void privateMessage(OutgoingMessage outgoingMessage) {
         if (outgoingMessage.getContent() == null) {
-            System.out.println("Can not send empty message!__________________");
             return;
         }
 
         System.out.println(outgoingMessage);
-        System.out.println("INSIDE SEND PRIVATE MSG_________________________________");
         Conversation conversation = conversationDao.findById(outgoingMessage.getConversationId()).get();
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //        User principal = (User) authentication.getPrincipal();
         User principal = userDao.findByUsername(outgoingMessage.getSenderUsername());
+
         Message message = Message.builder()
                 .content(outgoingMessage.getContent())
                 .sender(principal)
                 .date(ZonedDateTime.now())
 //                .time(new Time(System.currentTimeMillis()))
                 .conversation(conversation)
+                .notSeenByUser(userDao.findByUsername(outgoingMessage.getRecipientUsername()))
                 .parentMessage(conversation.getTheLastMessage())
                 .build();
+
         messageDAO.save(message);
 
         conversation.setTheLastMessage(message);
 
         conversationDao.save(conversation);
+        // fixme: replace with field lazy loading
+        message.getParentMessage().setParentMessage(null);
 
         template.convertAndSend("/chat/update-conversation-for-" + principal.getUsername(), conversationDao.findById(outgoingMessage.getConversationId()).get());
         template.convertAndSend("/chat/update-conversation-for-" + outgoingMessage.getRecipientUsername(), conversationDao.findById(outgoingMessage.getConversationId()).get());
-        template.convertAndSend("/chat/messages-list-for-conversation-id" + outgoingMessage.getConversationId(), messageDAO.findAllByConversation_Id(outgoingMessage.getConversationId()));
+        template.convertAndSend("/chat/private-messages-for-conversation-id" + outgoingMessage.getConversationId(), message);
 
     }
 
