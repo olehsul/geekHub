@@ -28,6 +28,7 @@ public class User implements UserDetails {
     private String password;
     private String lastName;
     private String firstName;
+    private String profileImage;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
