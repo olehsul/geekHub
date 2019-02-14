@@ -30,10 +30,7 @@ public class Message {
     //    @Temporal(TemporalType.TIMESTAMP)
 //    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private ZonedDateTime date;
-    @OneToOne(fetch = FetchType.LAZY)
-    // TODO: make lazy loading for field
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private Message parentMessage;
+    private Long parentMessageId;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "message_not_seen_by_users",

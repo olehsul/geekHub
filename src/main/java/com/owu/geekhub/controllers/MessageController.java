@@ -82,7 +82,7 @@ public class MessageController {
 //                .time(new Time(System.currentTimeMillis()))
                 .conversation(conversation)
                 .notSeenByUser(userDao.findByUsername(outgoingMessage.getRecipientUsername()))
-                .parentMessage(conversation.getTheLastMessage())
+                .parentMessageId(conversation.getTheLastMessage() != null ? conversation.getTheLastMessage().getId() : null)
                 .build();
 
         messageDAO.save(message);
@@ -90,8 +90,6 @@ public class MessageController {
         conversation.setTheLastMessage(message);
 
         conversationDao.save(conversation);
-        // fixme: replace with field lazy loading
-        message.getParentMessage().setParentMessage(null);
 
         template.convertAndSend("/chat/update-conversation-for-" + principal.getUsername(), conversationDao.findById(outgoingMessage.getConversationId()).get());
         template.convertAndSend("/chat/update-conversation-for-" + outgoingMessage.getRecipientUsername(), conversationDao.findById(outgoingMessage.getConversationId()).get());
