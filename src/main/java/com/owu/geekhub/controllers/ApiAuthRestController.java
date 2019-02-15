@@ -14,6 +14,7 @@ import com.owu.geekhub.service.generators.RandomUserIdentity;
 import com.owu.geekhub.service.validation.RegistrationValidator;
 import com.sun.net.httpserver.Authenticator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -62,10 +63,10 @@ public class ApiAuthRestController {
     private MailService mailService;
 
 
+
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginForm loginRequest) {
 
-        System.out.println("INSIDE SIGNIN_____________________");
         System.out.println(loginRequest);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Custom-Header", "foo");

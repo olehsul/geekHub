@@ -1,34 +1,29 @@
 package com.owu.geekhub.configs;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.*;
 
 import javax.persistence.Persistence;
+import java.io.File;
 
 @Configuration
 //@EnableWebMvc
 public class WebConfig implements WebMvcConfigurer {
+    @Value("${upload.path}")
+    private String uploadPath;
+
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/emailRecovery")
                 .setViewName("authentication/recovery-email");
-//        registry.addViewController("/verification").setViewName("verification");
-////        if (!(SecurityContextHolder.getContext().getAuthentication()
-////                instanceof AnonymousAuthenticationToken)) {
-////            registry.addViewController("/auth").setViewName("index");
-////        } else {
-////            //get method
-////            registry.addViewController("/auth").setViewName("auth");
-////        }
-
     }
-//    @Override
-//    public void addCorsMappings(CorsRegistry registry) {
-//        registry.addMapping("/**");
-//    }
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/images/**")
+                .addResourceLocations("file:///" + System.getProperty("user.dir") + uploadPath);
+    }
+
 
 }

@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-@AllArgsConstructor
-public class OutgoingMessage {
+//@AllArgsConstructor
+public class IncomingMessage {
     private String content;
     private Long conversationId;
     private String recipientUsername;
