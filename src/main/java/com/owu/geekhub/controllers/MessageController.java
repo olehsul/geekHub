@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 public class MessageController {
@@ -97,6 +98,36 @@ public class MessageController {
 
     }
 
+    @MessageMapping("set-new-messages-as-read-in-conversation-{conversationId}-for-{username}")
+    public void setMessageAsRead(@DestinationVariable Long conversationId, @DestinationVariable String username) {
+        System.out.println("inside SET MESSAGE AS READ");
+        Conversation conversation = conversationDao.findById(conversationId).get();
+
+        List<Message> readMessages = new ArrayList<>();
+
+        for (Message message : conversation.getMessages()) {
+            System.out.println(message.getNotSeenByUsers().size());
+            for (User notSeenByUser : message.getNotSeenByUsers()) {
+                if (notSeenByUser.getUsername().equals(username)) {
+                    readMessages.add(message);
+                    message.getNotSeenByUsers().remove(notSeenByUser);
+                } else {
+                }
+            }
+            System.out.println(message.getNotSeenByUsers().size());
+        }
+
+        conversationDao.save(conversation);
+
+//        for (User notSeenByUser : message.getNotSeenByUsers()) {
+//            System.out.println(notSeenByUser);
+//        }
+
+        if (readMessages.size() > 0) {
+            template.convertAndSend("/chat/message-is-read-in-conversation-" + conversation.getId(), readMessages);
+        }
+    }
+
     @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/goto-conversation")
     @ResponseBody
@@ -121,7 +152,6 @@ public class MessageController {
             e.printStackTrace();
         }
         return conversation;
-
     }
-
 }
+
