@@ -98,23 +98,26 @@ public class MessageController {
 
     }
 
-    @MessageMapping("set-new-messages-as-read-in-conversation-{conversationId}-for-{username}")
-    public void setMessageAsRead(@DestinationVariable Long conversationId, @DestinationVariable String username) {
+    @MessageMapping("/set-messages-as-read-in-conversation-{conversationId}-for-{receiver}")
+    public void saveMessageAsRead(
+            @DestinationVariable Long conversationId,
+            @DestinationVariable String receiver
+//            @DestinationVariable String sender
+            ) {
         System.out.println("inside SET MESSAGE AS READ");
         Conversation conversation = conversationDao.findById(conversationId).get();
 
         List<Message> readMessages = new ArrayList<>();
 
         for (Message message : conversation.getMessages()) {
-            System.out.println(message.getNotSeenByUsers().size());
-            for (User notSeenByUser : message.getNotSeenByUsers()) {
-                if (notSeenByUser.getUsername().equals(username)) {
+            Iterator<User> iterator = message.getNotSeenByUsers().iterator();
+            while (iterator.hasNext()) {
+                User notSeenByUser = iterator.next();
+                if (notSeenByUser.getUsername().equals(receiver)) {
                     readMessages.add(message);
-                    message.getNotSeenByUsers().remove(notSeenByUser);
-                } else {
+                    iterator.remove();
                 }
             }
-            System.out.println(message.getNotSeenByUsers().size());
         }
 
         conversationDao.save(conversation);
@@ -122,9 +125,11 @@ public class MessageController {
 //        for (User notSeenByUser : message.getNotSeenByUsers()) {
 //            System.out.println(notSeenByUser);
 //        }
-
+        // todo: solve send to all users, or only sender
         if (readMessages.size() > 0) {
-            template.convertAndSend("/chat/message-is-read-in-conversation-" + conversation.getId(), readMessages);
+            template.convertAndSend("/chat/get-read-messages-in-conversation-" + conversation.getId()
+//                    + "-for-" + receiver
+                    , readMessages);
         }
     }
 

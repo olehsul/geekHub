@@ -65,7 +65,6 @@ public class ApiAuthRestController {
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginForm loginRequest) {
 
-        System.out.println("INSIDE SIGNIN_____________________");
 
         System.out.println(loginRequest);
         HttpHeaders headers = new HttpHeaders();
