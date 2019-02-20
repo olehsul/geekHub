@@ -16,10 +16,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
-import java.sql.Time;
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 public class MessageController {
@@ -53,47 +52,85 @@ public class MessageController {
     // mapping for request to load messages for selected conversation
     @MessageMapping("/messages-for-conversation-id{conversationId}")
     @SendTo("/chat/messages-list-for-conversation-id{conversationId}")
-    public List<Message> getMessages(@DestinationVariable Long conversationId) {
-        System.out.println("INSIDE GET-MESSAGES______________________________________");
-        List<Message> list = messageDAO.findAllByConversation_Id(conversationId);
-        for (Message message : list) {
-            System.out.println(message);
-        }
-        return list;
+    public List<Message> getMessagesForConversation(@DestinationVariable Long conversationId) {
+        return messageDAO.findAllByConversation_Id(conversationId);
     }
+
+    // mapping for request to load messages for selected conversation
+//    @MessageMapping("/messages-for-conversation-id{conversationId}")
+//    @SendTo("/chat/private-messages-for-conversation-id{conversationId}")
+//    public List<Message> getNewMessageForConversation(@DestinationVariable Long conversationId) {
+//        return messageDAO.findAllByConversation_Id(conversationId);
+//    }
 
     // mapping for sent message to show both users & update conversations list
     @MessageMapping("/private-message")
-    public void privateMessage(IncomingMessage incomingMessage) {
-        if (incomingMessage.getContent() == null) {
-            System.out.println("Can not send empty message!__________________");
+    public void privateMessage(OutgoingMessage outgoingMessage) {
+        if (outgoingMessage.getContent() == null) {
             return;
         }
 
-        System.out.println(incomingMessage);
-        System.out.println("INSIDE SEND PRIVATE MSG_________________________________");
-        Conversation conversation = conversationDao.findById(incomingMessage.getConversationId()).get();
+        System.out.println(outgoingMessage);
+        Conversation conversation = conversationDao.findById(outgoingMessage.getConversationId()).get();
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //        User principal = (User) authentication.getPrincipal();
-        User principal = userDao.findByUsername(incomingMessage.getSenderUsername());
+        User principal = userDao.findByUsername(outgoingMessage.getSenderUsername());
+
         Message message = Message.builder()
-                .content(incomingMessage.getContent())
+                .content(outgoingMessage.getContent())
                 .sender(principal)
                 .date(ZonedDateTime.now())
 //                .time(new Time(System.currentTimeMillis()))
                 .conversation(conversation)
-                .parentMessage(conversation.getTheLastMessage())
+                .notSeenByUser(userDao.findByUsername(outgoingMessage.getRecipientUsername()))
+                .parentMessageId(conversation.getTheLastMessage() != null ? conversation.getTheLastMessage().getId() : null)
                 .build();
+
         messageDAO.save(message);
 
         conversation.setTheLastMessage(message);
 
         conversationDao.save(conversation);
 
-        template.convertAndSend("/chat/update-conversation-for-" + principal.getUsername(), conversationDao.findById(incomingMessage.getConversationId()).get());
-        template.convertAndSend("/chat/update-conversation-for-" + incomingMessage.getRecipientUsername(), conversationDao.findById(incomingMessage.getConversationId()).get());
-        template.convertAndSend("/chat/messages-list-for-conversation-id" + incomingMessage.getConversationId(), messageDAO.findAllByConversation_Id(incomingMessage.getConversationId()));
+        template.convertAndSend("/chat/update-conversation-for-" + principal.getUsername(), conversationDao.findById(outgoingMessage.getConversationId()).get());
+        template.convertAndSend("/chat/update-conversation-for-" + outgoingMessage.getRecipientUsername(), conversationDao.findById(outgoingMessage.getConversationId()).get());
+        template.convertAndSend("/chat/private-messages-for-conversation-id" + outgoingMessage.getConversationId(), message);
 
+    }
+
+    @MessageMapping("/set-messages-as-read-in-conversation-{conversationId}-for-{receiver}")
+    public void saveMessageAsRead(
+            @DestinationVariable Long conversationId,
+            @DestinationVariable String receiver
+//            @DestinationVariable String sender
+            ) {
+        System.out.println("inside SET MESSAGE AS READ");
+        Conversation conversation = conversationDao.findById(conversationId).get();
+
+        List<Message> readMessages = new ArrayList<>();
+
+        for (Message message : conversation.getMessages()) {
+            Iterator<User> iterator = message.getNotSeenByUsers().iterator();
+            while (iterator.hasNext()) {
+                User notSeenByUser = iterator.next();
+                if (notSeenByUser.getUsername().equals(receiver)) {
+                    readMessages.add(message);
+                    iterator.remove();
+                }
+            }
+        }
+
+        conversationDao.save(conversation);
+
+//        for (User notSeenByUser : message.getNotSeenByUsers()) {
+//            System.out.println(notSeenByUser);
+//        }
+        // todo: solve send to all users, or only sender
+        if (readMessages.size() > 0) {
+            template.convertAndSend("/chat/get-read-messages-in-conversation-" + conversation.getId()
+//                    + "-for-" + receiver
+                    , readMessages);
+        }
     }
 
     @CrossOrigin(origins = "http://localhost:4200")
@@ -120,7 +157,6 @@ public class MessageController {
             e.printStackTrace();
         }
         return conversation;
-
     }
-
 }
+

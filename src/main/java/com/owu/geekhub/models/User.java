@@ -37,12 +37,6 @@ public class User implements UserDetails {
     private Date birthDate;
     private int activationKey;
 
-//    @ManyToMany(fetch = FetchType.LAZY)
-//    @JoinTable(name = "user_roles",
-//            joinColumns = @JoinColumn(name = "user_id"),
-//            inverseJoinColumns = @JoinColumn(name = "role_id"))
-//    private Set<Role> roles = new HashSet<>();
-
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -68,19 +62,17 @@ public class User implements UserDetails {
             inverseJoinColumns = {@JoinColumn(name = "user_id")})
     private List<User> friendOf = new ArrayList<>();
 
-
-//    @OneToMany(fetch = FetchType.LAZY, mappedBy="receiver")
-//    private List<FriendshipRequest> incomingRequests = new ArrayList<>();
-//    @JsonIgnore
-//    @OneToMany(fetch = FetchType.LAZY, mappedBy="sender")
-//    private List<FriendshipRequest> outgoingRequests = new ArrayList<>();
-
     @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_conversation",
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "conversation_id")})
     List<Conversation> conversations = new ArrayList<>();
+
+    @JsonIgnore
+    @ToStringExclude
+    @ManyToMany(mappedBy = "notSeenByUsers", fetch = FetchType.LAZY)
+    private List<Message> notSeenMessages;
 
     @Override
     public String toString() {
@@ -91,7 +83,6 @@ public class User implements UserDetails {
                 ", firstName='" + firstName + '\'' +
                 '}';
     }
-
 
     @Override
     public String getUsername() {
