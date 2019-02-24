@@ -1,9 +1,6 @@
 package com.owu.geekhub.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
-import org.apache.commons.lang3.builder.ToStringExclude;
 
 import javax.persistence.*;
 import java.time.ZonedDateTime;
@@ -17,12 +14,10 @@ import java.util.List;
 public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name="msg_id", unique = true, nullable = false)
     private Long id;
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @ToStringExclude
-    private Conversation conversation;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    private Conversation conversation;
+    private Long conversationId;
     @OneToOne(fetch = FetchType.EAGER,
             targetEntity = User.class)
     private User sender;
@@ -33,26 +28,34 @@ public class Message {
     private Long parentMessageId;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "message_not_seen_by_users",
+            name = "message_unread_by_users",
             joinColumns = {@JoinColumn(name = "message_id")},
             inverseJoinColumns = {@JoinColumn(name = "user_id")}
     )
     @Singular
-    private List<User> notSeenByUsers = new ArrayList<>();
+    private List<User> unreadByUsers = new ArrayList<>();
 
-    public Message(User sender, String content, ZonedDateTime date, List<User> notSeenByUsers) {
+    public Message(User sender, String content, ZonedDateTime date, List<User> unreadByUsers) {
         this.sender = sender;
         this.content = content;
         this.date = date;
-        this.notSeenByUsers = notSeenByUsers;
+        this.unreadByUsers = unreadByUsers;
     }
 
-    public Message(Conversation conversation, User sender, String content, ZonedDateTime date, List<User> notSeenByUsers) {
-        this.conversation = conversation;
+//    public Message(Conversation conversation, User sender, String content, ZonedDateTime date, List<User> unreadByUsers) {
+//        this.conversation = conversation;
+//        this.sender = sender;
+//        this.content = content;
+//        this.date = date;
+//        this.unreadByUsers = unreadByUsers;
+//    }
+
+    public Message(Long conversationId, User sender, String content, ZonedDateTime date, List<User> unreadByUsers) {
+        this.conversationId = conversationId;
         this.sender = sender;
         this.content = content;
         this.date = date;
-        this.notSeenByUsers = notSeenByUsers;
+        this.unreadByUsers = unreadByUsers;
     }
 
     public Message() {

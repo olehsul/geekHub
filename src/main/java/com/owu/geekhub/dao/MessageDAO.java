@@ -11,5 +11,7 @@ import java.util.Set;
 @Repository
 public interface MessageDAO extends JpaRepository<Message, Long> {
 //    Set<Message> findMessagesBySenderIdAndRecipientId(Long senderId, Long recipientId);
-    List<Message> findAllByConversation_Id(Long conversationId);
+    List<Message> findAllByConversationId(Long conversationId);
+    Message findByParentMessageId(Long parentMessageId);
+    List<Message> findDistinctByUnreadByUsersIn(List<User> user);
 }

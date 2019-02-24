@@ -70,8 +70,8 @@ public class User implements UserDetails {
 
     @JsonIgnore
     @ToStringExclude
-    @ManyToMany(mappedBy = "notSeenByUsers", fetch = FetchType.LAZY)
-    private List<Message> notSeenMessages;
+    @ManyToMany(mappedBy = "unreadByUsers", fetch = FetchType.LAZY)
+    private List<Message> unreadMessages;
 
     @Override
     public String toString() {
