@@ -23,7 +23,7 @@ public class Conversation {
     private List<User> users = new ArrayList<>();
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="conversation", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="conversationId", cascade = CascadeType.ALL)
     private List<Message> messages;
     @OneToOne(fetch = FetchType.EAGER)
     private Message theLastMessage;
