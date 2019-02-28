@@ -33,6 +33,13 @@ public class ApiUserRestController {
     public User getUserById(@PathVariable Long userId) {
         User user = userDao.findById(userId).get();
         System.out.println(user);
+        String baseDir = System.getProperty("user.dir");
+        String appDir = File.separator + "src"
+                + File.separator + "main" + File.separator
+                + "resources" + File.separator + "static"
+                +File.separator;
+        String userPicture = File.separator + uploadPath + File.separator + "usersPicture" + File.separator + user.getProfileImage();
+        user.setProfileImage(userPicture);
         return user;
     }
 
