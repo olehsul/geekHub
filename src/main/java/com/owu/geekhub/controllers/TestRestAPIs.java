@@ -3,8 +3,12 @@ package com.owu.geekhub.controllers;
 
 import com.owu.geekhub.dao.UserDao;
 import com.owu.geekhub.models.User;
+import com.owu.geekhub.service.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +18,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.UUID;
@@ -25,6 +30,9 @@ import java.util.UUID;
 public class TestRestAPIs {
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private FileStorageService fileStorageService;
 
     @GetMapping("/api/test/user")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
@@ -67,6 +75,15 @@ public class TestRestAPIs {
                 userDao.save(user);
 
         }
+    }
+
+    @GetMapping("/files/{filename:.+}")
+    @ResponseBody
+    public ResponseEntity<Resource> getFile(@PathVariable String filename) throws MalformedURLException {
+        Resource file = fileStorageService.loadFile(filename);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
+                .body(file);
     }
 
 }

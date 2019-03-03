@@ -15,52 +15,61 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.thymeleaf.expression.Lists;
 
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
-@Controller
+@CrossOrigin(origins = "http://localhost:4200")
+@RestController
 public class MessageController {
-    @Autowired
-    private UserDao userDao;
-    @Autowired
-    private MessageDAO messageDAO;
-    @Autowired
-    private MessageService messageService;
-    @Autowired
-    private UserConversationDao userConversationDao;
-    @Autowired
-    private ConversationDao conversationDao;
-    @Autowired
-    private SimpMessagingTemplate template;
+    private final UserDao userDao;
+    private final MessageDAO messageDAO;
+    private final MessageService messageService;
+    private final UserConversationDao userConversationDao;
+    private final ConversationDao conversationDao;
+    private final SimpMessagingTemplate template;
 
-    // mapping for request to load conversation lost for user
-    @MessageMapping("/conversations-request-for-{username}")
-    @SendTo("/chat/requested-conversations-for-{username}")
-    public List<Conversation> getConversations(@DestinationVariable String username) {
-        System.out.println("INSIDE CONVERSATION MESSAGE MAPPING");
+    @Autowired
+    public MessageController(UserDao userDao, MessageDAO messageDAO, MessageService messageService, UserConversationDao userConversationDao, ConversationDao conversationDao, SimpMessagingTemplate template) {
+        this.userDao = userDao;
+        this.messageDAO = messageDAO;
+        this.messageService = messageService;
+        this.userConversationDao = userConversationDao;
+        this.conversationDao = conversationDao;
+        this.template = template;
+    }
+
+
+    @GetMapping("/chat/conversations-for-{username}")
+    public List<Conversation> getConversations(@PathVariable String username) {
         User user = userDao.findByUsername(username);
-        System.out.println(user);
-
-        List<Conversation> conversations = user.getConversations();
-
-        System.out.println(conversations.size());
-        return conversations;
+        List<Conversation> collected = user.getConversations()
+                .stream()
+                .sorted((o1, o2) -> {
+                    if (o1.getTheLastMessage() == null && o2.getTheLastMessage() == null)
+                        return 0;
+                    else if (o1.getTheLastMessage() == null && o2.getTheLastMessage() != null)
+                        return -1;
+                    else if (o2.getTheLastMessage() == null && o1.getTheLastMessage() != null)
+                        return 1;
+                    else
+                        return o1.getTheLastMessage().getDate().compareTo(o2.getTheLastMessage().getDate());
+                })
+                .collect(Collectors.toList());
+        Collections.reverse(collected);
+        return collected;
     }
 
-    // mapping for request to load messages for selected conversation
-    @MessageMapping("/messages-for-conversation-id{conversationId}")
-    @SendTo("/chat/messages-list-for-conversation-id{conversationId}")
-    public List<Message> getMessagesForConversation(@DestinationVariable Long conversationId) {
-        return messageDAO.findAllByConversation_Id(conversationId);
+    @GetMapping("/chat/messages-for-{conversationId}")
+    public List<Message> getMessages(@PathVariable Long conversationId) {
+        return messageDAO.findAllByConversationId(conversationId)
+                .stream()
+                .sorted(Comparator.comparing(Message::getDate))
+                .collect(Collectors.toList());
     }
 
-    // mapping for request to load messages for selected conversation
-//    @MessageMapping("/messages-for-conversation-id{conversationId}")
-//    @SendTo("/chat/private-messages-for-conversation-id{conversationId}")
-//    public List<Message> getNewMessageForConversation(@DestinationVariable Long conversationId) {
-//        return messageDAO.findAllByConversation_Id(conversationId);
-//    }
 
     // mapping for sent message to show both users & update conversations list
     @MessageMapping("/private-message")
@@ -69,8 +78,9 @@ public class MessageController {
             return;
         }
 
-        System.out.println(outgoingMessage);
+        System.out.println("Outgoing message: " + outgoingMessage);
         Conversation conversation = conversationDao.findById(outgoingMessage.getConversationId()).get();
+
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //        User principal = (User) authentication.getPrincipal();
         User principal = userDao.findByUsername(outgoingMessage.getSenderUsername());
@@ -80,15 +90,14 @@ public class MessageController {
                 .sender(principal)
                 .date(ZonedDateTime.now())
 //                .time(new Time(System.currentTimeMillis()))
-                .conversation(conversation)
-                .notSeenByUser(userDao.findByUsername(outgoingMessage.getRecipientUsername()))
+                .conversationId(conversation.getId())
+                .unreadByUser(userDao.findByUsername(outgoingMessage.getRecipientUsername()))
                 .parentMessageId(conversation.getTheLastMessage() != null ? conversation.getTheLastMessage().getId() : null)
                 .build();
 
         messageDAO.save(message);
 
         conversation.setTheLastMessage(message);
-
         conversationDao.save(conversation);
 
         template.convertAndSend("/chat/update-conversation-for-" + principal.getUsername(), conversationDao.findById(outgoingMessage.getConversationId()).get());
@@ -97,9 +106,45 @@ public class MessageController {
 
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
+    @MessageMapping("/set-messages-as-read-in-conversation-{conversationId}-for-{receiver}")
+    public void saveMessageAsRead(
+            @DestinationVariable Long conversationId,
+            @DestinationVariable String receiver
+//            @DestinationVariable String sender
+    ) {
+        List<Message> readMessages = new ArrayList<>();
+
+        List<Message> unreadMessages = messageDAO
+                .findDistinctByUnreadByUsersIn(Collections
+                        .singletonList(userDao.findByUsername(receiver))
+                );
+
+        for (Message message : unreadMessages) {
+            Iterator<User> iterator = message.getUnreadByUsers().iterator();
+            while (iterator.hasNext()) {
+                User notSeenByUser = iterator.next();
+                if (notSeenByUser.getUsername().equals(receiver)) {
+                    readMessages.add(message);
+                    iterator.remove();
+                }
+            }
+            messageDAO.save(message);
+        }
+
+        // todo: solve send to all users, or only sender
+        if (readMessages.size() > 0) {
+            template.convertAndSend("/chat/get-read-messages-in-conversation-" + conversationId
+//                    + "-for-" + receiver
+                    , readMessages);
+        }
+    }
+
+    @GetMapping("/api/unread-messages")
+    public List<Message> getUnreadMessages(@RequestParam String username) {
+        return this.userDao.findByUsername(username).getUnreadMessages();
+    }
+
     @PostMapping("/goto-conversation")
-    @ResponseBody
     public Conversation createConversationOrMessage(
             @RequestParam Long friendId
     ) {
@@ -121,7 +166,6 @@ public class MessageController {
             e.printStackTrace();
         }
         return conversation;
-
     }
-
 }
+
