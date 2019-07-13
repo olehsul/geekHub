@@ -9,11 +9,13 @@ import com.owu.geekhub.models.Role;
 import com.owu.geekhub.models.User;
 import com.owu.geekhub.models.http.PasswordResetResponse;
 import com.owu.geekhub.security.jwt.JwtProvider;
+import com.owu.geekhub.service.FileStorageService;
 import com.owu.geekhub.service.MailService;
 import com.owu.geekhub.service.generators.RandomUserIdentity;
 import com.owu.geekhub.service.validation.RegistrationValidator;
 import com.sun.net.httpserver.Authenticator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +31,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
 import javax.validation.Valid;
+import java.net.MalformedURLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -61,9 +64,8 @@ public class ApiAuthRestController {
     @Autowired
     private MailService mailService;
 
-
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginForm loginRequest) {
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginForm loginRequest) throws MalformedURLException {
 
 
         System.out.println(loginRequest);
@@ -81,6 +83,7 @@ public class ApiAuthRestController {
                     new JwtResponse(null, loginRequest.getUsername(), null, HttpStatus.LOCKED), headers, HttpStatus.LOCKED);
         }
         Authentication authentication = null;
+
         try {
             authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
