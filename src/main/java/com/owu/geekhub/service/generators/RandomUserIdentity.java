@@ -8,8 +8,12 @@ import org.springframework.stereotype.Service;
 import java.util.Random;
 @Service
 public class RandomUserIdentity {
-    @Autowired
-    private UserDao userDao;
+
+    private final UserDao userDao;
+
+    public RandomUserIdentity(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
     public Long createRandomUserIdentity(){
         long aStart =10000000L;

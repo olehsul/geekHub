@@ -20,20 +20,21 @@ import javax.mail.internet.MimeMessage;
 @Service
 public class MailServiceImpl implements MailService {
 
-    @Autowired
-    private JavaMailSender javaMailSender;
+    private final JavaMailSender javaMailSender;
 
-    @Autowired
-    private RandomVerificationNumber randomVerificationNumber;
+    private final RandomVerificationNumber randomVerificationNumber;
 
-    @Autowired
-    private UserDao userDao;
+    private final UserDao userDao;
 
-    @Autowired
-    private Environment env;
+    private final Environment env;
 
-    @Autowired
-    private UserService userService;
+    public MailServiceImpl(JavaMailSender javaMailSender, RandomVerificationNumber randomVerificationNumber,
+                           UserDao userDao, Environment env) {
+        this.javaMailSender = javaMailSender;
+        this.randomVerificationNumber = randomVerificationNumber;
+        this.userDao = userDao;
+        this.env = env;
+    }
 
     private void send(String email) throws MessagingException {
         User user = userDao.findByUsername(email);
@@ -46,12 +47,12 @@ public class MailServiceImpl implements MailService {
         int verificationNumber = randomVerificationNumber.getRandomVerificationNumber();
 
         user.setActivationKey(verificationNumber);
-        userService.update(user);
+        userDao.save(user);
 
         try {
             mimeMessage.setFrom(new InternetAddress(env.getProperty("email.username")));
             helper.setTo(email);
-            helper.setText(Integer.toString(verificationNumber),true);
+            helper.setText(Integer.toString(verificationNumber), true);
 
         } catch (MessagingException e) {
             e.printStackTrace();
@@ -67,6 +68,7 @@ public class MailServiceImpl implements MailService {
         }
         send(email);
     }
+
     public void sendRecoveryCode(String email) throws MessagingException {
         send(email);
     }
