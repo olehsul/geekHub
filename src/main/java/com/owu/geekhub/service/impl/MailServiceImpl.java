@@ -61,11 +61,6 @@ public class MailServiceImpl implements MailService {
     }
 
     public void sendActivationKey(String email) throws MessagingException {
-        User user = userDao.findByUsername(email);
-        if (user.isActivated()) {
-            System.out.println(" user " + user.getUsername() + " is already activated");
-            return;
-        }
         send(email);
     }
 

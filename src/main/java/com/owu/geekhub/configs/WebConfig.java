@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.*;
 
-import javax.persistence.Persistence;
 import java.io.File;
 
 @Configuration
@@ -21,12 +20,8 @@ public class WebConfig implements WebMvcConfigurer {
     }
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        String appDir = File.separator + "src"
-                + File.separator + "main" + File.separator
-                + "resources" + File.separator + "static"
-                +File.separator;
-        System.out.println(("file:\\\\\\" + System.getProperty("user.dir") + appDir + uploadPath + File.separator + "usersPicture"));
-        registry.addResourceHandler("\\images\\**")
-                .addResourceLocations("file:\\\\\\" + System.getProperty("user.dir") + appDir + uploadPath + File.separator + "usersPicture");
+        registry.addResourceHandler("/images/**")
+                .addResourceLocations("classpath:/static/" + uploadPath + "/usersPicture/");
+//                .addResourceLocations("file:\\\\\\" + System.getProperty("user.dir") + appDir + uploadPath + File.separator + "usersPicture");
     }
 }

@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public ResponseEntity<?> save(User user) {
+    public synchronized ResponseEntity<?> save(User user) {
         if (user.getBirthDate().after(Date.valueOf(java.time.LocalDate.now()))) {
             return new ResponseEntity<>(new ResponseMessage("User born in future can not be signed up... ¯\\_(ツ)_/¯"),
                     HttpStatus.BAD_REQUEST);
@@ -80,15 +80,13 @@ public class UserServiceImpl implements UserService {
             return new ResponseEntity<>(new ResponseMessage("There was an error sending the message"),
                     HttpStatus.BAD_REQUEST);
         }
-        randomUserIdentity.setRandomId(user);
-        encodePassword(user);
-        userDao.save(user);
         logger.info("New User registered: " + user);
         return new ResponseEntity<>(new ResponseMessage("User registered successfully!"), HttpStatus.OK);
     }
 
     private void completeUser(User user) {
         randomUserIdentity.setRandomId(user);
+        encodePassword(user);
         user.setCredentialsNonExpired(true);
         user.setEnabled(true);
         user.setAccountNonExpired(true);
@@ -99,6 +97,7 @@ public class UserServiceImpl implements UserService {
         user.setAccountNonExpired(true);
         user.setCredentialsNonExpired(true);
         user.setAccountNonLocked(true);
+        user.setProfileImage("general.png");
     }
 
     @Override
