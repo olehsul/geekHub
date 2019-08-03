@@ -145,7 +145,7 @@ public class MessageController {
     }
 
     @PostMapping("/goto-conversation")
-    public Conversation createConversationOrMessage(
+    public Conversation createConversationIfNotExistsAndGet(
             @RequestParam Long friendId
     ) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

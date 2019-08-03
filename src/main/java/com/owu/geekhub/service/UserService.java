@@ -1,6 +1,7 @@
 package com.owu.geekhub.service;
 
 import com.owu.geekhub.models.User;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
@@ -9,9 +10,11 @@ import java.util.List;
 
 @Service
 public interface UserService extends UserDetailsService {
-    boolean save(User user) throws MessagingException;
+    ResponseEntity<?> save(User user) throws MessagingException;
+
     void update(User user);
+
     void updatePassword(User user);
-    boolean validatePassword(String password);
-     List<User> searchUser(String name, String surname);
+
+    List<User> searchUser(String name, String surname);
 }

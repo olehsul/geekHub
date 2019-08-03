@@ -31,32 +31,13 @@ public class ApiUserRestController {
 
     @GetMapping("/api/user/{userId}")
     public User getUserById(@PathVariable Long userId) {
-        User user = userDao.findById(userId).get();
-        System.out.println(user);
-        String baseDir = System.getProperty("user.dir");
-        String appDir = File.separator + "src"
-                + File.separator + "main" + File.separator
-                + "resources" + File.separator + "static"
-                +File.separator;
-        String userPicture = File.separator + uploadPath + File.separator + "usersPicture" + File.separator + user.getProfileImage();
-        user.setProfileImage(userPicture);
-        return user;
+        return userDao.findById(userId).get();
     }
 
     @GetMapping("/api/get-user-by-username")
 //    @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('PM')")
     public User getUserByUsername(@RequestParam String username) {
-        User user = userDao.findByUsername(username);
-        String baseDir = System.getProperty("user.dir");
-        String appDir = File.separator + "src"
-                + File.separator + "main" + File.separator
-                + "resources" + File.separator + "static"
-                +File.separator;
-        String userPicture = File.separator + uploadPath + File.separator + "usersPicture" + File.separator + user.getProfileImage();
-        user.setProfileImage(userPicture);
-        System.out.println("---------------------inside get user by username----------------------");
-        System.out.println(user);
-        return user;
+        return userDao.findByUsername(username);
     }
 
     @GetMapping("/api/user-friends")

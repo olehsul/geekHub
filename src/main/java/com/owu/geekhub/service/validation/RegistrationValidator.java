@@ -42,12 +42,7 @@ public class RegistrationValidator {
     }
 
     public boolean validateRegistrationData(User user){
-        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-
-        String date = format.format(user.getBirthDate());
         if (!isNameValid(user.getFirstName())
-
-                        || !isDateValid(date)
                         || !isPasswordValid(user.getPassword())
         ) {
             System.out.println("-----some registration data are wrong--------");
