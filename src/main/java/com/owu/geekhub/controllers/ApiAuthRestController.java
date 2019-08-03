@@ -73,7 +73,7 @@ public class ApiAuthRestController {
 
     @PostMapping("/get-verification-code")
     public ResponseEntity getVerificationCode(@RequestParam String username, @RequestParam String code) {
-        if (code.matches("d+")
+        if (code.matches("[0-9]+")
                 && authenticationService.matchVerificationCode(username, Integer.parseInt(code))) {
             return ResponseEntity.ok()
                     .body(new ResponseMessage("Code matches"));
