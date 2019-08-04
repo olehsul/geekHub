@@ -8,19 +8,25 @@ import com.owu.geekhub.service.MailService;
 import com.owu.geekhub.service.UserService;
 import com.owu.geekhub.service.generators.RandomUserIdentity;
 import com.owu.geekhub.service.validation.RegistrationValidator;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
 
 import javax.mail.MessagingException;
 import java.sql.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
     private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
@@ -44,7 +50,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String s) {
         return userDao.findByUsername(s);
     }
 
@@ -80,8 +86,10 @@ public class UserServiceImpl implements UserService {
             return new ResponseEntity<>(new ResponseMessage("There was an error sending the message"),
                     HttpStatus.BAD_REQUEST);
         }
-        logger.info("New User registered: " + user);
-        return new ResponseEntity<>(new ResponseMessage("User registered successfully!"), HttpStatus.OK);
+        log.info("New User registered: " + user);
+        MultiValueMap<String, String> httpHeaders = new HttpHeaders();
+        httpHeaders.set(HttpHeaders.CONTENT_TYPE, "application/json");
+        return new ResponseEntity<>(new ResponseMessage("User registered successfully!"), httpHeaders, HttpStatus.OK);
     }
 
     private void completeUser(User user) {

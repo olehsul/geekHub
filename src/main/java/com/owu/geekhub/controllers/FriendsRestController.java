@@ -3,12 +3,13 @@ package com.owu.geekhub.controllers;
 import com.owu.geekhub.models.FriendshipRequest;
 import com.owu.geekhub.models.User;
 import com.owu.geekhub.service.UserFriendService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@Slf4j
 @RestController
 @CrossOrigin(origins = {"http://localhost:4200"})
 public class FriendsRestController {
@@ -21,12 +22,12 @@ public class FriendsRestController {
     public boolean friendRequest(
             @RequestParam Long friendId
     ) {
-        System.out.println("Sending friend request to user@id:" + friendId + "...");
+        log.debug("Sending friend request to user@id:" + friendId + "...");
         try {
             userFriendService.sendFriendRequest(friendId);
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
             return false;
         }
     }
@@ -36,7 +37,7 @@ public class FriendsRestController {
     public void acceptFriendRequest(
             @RequestParam Long friendId
     ) {
-        System.out.println("Accepting request from user@id:" + friendId + "...");
+        log.debug("Accepting request from user@id:" + friendId + "...");
         userFriendService.acceptFriendRequest(friendId);
     }
 
@@ -44,7 +45,7 @@ public class FriendsRestController {
     public void cancelFriendRequest(
             @RequestParam Long friendId
     ) {
-        System.out.println("Deleting request to user@id:" + friendId + "...");
+        log.debug("Deleting request to user@id:" + friendId + "...");
         userFriendService.cancelFriendRequest(friendId);
     }
 
@@ -52,19 +53,20 @@ public class FriendsRestController {
     public void deleteFriend(
             @RequestParam Long friendId
     ) {
-        System.out.println("Deleting user@id:" + friendId + " from friends list...");
+        log.debug("Deleting user@id:" + friendId + " from friends list...");
         userFriendService.deleteFriend(friendId);
     }
 
+
     @GetMapping("/incoming-friend-requests")
     public List<FriendshipRequest> getIncomingFriendRequests() {
-        System.out.println("Getting incoming friend requests...");
+        log.debug("Getting incoming friend requests...");
         return userFriendService.getIncomingFriendRequests();
     }
 
     @GetMapping("/outgoing-friend-requests")
     public List<FriendshipRequest> getOutGoingFriendRequests() {
-        System.out.println("Getting outgoing friend requests...");
+        log.debug("Getting outgoing friend requests...");
         return userFriendService.getOutgoingFriendRequests();
     }
 }
