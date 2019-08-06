@@ -4,6 +4,7 @@ import com.owu.geekhub.dao.UserDao;
 import com.owu.geekhub.jwtmessage.request.LoginForm;
 import com.owu.geekhub.jwtmessage.request.SignUpForm;
 import com.owu.geekhub.jwtmessage.response.ResponseMessage;
+import com.owu.geekhub.models.SendCodeRequest;
 import com.owu.geekhub.models.User;
 import com.owu.geekhub.service.AuthenticationService;
 import com.owu.geekhub.service.MailService;
@@ -71,10 +72,22 @@ public class ApiAuthRestController {
         return userService.save(user);
     }
 
-    @PostMapping("/get-verification-code")
+    /*@PostMapping("/get-verification-code")
     public ResponseEntity getVerificationCode(@RequestParam String username, @RequestParam String code) {
         if (code.matches("d+")
                 && authenticationService.matchVerificationCode(username, Integer.parseInt(code))) {
+            return ResponseEntity.ok()
+                    .body(new ResponseMessage("Code matches"));
+        } else {
+            return ResponseEntity.badRequest()
+                    .body(new ResponseMessage("Code does not matches"));
+
+        }
+    }*/
+
+    @PostMapping("/get-verification-code")
+    public ResponseEntity getVerificationCode(@RequestBody SendCodeRequest sendCodeRequest) {
+        if (authenticationService.matchVerificationCode(sendCodeRequest.getUsername(), Integer.parseInt(sendCodeRequest.getCode()))) {
             return ResponseEntity.ok()
                     .body(new ResponseMessage("Code matches"));
         } else {
