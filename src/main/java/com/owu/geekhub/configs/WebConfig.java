@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.*;
 @Configuration
 //@EnableWebMvc
 public class WebConfig implements WebMvcConfigurer {
-    @Value("${upload.path}")
+    @Value("${upload.path:#{null}}")
     private String uploadPath;
 
 
