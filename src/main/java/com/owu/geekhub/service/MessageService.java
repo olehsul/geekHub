@@ -10,7 +10,6 @@ import java.util.List;
 
 @Service
 public interface MessageService {
-    void save(Message msg);
     void createConversationIfNotExists(Long userId, Long friendId);
     Conversation gotoConversation(Long friendId);
     List<Conversation> getConversations(String username);

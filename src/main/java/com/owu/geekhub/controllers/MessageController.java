@@ -1,8 +1,6 @@
 package com.owu.geekhub.controllers;
 
-import com.owu.geekhub.dao.ConversationDao;
 import com.owu.geekhub.dao.MessageDAO;
-import com.owu.geekhub.dao.UserConversationDao;
 import com.owu.geekhub.dao.UserDao;
 import com.owu.geekhub.models.*;
 import com.owu.geekhub.service.MessageService;
@@ -21,17 +19,14 @@ public class MessageController {
     private final UserDao userDao;
     private final MessageDAO messageDAO;
     private final MessageService messageService;
-    private final UserConversationDao userConversationDao;
-    private final ConversationDao conversationDao;
     private final SimpMessagingTemplate template;
 
     @Autowired
-    public MessageController(UserDao userDao, MessageDAO messageDAO, MessageService messageService, UserConversationDao userConversationDao, ConversationDao conversationDao, SimpMessagingTemplate template) {
+    public MessageController(UserDao userDao, MessageDAO messageDAO, MessageService messageService,
+                             SimpMessagingTemplate template) {
         this.userDao = userDao;
         this.messageDAO = messageDAO;
         this.messageService = messageService;
-        this.userConversationDao = userConversationDao;
-        this.conversationDao = conversationDao;
         this.template = template;
     }
 

@@ -6,56 +6,40 @@ import com.owu.geekhub.dao.UserConversationDao;
 import com.owu.geekhub.dao.UserDao;
 import com.owu.geekhub.models.*;
 import com.owu.geekhub.service.MessageService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class MessageServiceImpl implements MessageService {
-    @Autowired
-    private MessageDAO messageDAO;
 
-    @Autowired
-    private ConversationDao conversationDao;
 
-    @Autowired
-    private UserConversationDao userConversationDao;
+    private static final String UPDATE_CONVERSATION_URL = "/chat/update-conversation-for-";
+    private static final String READ_MESSAGES_IN_CONVERSATION_URL = "/chat/get-read-messages-in-conversation-";
+    private static final String PRIVATE_MESSAGE_URL = "/chat/private-messages-for-conversation-id";
+    private final MessageDAO messageDAO;
 
-    @Autowired
-    private UserDao userDao;
+    private final ConversationDao conversationDao;
 
-    @Override
-    public void save(Message msg) {
+    private final UserConversationDao userConversationDao;
 
+    private final UserDao userDao;
+
+    public MessageServiceImpl(MessageDAO messageDAO, ConversationDao conversationDao, UserConversationDao userConversationDao, UserDao userDao) {
+        this.messageDAO = messageDAO;
+        this.conversationDao = conversationDao;
+        this.userConversationDao = userConversationDao;
+        this.userDao = userDao;
     }
 
     @Override
     public void createConversationIfNotExists(Long userId, Long friendId) {
-        List<UserConversation> allConvByUserId = userConversationDao.findAllByUser_id(userId);
-        List<UserConversation> allConvByFriendId = userConversationDao.findAllByUser_id(friendId);
-        boolean conversationExists = false;
-        for (UserConversation userConversation : allConvByFriendId) {
-            for (UserConversation conversation : allConvByUserId) {
-                if (userConversation.getConversation_id().equals(conversation.getConversation_id())) {
-                    conversationExists = true;
-                    break;
-                }
-            }
-
-            if (conversationExists)
-                break;
-        }
-
-        if (!conversationExists) {
+        if (!checkIfConversationExists(userId, friendId)) {
             User user = userDao.findById(userId).get();
             User friend = userDao.findById(friendId).get();
             Conversation conversation = new Conversation();
@@ -65,6 +49,19 @@ public class MessageServiceImpl implements MessageService {
             conversation.setMessages(new ArrayList<>());
             conversationDao.save(conversation);
         }
+    }
+
+    private boolean checkIfConversationExists(Long userId, Long friendId) {
+        List<UserConversation> conversationsByUserId = userConversationDao.findAllByUser_id(userId);
+        List<UserConversation> conversationsByFriendId = userConversationDao.findAllByUser_id(friendId);
+        for (UserConversation userConversation : conversationsByFriendId) {
+            for (UserConversation conversation : conversationsByUserId) {
+                if (userConversation.getConversation_id().equals(conversation.getConversation_id())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public Conversation gotoConversation(Long friendId) {
@@ -114,8 +111,7 @@ public class MessageServiceImpl implements MessageService {
 
         List<Message> unreadMessages = messageDAO
                 .findDistinctByUnreadByUsersIn(Collections
-                        .singletonList(userDao.findByUsername(receiver))
-                );
+                        .singletonList(userDao.findByUsername(receiver)));
 
         for (Message message : unreadMessages) {
             Iterator<User> iterator = message.getUnreadByUsers().iterator();
@@ -129,11 +125,14 @@ public class MessageServiceImpl implements MessageService {
             messageDAO.save(message);
         }
 
-        // todo: solve send to all users, or only sender
-        if (readMessages.size() > 0) {
-            template.convertAndSend("/chat/get-read-messages-in-conversation-" + conversationId
-//                    + "-for-" + receiver
-                    , readMessages);
+        if (!readMessages.isEmpty()) {
+            template.convertAndSend(READ_MESSAGES_IN_CONVERSATION_URL
+                    + conversationId, readMessages);
+
+//            Optional<Conversation> optional = conversationDao.findById(conversationId);
+//            optional.ifPresent(conversation -> conversation.getUsers().forEach(user -> {
+//                template.convertAndSend(UPDATE_CONVERSATION_URL + user.getUsername(), conversation);
+//            }));
         }
     }
 
@@ -143,11 +142,14 @@ public class MessageServiceImpl implements MessageService {
             return;
         }
 
-        System.out.println("Outgoing message: " + outgoingMessage);
-        Conversation conversation = conversationDao.findById(outgoingMessage.getConversationId()).get();
+        Optional<Conversation> optional = conversationDao.findById(outgoingMessage.getConversationId());
+        if (!optional.isPresent()) {
+            return;
+        }
+        Conversation conversation = optional.get();
 
-       /* Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User principal = (User) authentication.getPrincipal();*/
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        User principal = (User) authentication.getPrincipal();
         User principal = userDao.findByUsername(outgoingMessage.getSenderUsername());
 
         Message message = Message.builder()
@@ -164,9 +166,8 @@ public class MessageServiceImpl implements MessageService {
 
         conversation.setTheLastMessage(message);
         conversationDao.save(conversation);
-
-        template.convertAndSend("/chat/update-conversation-for-" + principal.getUsername(), conversationDao.findById(outgoingMessage.getConversationId()).get());
-        template.convertAndSend("/chat/update-conversation-for-" + outgoingMessage.getRecipientUsername(), conversationDao.findById(outgoingMessage.getConversationId()).get());
-        template.convertAndSend("/chat/private-messages-for-conversation-id" + outgoingMessage.getConversationId(), message);
+        template.convertAndSend(UPDATE_CONVERSATION_URL + principal.getUsername(), conversation);
+        template.convertAndSend(UPDATE_CONVERSATION_URL + outgoingMessage.getRecipientUsername(), conversation);
+        template.convertAndSend(PRIVATE_MESSAGE_URL + outgoingMessage.getConversationId(), message);
     }
 }

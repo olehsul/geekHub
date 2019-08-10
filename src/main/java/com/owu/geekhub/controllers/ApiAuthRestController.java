@@ -72,22 +72,11 @@ public class ApiAuthRestController {
         return userService.save(user);
     }
 
-    /*@PostMapping("/get-verification-code")
-    public ResponseEntity getVerificationCode(@RequestParam String username, @RequestParam String code) {
-        if (code.matches("[0-9]+")
-                && authenticationService.matchVerificationCode(username, Integer.parseInt(code))) {
-            return ResponseEntity.ok()
-                    .body(new ResponseMessage("Code matches"));
-        } else {
-            return ResponseEntity.badRequest()
-                    .body(new ResponseMessage("Code does not matches"));
-
-        }
-    }*/
-
     @PostMapping("/get-verification-code")
     public ResponseEntity getVerificationCode(@RequestBody SendCodeRequest sendCodeRequest) {
-        if (authenticationService.matchVerificationCode(sendCodeRequest.getUsername(), Integer.parseInt(sendCodeRequest.getCode()))) {
+        if (sendCodeRequest.getCode().matches("[0-9]+")
+                && authenticationService.matchVerificationCode(sendCodeRequest.getUsername(),
+                Integer.parseInt(sendCodeRequest.getCode()))) {
             return ResponseEntity.ok()
                     .body(new ResponseMessage("Code matches"));
         } else {
