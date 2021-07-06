@@ -10,11 +10,12 @@ import java.util.List;
 
 @Service
 public interface UserService extends UserDetailsService {
+
     ResponseEntity<?> save(User user) throws MessagingException;
-
     void update(User user);
-
     void updatePassword(User user);
-
     List<User> searchUser(String name, String surname);
+    ResponseEntity<?> activateUser(String username, String code);
+    ResponseEntity<?> sendNewActivationCode(String username);
+
 }

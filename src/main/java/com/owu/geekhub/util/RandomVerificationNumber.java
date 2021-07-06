@@ -1,4 +1,4 @@
-package com.owu.geekhub.service.generators;
+package com.owu.geekhub.util;
 
 import org.springframework.stereotype.Service;
 

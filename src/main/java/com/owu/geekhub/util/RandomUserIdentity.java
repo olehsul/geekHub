@@ -1,4 +1,4 @@
-package com.owu.geekhub.service.generators;
+package com.owu.geekhub.util;
 
 import com.owu.geekhub.dao.UserDao;
 import com.owu.geekhub.models.User;

@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "email.username",
+      "type": "java.lang.String",
+      "description": "Description for email.username."
+  }
+] }

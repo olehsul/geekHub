@@ -34,7 +34,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public ResponseEntity attemptLoginAndGetResponse(String username, String password) {
+    public ResponseEntity<JwtResponse> attemptLoginAndGetResponse(String username, String password) {
         if (!userDao.existsByUsername(username)) {
             String message = String.format("User [%s] does not exist!", username);
             logger.warn(message);
@@ -61,20 +61,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public boolean matchVerificationCode(String username, int code) {
+    public boolean changePassword(String username, String code, String newPassword) {
         User user = userDao.findByUsername(username);
-        if (user.getActivationKey() == code) {
-            user.setActivated(true);
-            userDao.save(user);
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean changePassword(String username, int code, String newPassword) {
-        User user = userDao.findByUsername(username);
-        if (user.getActivationKey() == code) {
+        if (user.getActivationKey().equals(code)) {
             user.setPassword(encoder.encode(newPassword));
             userDao.save(user);
             return true;

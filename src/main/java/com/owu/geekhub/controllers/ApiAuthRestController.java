@@ -1,20 +1,19 @@
 package com.owu.geekhub.controllers;
 
 import com.owu.geekhub.dao.UserDao;
-import com.owu.geekhub.jwtmessage.request.LoginForm;
-import com.owu.geekhub.jwtmessage.request.SignUpForm;
-import com.owu.geekhub.jwtmessage.response.ResponseMessage;
 import com.owu.geekhub.models.SendCodeRequest;
 import com.owu.geekhub.models.User;
-import com.owu.geekhub.service.AuthenticationService;
-import com.owu.geekhub.service.MailService;
+import com.owu.geekhub.jwtmessage.request.LoginForm;
 import com.owu.geekhub.service.UserService;
-import com.owu.geekhub.service.validation.RegistrationValidator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.owu.geekhub.service.AuthenticationService;
+import com.owu.geekhub.jwtmessage.request.SignUpForm;
+import com.owu.geekhub.util.UserRegistrationValidator;
+import com.owu.geekhub.jwtmessage.response.ResponseMessage;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.mail.MessagingException;
 import javax.validation.Valid;
@@ -22,38 +21,38 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+@Slf4j
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/api/auth")
 public class ApiAuthRestController {
-    private static final Logger logger = LoggerFactory.getLogger(ApiAuthRestController.class);
 
     private final UserDao userDao;
     private final UserService userService;
-    private final MailService mailService;
-    private final RegistrationValidator registrationValidator;
     private final AuthenticationService authenticationService;
+    private final UserRegistrationValidator userRegistrationValidator;
 
-    public ApiAuthRestController(UserDao userDao, RegistrationValidator registrationValidator,
-                                 MailService mailService, UserService userService,
-                                 AuthenticationService authenticationService) {
+    @Autowired
+    public ApiAuthRestController(UserDao userDao,
+                                 UserService userService,
+                                 AuthenticationService authenticationService,
+                                 UserRegistrationValidator userRegistrationValidator) {
         this.userDao = userDao;
-        this.registrationValidator = registrationValidator;
-        this.mailService = mailService;
         this.userService = userService;
         this.authenticationService = authenticationService;
+        this.userRegistrationValidator = userRegistrationValidator;
     }
 
     @PostMapping("/signin")
-    public ResponseEntity authenticateUser(@Valid @RequestBody LoginForm loginRequest) {
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginForm loginRequest) {
         return authenticationService.attemptLoginAndGetResponse(loginRequest.getUsername(),
                 loginRequest.getPassword());
     }
 
     @PostMapping("/signup")
-    public ResponseEntity registerUser(@Valid @RequestBody SignUpForm signUpRequest)
+    public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpForm signUpRequest)
             throws ParseException, MessagingException {
-        if (!registrationValidator.isDateValid(signUpRequest.getDate())) {
+        if (!userRegistrationValidator.isDateValid(signUpRequest.getDate())) {
             return ResponseEntity.badRequest()
                     .body(new ResponseMessage("Invalid birth date!"));
         }
@@ -72,46 +71,27 @@ public class ApiAuthRestController {
         return userService.save(user);
     }
 
-    /*@PostMapping("/get-verification-code")
-    public ResponseEntity getVerificationCode(@RequestParam String username, @RequestParam String code) {
-        if (code.matches("d+")
-                && authenticationService.matchVerificationCode(username, Integer.parseInt(code))) {
-            return ResponseEntity.ok()
-                    .body(new ResponseMessage("Code matches"));
-        } else {
-            return ResponseEntity.badRequest()
-                    .body(new ResponseMessage("Code does not matches"));
-
-        }
-    }*/
-
     @PostMapping("/get-verification-code")
-    public ResponseEntity getVerificationCode(@RequestBody SendCodeRequest sendCodeRequest) {
-        if (authenticationService.matchVerificationCode(sendCodeRequest.getUsername(), Integer.parseInt(sendCodeRequest.getCode()))) {
-            return ResponseEntity.ok()
-                    .body(new ResponseMessage("Code matches"));
-        } else {
-            return ResponseEntity.badRequest()
-                    .body(new ResponseMessage("Code does not matches"));
+    public ResponseEntity<?> getVerificationCode(@RequestBody SendCodeRequest sendCodeRequest) {
+        log.debug(sendCodeRequest.toString());
 
-        }
+        return userService.activateUser(sendCodeRequest.getUsername(), sendCodeRequest.getCode());
     }
 
     @PostMapping("/send-code-to-email")
-    public ResponseEntity sendCodeToEmail(@RequestBody String username) throws MessagingException {
+    public ResponseEntity<?> sendCodeToEmail(@RequestBody String username) {
         if (!userDao.existsByUsername(username)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ResponseMessage("User with such email does not exist!"));
         }
-        mailService.sendRecoveryCode(username);
-        return ResponseEntity.ok(new ResponseMessage("Code sent"));
+        return userService.sendNewActivationCode(username);
     }
 
     @PostMapping("/set-new-password")
-    public ResponseEntity setNewPassword(@RequestParam String username,
+    public ResponseEntity<ResponseMessage> setNewPassword(@RequestParam String username,
                                          @RequestParam String code,
                                          @RequestParam String newPassword) {
-        if (authenticationService.changePassword(username, Integer.parseInt(code), newPassword)) {
+        if (authenticationService.changePassword(username, code, newPassword)) {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.badRequest()
